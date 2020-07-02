@@ -1,6 +1,6 @@
 # svelte-canvas
 
-Reactive canvas rendering with [Svelte](https://svelte.dev/).
+Reactive canvas rendering with Svelte.
 
 ## Installation
 

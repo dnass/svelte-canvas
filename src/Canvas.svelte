@@ -9,7 +9,8 @@
     context,
     setups = [],
     renderers = [],
-    redrawNeeded = true;
+    redrawNeeded = true,
+    resizeNeeded = true;
 
   export let width = 640,
     height = 640,
@@ -35,6 +36,12 @@
   });
 
   const draw = () => {
+    if (resizeNeeded) {
+      context.scale(pixelRatio, pixelRatio);
+      resizeNeeded = false;
+      console.log("here");
+    }
+
     if (setups.length) {
       for (let setup of setups) {
         setup({ context, width, height });
@@ -61,12 +68,11 @@
 
   onMount(() => {
     context = canvas.getContext("2d");
-    context.scale(pixelRatio, pixelRatio);
 
     draw();
   });
 
-  $: width, height, redraw();
+  $: width, height, (resizeNeeded = true), redraw();
 </script>
 
 <style>
