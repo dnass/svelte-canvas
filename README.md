@@ -36,7 +36,7 @@ Reactive canvas rendering with Svelte.
 | `width`      | 640                       | Canvas width                                                                                            |
 | `height`     | 640                       | Canvas height                                                                                           |
 | `pixelRatio` | `window.devicePixelRatio` | Canvas [pixel ratio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Examples) |
-| `autoclear`  | `false`                   | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
+| `autoclear`  | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
 
 And exposes these methods:
 

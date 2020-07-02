@@ -15,7 +15,7 @@
   export let width = 640,
     height = 640,
     pixelRatio = window.devicePixelRatio,
-    autoclear = false;
+    autoclear = true;
 
   export const redraw = () => (redrawNeeded = true);
   export const getCanvas = () => canvas;
