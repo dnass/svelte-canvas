@@ -1,12 +1,16 @@
 {
   "name": "svelte-canvas",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "svelte": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnass/svelte-canvas.git"
   },
   "keywords": [
     "svelte",

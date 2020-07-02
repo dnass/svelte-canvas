@@ -7,7 +7,8 @@
 
   let canvas,
     context,
-    layers = [],
+    setups = [],
+    renderers = [],
     redrawNeeded = true;
 
   export let width = 640,
@@ -20,26 +21,38 @@
   export const getContext = () => context;
 
   setContext(KEY, {
-    register(layer) {
-      layers.push(layer);
-      onDestroy(() => layers.splice(layers.indexOf(layer), 1));
+    registerSetup(setup) {
+      setups.push(setup);
+    },
+    registerRender(render) {
+      renderers.push(render);
+      onDestroy(() => {
+        renderers.splice(renderers.indexOf(render), 1);
+        redrawNeeded = true;
+      });
     },
     redraw
   });
 
   const draw = () => {
+    if (setups.length) {
+      for (let setup of setups) {
+        setup({ context, width, height });
+        setups.splice(setups.indexOf(setup), 1);
+      }
+
+      redrawNeeded = true;
+    }
+
     if (redrawNeeded) {
       if (autoclear) {
         context.clearRect(0, 0, width, height);
       }
 
-      for (let render of layers) {
-        if (typeof render === "function") {
-          render({ width, height, context });
-        } else {
-          throw new Error("render must be a function");
-        }
+      for (let render of renderers) {
+        render({ context, width, height });
       }
+
       redrawNeeded = false;
     }
 
