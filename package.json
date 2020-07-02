@@ -1,0 +1,22 @@
+{
+  "name": "svelte-canvas",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "src/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "svelte",
+    "canvas"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "rollup": "^2.18.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^5.2.3",
+    "svelte": "^3.23.2"
+  }
+}
