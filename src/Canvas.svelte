@@ -39,7 +39,6 @@
     if (resizeNeeded) {
       context.scale(pixelRatio, pixelRatio);
       resizeNeeded = false;
-      console.log("here");
     }
 
     if (setups.length) {
