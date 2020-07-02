@@ -88,5 +88,10 @@
   on:mouseup
   on:mousedown
   on:mousemove
+  on:mouseover
+  on:mouseenter
+  on:mouseout
+  on:mouseleave
+  on:click
   on:wheel />
 <slot />
