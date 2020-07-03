@@ -17,6 +17,7 @@
   export let width = 640,
     height = 640,
     pixelRatio = window.devicePixelRatio,
+    style = null,
     autoclear = true;
 
   export const getCanvas = () => canvas,
@@ -93,7 +94,7 @@
 </style>
 
 <canvas
-  style="width: {width}px; height: {height}px"
+  style="width: {width}px; height: {height}px;{style ? ` ${style}` : ''}"
   width={width * pixelRatio}
   height={height * pixelRatio}
   bind:this={canvas}
