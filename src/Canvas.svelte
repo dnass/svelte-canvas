@@ -4,36 +4,26 @@
 
 <script>
   import { onMount, onDestroy, setContext } from "svelte";
+  import { get } from "svelte/store";
 
   let canvas,
     context,
-    setups = [],
-    renderers = [],
     redrawNeeded = true,
     resizeNeeded = true;
+
+  const setups = [],
+    renderers = [];
 
   export let width = 640,
     height = 640,
     pixelRatio = window.devicePixelRatio,
     autoclear = true;
 
-  export const redraw = () => (redrawNeeded = true);
-  export const getCanvas = () => canvas;
-  export const getContext = () => context;
+  export const getCanvas = () => canvas,
+    getContext = () => context,
+    redraw = () => (redrawNeeded = true);
 
-  setContext(KEY, {
-    registerSetup(setup) {
-      setups.push(setup);
-    },
-    registerRender(render) {
-      renderers.push(render);
-      onDestroy(() => {
-        renderers.splice(renderers.indexOf(render), 1);
-        redrawNeeded = true;
-      });
-    },
-    redraw
-  });
+  const resize = () => (resizeNeeded = true);
 
   const draw = () => {
     if (resizeNeeded) {
@@ -41,7 +31,7 @@
       resizeNeeded = false;
     }
 
-    if (setups.length) {
+    if (setups.length !== 0) {
       for (let setup of setups) {
         setup({ context, width, height });
         setups.splice(setups.indexOf(setup), 1);
@@ -55,7 +45,17 @@
         context.clearRect(0, 0, width, height);
       }
 
-      for (let render of renderers) {
+      const length = renderers.length;
+
+      const prioritized = renderers
+        .map((renderer, i) => {
+          const rank = get(renderer.priority);
+          renderer.rank = rank || i - length;
+          return renderer;
+        })
+        .sort((a, b) => a.rank - b.rank);
+
+      for (let { render } of prioritized) {
         render({ context, width, height });
       }
 
@@ -65,13 +65,25 @@
     requestAnimationFrame(draw);
   };
 
+  const register = ({ setup, renderer }) => {
+    if (setup) setups.push(setup);
+
+    renderers.push(renderer);
+
+    onDestroy(() => {
+      renderers.splice(renderers.indexOf(renderer), 1);
+      redrawNeeded = true;
+    });
+  };
+
+  setContext(KEY, { register, redraw });
+
   onMount(() => {
     context = canvas.getContext("2d");
-
     draw();
   });
 
-  $: width, height, (resizeNeeded = true), redraw();
+  $: width, height, resize(), redraw();
 </script>
 
 <style>

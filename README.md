@@ -48,11 +48,13 @@ And exposes these methods:
 
 ### Layer
 
-`Layer` is a layer to be rendered onto the canvas. It takes a two props, `setup` and `render`. Both are functions with one argument that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
+`Layer` is a layer to be rendered onto the canvas. It takes three props. `setup` and `render` both take functions with one argument that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
 
-`setup` is called once at initialization. `render` is called every time the canvas redraws.
+`setup` is optional and is called once at initialization. `render` is called every time the canvas redraws.
 
 Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_a_statement_as_reactive) lets `svelte-canvas` re-render anytime the values that the function depends on change.
+
+The third prop, `priority`, takes a positive integer which determines the layer's render priority. Layers with a `priority` will be rendered _after_ other layers, in ascending order of priority, so that they appear on top of the scene.
 
 ### t
 
