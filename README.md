@@ -20,7 +20,7 @@ Reactive canvas rendering with Svelte.
   };
 </script>
 
-<Canvas width={640} height={640} autoclear>
+<Canvas width={640} height={640}>
   <Layer {render} />
 </Canvas>
 ```
@@ -29,7 +29,9 @@ Reactive canvas rendering with Svelte.
 
 ### Canvas
 
-`Canvas` is the top-level element. It's a Svelte wrapper around an [HTML `<canvas>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas). It takes these parameters:
+`Canvas` is the top-level element. It's a Svelte wrapper around an [HTML `<canvas>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas).
+
+#### Parameters
 
 | parameter    | default                   | description                                                                                             |
 | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -39,7 +41,7 @@ Reactive canvas rendering with Svelte.
 | `style`      | `null`                    | A CSS style string which will be applied to the canvas element                                          |
 | `autoclear`  | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
 
-And exposes these methods:
+#### Methods
 
 | method       | description                                   |
 | ------------ | --------------------------------------------- |
@@ -47,15 +49,19 @@ And exposes these methods:
 | `getContext` | Returns the canvas's 2D rendering context     |
 | `redraw`     | Forces a re-render of the canvas              |
 
+#### Events
+
+All DOM events on the `<canvas>` element are forwarded to the `Canvas` component, so [handling an event](https://svelte.dev/docs#Element_directives) is as simple as `<Canvas on:click={handleClick}>`.
+
 ### Layer
 
-`Layer` is a layer to be rendered onto the canvas. It takes three props. `setup` and `render` both take functions with one argument that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
+`Layer` is a layer to be rendered onto the canvas. It takes three props: `setup`, `render`, and `priority`. `setup` and `render` both require functions with one argument, that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
 
 `setup` is optional and is called once at initialization. `render` is called every time the canvas redraws.
 
 Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_a_statement_as_reactive) lets `svelte-canvas` re-render anytime the values that the function depends on change.
 
-The third prop, `priority`, takes a positive integer which determines the layer's render priority. Layers with a `priority` will be rendered _after_ other layers, in ascending order of priority, so that they appear on top of the scene.
+The third prop, `priority`, takes a positive integer which determines the layer's render priority. Layers with a `priority` will be rendered _after_ other layers, in ascending order of priority, so that higher priority layers appear on top of the scene.
 
 ### t
 
