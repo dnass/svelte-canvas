@@ -4,7 +4,6 @@
 
 <script>
   import { onMount, onDestroy, setContext } from "svelte";
-  import { get } from "svelte/store";
   import { current_component } from "svelte/internal";
   import forwardEventsBuilder from "./forwardEvents";
 
@@ -54,7 +53,7 @@
 
       const prioritized = renderers
         .map((renderer, i) => {
-          const rank = get(renderer.priority);
+          const rank = renderer.priority();
           renderer.rank = rank || i - length;
           return renderer;
         })

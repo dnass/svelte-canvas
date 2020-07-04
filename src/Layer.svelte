@@ -1,6 +1,5 @@
 <script>
   import { getContext } from "svelte";
-  import { writable } from "svelte/store";
   import { KEY } from "./Canvas.svelte";
 
   const { register, redraw } = getContext(KEY);
@@ -21,10 +20,7 @@
     throw new Error("priority must be a positive integer");
   }
 
-  const p = writable(priority);
+  register({ setup, renderer: { render, priority: () => priority } });
 
-  register({ setup, renderer: { render, priority: p } });
-
-  $: p.set(priority), redraw();
-  $: render, redraw();
+  $: priority, render, redraw();
 </script>
