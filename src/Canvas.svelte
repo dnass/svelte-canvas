@@ -5,6 +5,10 @@
 <script>
   import { onMount, onDestroy, setContext } from "svelte";
   import { get } from "svelte/store";
+  import { current_component } from "svelte/internal";
+  import forwardEventsBuilder from "./forwardEvents";
+
+  const forwardEvents = forwardEventsBuilder(current_component);
 
   let canvas,
     context,
@@ -98,13 +102,5 @@
   width={width * pixelRatio}
   height={height * pixelRatio}
   bind:this={canvas}
-  on:mouseup
-  on:mousedown
-  on:mousemove
-  on:mouseover
-  on:mouseenter
-  on:mouseout
-  on:mouseleave
-  on:click
-  on:wheel />
+  use:forwardEvents />
 <slot />
