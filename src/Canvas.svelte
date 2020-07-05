@@ -4,10 +4,9 @@
 
 <script>
   import { onMount, onDestroy, setContext } from "svelte";
-  import { current_component } from "svelte/internal";
   import forwardEventsBuilder from "./forwardEvents";
 
-  const forwardEvents = forwardEventsBuilder(current_component);
+  const forwardEvents = forwardEventsBuilder();
 
   let canvas,
     context,
@@ -19,7 +18,7 @@
 
   export let width = 640,
     height = 640,
-    pixelRatio = window.devicePixelRatio,
+    pixelRatio = undefined,
     style = null,
     autoclear = true;
 
@@ -83,11 +82,14 @@
   setContext(KEY, { register, redraw });
 
   onMount(() => {
+    if (pixelRatio === undefined) {
+      pixelRatio = window.devicePixelRatio || 2;
+    }
     context = canvas.getContext("2d");
     draw();
   });
 
-  $: width, height, resize(), redraw();
+  $: width, height, pixelRatio, autoclear, resize(), redraw();
 </script>
 
 <style>
