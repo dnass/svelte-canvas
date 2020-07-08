@@ -25,6 +25,13 @@ Reactive canvas rendering with Svelte.
 </Canvas>
 ```
 
+More examples:
+
+- [Scatterplot](https://svelte.dev/repl/8265c051bf754f8aba6f5d6ed9d0d74f)
+- [Globe](https://svelte.dev/repl/b0c3901c51cd49f1a2f337f731942269)
+- [Trefoil](https://svelte.dev/repl/44d1eb4677e2421ab20a584ca8a0a934)
+- [DVD screensaver](https://svelte.dev/repl/34d79dea30b8428590b8cb76221ca1d4)
+
 ## API
 
 ### Canvas
