@@ -29,6 +29,12 @@
   const resize = () => (resizeNeeded = true);
 
   const draw = () => {
+    if (typeof window === "undefined") {
+      resizeNeeded = false;
+      redrawNeeded = false;
+      return;
+    }
+
     if (resizeNeeded) {
       context.scale(pixelRatio, pixelRatio);
       resizeNeeded = false;
@@ -65,7 +71,7 @@
       redrawNeeded = false;
     }
 
-    requestAnimationFrame(draw);
+    window.requestAnimationFrame(draw);
   };
 
   const register = ({ setup, renderer }) => {
@@ -82,9 +88,15 @@
   setContext(KEY, { register, redraw });
 
   onMount(() => {
-    if (pixelRatio === undefined) {
+    if (typeof window === "undefined") {
+      pixelRatio = 2;
+      return
+    }
+    
+    if(pixelRatio === undefined) {
       pixelRatio = window.devicePixelRatio || 2;
     }
+
     context = canvas.getContext("2d");
     draw();
   });

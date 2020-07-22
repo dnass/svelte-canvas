@@ -4,9 +4,16 @@ let frame
 
 const now = Date.now()
 
-export default readable(Date.now() - now, function start(set) {
-  frame = requestAnimationFrame(() => start(set))
+function start(set) {
   set(Date.now() - now)
 
-  return () => cancelAnimationFrame(frame)
-})
+  frame = window.requestAnimationFrame(() => start(set))
+  return () => window.cancelAnimationFrame(frame)
+}
+
+function noop() {}
+
+export default readable(
+  Date.now() - now,
+  typeof window === 'undefined' ? noop : start
+)
