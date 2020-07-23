@@ -65,7 +65,7 @@
       redrawNeeded = false;
     }
 
-    requestAnimationFrame(draw);
+    window.requestAnimationFrame(draw);
   };
 
   const register = ({ setup, renderer }) => {
@@ -81,10 +81,15 @@
 
   setContext(KEY, { register, redraw });
 
-  onMount(() => {
-    if (pixelRatio === undefined) {
-      pixelRatio = window.devicePixelRatio || 2;
+  if (pixelRatio === undefined) {
+    if (typeof window === "undefined") {
+      pixelRatio = 2;
+    } else {
+      pixelRatio = window.devicePixelRatio;
     }
+  }
+
+  onMount(() => {
     context = canvas.getContext("2d");
     draw();
   });
