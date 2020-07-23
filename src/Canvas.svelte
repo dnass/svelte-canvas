@@ -29,12 +29,6 @@
   const resize = () => (resizeNeeded = true);
 
   const draw = () => {
-    if (typeof window === "undefined") {
-      resizeNeeded = false;
-      redrawNeeded = false;
-      return;
-    }
-
     if (resizeNeeded) {
       context.scale(pixelRatio, pixelRatio);
       resizeNeeded = false;
@@ -87,16 +81,15 @@
 
   setContext(KEY, { register, redraw });
 
-  onMount(() => {
+  if (pixelRatio === undefined) {
     if (typeof window === "undefined") {
       pixelRatio = 2;
-      return
+    } else {
+      pixelRatio = window.devicePixelRatio;
     }
-    
-    if(pixelRatio === undefined) {
-      pixelRatio = window.devicePixelRatio || 2;
-    }
+  }
 
+  onMount(() => {
     context = canvas.getContext("2d");
     draw();
   });
