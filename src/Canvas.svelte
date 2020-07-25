@@ -3,8 +3,8 @@
 </script>
 
 <script>
-  import { onMount, onDestroy, setContext } from "svelte";
-  import forwardEventsBuilder from "./forwardEvents";
+  import { onMount, onDestroy, setContext } from 'svelte';
+  import forwardEventsBuilder from './forwardEvents';
 
   const forwardEvents = forwardEventsBuilder();
 
@@ -75,14 +75,14 @@
 
     onDestroy(() => {
       renderers.splice(renderers.indexOf(renderer), 1);
-      redrawNeeded = true;
+      redraw();
     });
   };
 
   setContext(KEY, { register, redraw });
 
   if (pixelRatio === undefined) {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       pixelRatio = 2;
     } else {
       pixelRatio = window.devicePixelRatio;
@@ -90,7 +90,7 @@
   }
 
   onMount(() => {
-    context = canvas.getContext("2d");
+    context = canvas.getContext('2d');
     draw();
   });
 

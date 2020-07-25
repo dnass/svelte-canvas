@@ -1,14 +1,14 @@
-import { readable } from 'svelte/store'
+import { readable } from 'svelte/store';
 
-let frame
+let frame;
 
-const now = Date.now()
+const now = Date.now();
 
 function start(set) {
-  set(Date.now() - now)
+  set(Date.now() - now);
 
-  frame = window.requestAnimationFrame(() => start(set))
-  return () => window.cancelAnimationFrame(frame)
+  frame = window.requestAnimationFrame(() => start(set));
+  return () => window.cancelAnimationFrame(frame);
 }
 
 function noop() {}
@@ -16,4 +16,4 @@ function noop() {}
 export default readable(
   Date.now() - now,
   typeof window === 'undefined' ? noop : start
-)
+);
