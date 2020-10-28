@@ -2,7 +2,7 @@
   import { getContext } from 'svelte';
   import { KEY } from './Canvas.svelte';
 
-  const { register, redraw } = getContext(KEY);
+  const { register, redraw, priorityChange } = getContext(KEY);
 
   export let setup = undefined,
     render = () => {},
@@ -22,5 +22,6 @@
 
   register({ setup, renderer: { render, priority: () => priority } });
 
+  $: priority, priorityChange();
   $: priority, render, redraw();
 </script>
