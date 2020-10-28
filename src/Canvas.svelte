@@ -38,7 +38,6 @@
     }
 
     if (resortNeeded) {
-      console.log('sorting');
       prioritized = renderers
         .map((renderer, i) => {
           const rank = renderer.priority();
