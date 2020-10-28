@@ -8,13 +8,15 @@
 
   const forwardEvents = forwardEventsBuilder();
 
-  let canvas,
-    context,
-    redrawNeeded = true,
-    resizeNeeded = true;
+  let canvas, context;
 
-  const setups = [],
-    renderers = [];
+  let redrawNeeded = true,
+    resizeNeeded = true,
+    resortNeeded = true;
+
+  let setups = [],
+    renderers = [],
+    prioritized = [];
 
   export let width = 640,
     height = 640,
@@ -26,12 +28,26 @@
     getContext = () => context,
     redraw = () => (redrawNeeded = true);
 
-  const resize = () => (resizeNeeded = true);
+  const resize = () => (resizeNeeded = true),
+    priorityChange = () => (resortNeeded = true);
 
   const draw = () => {
     if (resizeNeeded) {
       context.scale(pixelRatio, pixelRatio);
       resizeNeeded = false;
+    }
+
+    if (resortNeeded) {
+      console.log('sorting');
+      prioritized = renderers
+        .map((renderer, i) => {
+          const rank = renderer.priority();
+          renderer.rank = rank || i - renderers.length;
+          return renderer;
+        })
+        .sort((a, b) => a.rank - b.rank);
+
+      resortNeeded = false;
     }
 
     if (setups.length !== 0) {
@@ -47,16 +63,6 @@
       if (autoclear) {
         context.clearRect(0, 0, width, height);
       }
-
-      const length = renderers.length;
-
-      const prioritized = renderers
-        .map((renderer, i) => {
-          const rank = renderer.priority();
-          renderer.rank = rank || i - length;
-          return renderer;
-        })
-        .sort((a, b) => a.rank - b.rank);
 
       for (let { render } of prioritized) {
         render({ context, width, height });
@@ -75,11 +81,12 @@
 
     onDestroy(() => {
       renderers.splice(renderers.indexOf(renderer), 1);
+      priorityChange();
       redraw();
     });
   };
 
-  setContext(KEY, { register, redraw });
+  setContext(KEY, { register, redraw, priorityChange });
 
   if (pixelRatio === undefined) {
     if (typeof window === 'undefined') {
