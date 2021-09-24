@@ -1,5 +1,5 @@
 <script>
-  import { Canvas, Layer, t } from "svelte-canvas";
+  import { Canvas, Layer, t } from 'svelte-canvas';
 
   $: render = ({ context, width, height }) => {
     context.fillStyle = `hsl(${$t / 40}, 100%, 50%)`;

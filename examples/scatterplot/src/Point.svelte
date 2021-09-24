@@ -1,12 +1,11 @@
 <script>
-  import { Layer } from "svelte-canvas";
-  import { spring } from "svelte/motion";
-  import { cubicOut } from "svelte/easing";
+  import { Layer } from 'svelte-canvas';
+  import { spring } from 'svelte/motion';
 
   export let x = 0,
     y = 0,
     r = 1,
-    fill = "black",
+    fill = 'black',
     stroke = null,
     strokeWidth = 1;
 
@@ -29,4 +28,4 @@
   };
 </script>
 
-<Layer {render} priority={stroke && 1} />
+<Layer {render} />
