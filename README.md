@@ -4,7 +4,7 @@ Reactive canvas rendering with Svelte.
 
 ## Installation
 
-`npm install svelte svelte-canvas`
+`npm install svelte-canvas`
 
 ## Usage
 
@@ -31,6 +31,7 @@ More examples:
 - [Globe](https://svelte.dev/repl/b0c3901c51cd49f1a2f337f731942269)
 - [Trefoil](https://svelte.dev/repl/44d1eb4677e2421ab20a584ca8a0a934)
 - [DVD screensaver](https://svelte.dev/repl/34d79dea30b8428590b8cb76221ca1d4)
+- [svelte-canvas + SVG](https://svelte.dev/repl/0df2613d2bff4ac89735edc628955937)
 
 ## API
 
@@ -62,13 +63,11 @@ All DOM events on the `<canvas>` element are forwarded to the `Canvas` component
 
 ### Layer
 
-`Layer` is a layer to be rendered onto the canvas. It takes three props: `setup`, `render`, and `priority`. `setup` and `render` both require functions with one argument, that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
+`Layer` is a layer to be rendered onto the canvas. It takes two props, `setup` and `render` Both take functions with a single argument that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
 
 `setup` is optional and is called once at initialization. `render` is called every time the canvas redraws.
 
-Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_a_statement_as_reactive) lets `svelte-canvas` re-render anytime the values that the function depends on change.
-
-The third prop, `priority`, takes a positive integer which determines the layer's render priority. Layers with a `priority` will be rendered _after_ other layers, in ascending order of priority, so that higher priority layers appear on top of the scene.
+Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_a_statement_as_reactive) allows `svelte-canvas` to re-render anytime the values that the function depends on change.
 
 ### t
 
