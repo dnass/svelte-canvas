@@ -47,8 +47,7 @@ class RenderManager {
     const renderProps = { context, width, height };
 
     if (this.needsResize) {
-      context.setTransform(1, 0, 0, 1, 0, 0);
-      context.scale(pixelRatio, pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       this.needsResize = false;
     }
 
