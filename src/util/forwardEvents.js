@@ -1,5 +1,5 @@
 // Adapted from https://github.com/hperrin/svelte-material-ui/blob/master/packages/common/forwardEvents.js
-import { bubble, listen, current_component } from 'svelte/internal';
+import { bubble, listen, get_current_component } from 'svelte/internal';
 
 // prettier-ignore
 const events = [
@@ -17,7 +17,7 @@ const events = [
   ];
 
 export default function forwardEventsBuilder() {
-  const component = current_component;
+  const component = get_current_component();
 
   return node => {
     const destructors = events.map(event =>
