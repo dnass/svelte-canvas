@@ -6,86 +6,99 @@
   import { onMount, onDestroy, setContext } from 'svelte';
   import forwardEventsBuilder from './forwardEvents';
 
-  const forwardEvents = forwardEventsBuilder();
-
-  let canvas, context;
-
-  let redrawNeeded = true,
-    resizeNeeded = true,
-    resortNeeded = true;
-
-  let setups = [],
-    renderers = [],
-    prioritized = [];
-
   export let width = 640,
     height = 640,
     pixelRatio = undefined,
     style = null,
     autoclear = true;
 
-  export const getCanvas = () => canvas,
-    getContext = () => context,
-    redraw = () => (redrawNeeded = true);
+  export { getCanvas, getContext, redraw };
 
-  const resize = () => (resizeNeeded = true),
-    priorityChange = () => (resortNeeded = true);
+  const forwardEvents = forwardEventsBuilder();
 
-  const draw = () => {
-    if (resizeNeeded) {
+  let canvas, context, animationLoop, layerRef, layerObserver, layerSequence;
+
+  let needsRedraw = true,
+    needsResize = true;
+
+  let currentLayerId = 0;
+
+  const setups = new Map(),
+    renderers = new Map();
+
+  function getCanvas() {
+    return canvas;
+  }
+
+  function getContext() {
+    return context;
+  }
+
+  function redraw() {
+    needsRedraw = true;
+  }
+
+  function resize() {
+    needsResize = true;
+  }
+
+  function draw() {
+    if (needsResize) {
       context.scale(pixelRatio, pixelRatio);
-      resizeNeeded = false;
+      needsResize = false;
     }
 
-    if (resortNeeded) {
-      prioritized = renderers
-        .map((renderer, i) => {
-          const rank = renderer.priority();
-          renderer.rank = rank || i - renderers.length;
-          return renderer;
-        })
-        .sort((a, b) => a.rank - b.rank);
-
-      resortNeeded = false;
-    }
-
-    if (setups.length !== 0) {
-      for (let setup of setups) {
+    if (setups.size !== 0) {
+      for (const [layerId, setup] of setups) {
         setup({ context, width, height });
-        setups.splice(setups.indexOf(setup), 1);
+        setups.delete(layerId);
       }
 
-      redrawNeeded = true;
+      redraw();
     }
 
-    if (redrawNeeded) {
+    if (needsRedraw) {
       if (autoclear) {
         context.clearRect(0, 0, width, height);
       }
 
-      for (let { render } of prioritized) {
-        render({ context, width, height });
+      for (const layerId of layerSequence) {
+        renderers.get(layerId)({ context, width, height });
       }
 
-      redrawNeeded = false;
+      needsRedraw = false;
     }
 
-    window.requestAnimationFrame(draw);
-  };
+    animationLoop = window.requestAnimationFrame(draw);
+  }
 
-  const register = ({ setup, renderer }) => {
-    if (setup) setups.push(setup);
+  function register({ setup, render }) {
+    renderers.set(currentLayerId, render);
 
-    renderers.push(renderer);
+    if (setup) {
+      setups.set(currentLayerId, setup);
+    }
 
-    onDestroy(() => {
-      renderers.splice(renderers.indexOf(renderer), 1);
-      priorityChange();
-      redraw();
-    });
-  };
+    return currentLayerId++;
+  }
 
-  setContext(KEY, { register, redraw, priorityChange });
+  function unregister(layerId) {
+    renderers.delete(layerId);
+    redraw();
+  }
+
+  function getLayerSequence() {
+    layerSequence = [...layerRef.children].map(d => +d.dataset.layerId);
+    redraw();
+  }
+
+  function observeLayers() {
+    layerObserver = new MutationObserver(getLayerSequence);
+    layerObserver.observe(layerRef, { childList: true });
+    getLayerSequence();
+  }
+
+  setContext(KEY, { register, unregister, redraw });
 
   if (pixelRatio === undefined) {
     if (typeof window === 'undefined') {
@@ -97,22 +110,28 @@
 
   onMount(() => {
     context = canvas.getContext('2d');
+    observeLayers();
     draw();
+  });
+
+  onDestroy(() => {
+    window.cancelAnimationFrame(animationLoop);
+    layerObserver.disconnect();
   });
 
   $: width, height, pixelRatio, autoclear, resize(), redraw();
 </script>
 
-<style>
-  canvas {
-    display: block;
-  }
-</style>
-
 <canvas
-  style="width: {width}px; height: {height}px;{style ? ` ${style}` : ''}"
+  style="display: block; width: {width}px; height: {height}px;{style
+    ? ` ${style}`
+    : ''}"
   width={width * pixelRatio}
   height={height * pixelRatio}
   bind:this={canvas}
-  use:forwardEvents />
-<slot />
+  use:forwardEvents
+/>
+
+<div style="display: none;" bind:this={layerRef}>
+  <slot />
+</div>

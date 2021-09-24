@@ -1,12 +1,11 @@
 <script>
-  import { getContext } from 'svelte';
+  import { getContext, onDestroy } from 'svelte';
   import { KEY } from './Canvas.svelte';
 
-  const { register, redraw, priorityChange } = getContext(KEY);
+  const { register, unregister, redraw } = getContext(KEY);
 
   export let setup = undefined,
-    render = () => {},
-    priority = undefined;
+    render = () => {};
 
   if (typeof setup !== 'function' && setup !== undefined) {
     throw new Error('setup must be a function');
@@ -16,12 +15,11 @@
     throw new Error('render must be a function');
   }
 
-  if (priority && (!Number.isInteger(priority) || priority <= 0)) {
-    throw new Error('priority must be a positive integer');
-  }
+  const layerId = register({ setup, render });
 
-  register({ setup, renderer: { render, priority: () => priority } });
+  onDestroy(() => unregister(layerId));
 
-  $: priority, priorityChange();
-  $: priority, render, redraw();
+  $: render, redraw();
 </script>
+
+<div data-layer-id={layerId} />
