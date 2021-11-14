@@ -70,6 +70,7 @@
   });
 
   onDestroy(() => {
+    if (typeof window === 'undefined') return;
     window.cancelAnimationFrame(animationLoop);
     layerObserver.disconnect();
   });
