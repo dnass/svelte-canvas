@@ -21,6 +21,6 @@
     "rollup": "^2.60.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-svelte": "^7.1.0",
-    "svelte": "^3.44.1"
+    "svelte": "^3.49.0"
   }
 }
