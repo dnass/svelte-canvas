@@ -1,10 +1,10 @@
-import { readable } from 'svelte/store';
+import { readable, type StartStopNotifier } from 'svelte/store';
 
 let frame: number;
 
 const now = Date.now();
 
-function start(set) {
+const start: StartStopNotifier<number> = (set) => {
   set(Date.now() - now);
 
   frame = window.requestAnimationFrame(() => start(set));

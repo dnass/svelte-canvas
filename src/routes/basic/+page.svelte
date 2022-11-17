@@ -1,12 +1,12 @@
 <script>
-  import { Canvas, Layer, t } from '$lib';
+  import { Canvas, Layer, t, r } from '$lib';
 
-  $: render = ({ context, width, height }) => {
+  $: render = r(({ context, width, height }) => {
     context.fillStyle = `hsl(${$t / 40}, 100%, 50%)`;
     context.beginPath();
     context.arc(($t / 4) % width, ($t / 4) % height, 100, 0, Math.PI * 2);
     context.fill();
-  };
+  });
 </script>
 
 <Canvas width={640} height={640}>
