@@ -1,5 +1,5 @@
 <script context="module">
-  export const KEY = {};
+  export const KEY = Symbol();
 </script>
 
 <script lang="ts">
@@ -9,7 +9,7 @@
 
   export let width = 640,
     height = 640,
-    pixelRatio: number | undefined = undefined,
+    pixelRatio: number | null = null,
     style = '',
     autoclear = true;
 
@@ -38,14 +38,11 @@
   }
 
   if (pixelRatio === undefined) {
-    if (typeof window === 'undefined') {
-      pixelRatio = 2;
-    } else {
-      pixelRatio = window.devicePixelRatio;
-    }
+    pixelRatio = 2;
   }
 
   function draw() {
+    if (!pixelRatio) return;
     manager.render({ context, width, height, pixelRatio, autoclear });
     animationLoop = window.requestAnimationFrame(draw);
   }
@@ -57,6 +54,7 @@
   });
 
   onMount(() => {
+    pixelRatio = window.devicePixelRatio
     context = canvas.getContext('2d')!;
 
     layerObserver = new MutationObserver(getLayerSequence);

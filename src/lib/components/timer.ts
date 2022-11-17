@@ -9,7 +9,7 @@ const start: StartStopNotifier<number> = (set) => {
 
   frame = window.requestAnimationFrame(() => start(set));
   return () => window.cancelAnimationFrame(frame);
-}
+};
 
 function noop() {
   void 0;

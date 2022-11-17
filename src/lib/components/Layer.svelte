@@ -8,14 +8,6 @@
   export let setup: Render | undefined = undefined;
   export let render: Render = () => {};
 
-  if (typeof setup !== 'function' && setup !== undefined) {
-    throw new Error('setup must be a function');
-  }
-
-  if (typeof render !== 'function') {
-    throw new Error('render must be a function');
-  }
-
   const layerId = register({ setup, render });
 
   onDestroy(() => unregister(layerId));

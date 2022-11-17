@@ -1,4 +1,15 @@
+import type { Render } from '$lib/components/render';
+
 class RenderManager {
+  currentLayerId: number;
+  setups: Map<number, Render>;
+  renderers: Map<number, Render>;
+  needsSetup: boolean;
+  needsResize: boolean;
+  needsRedraw: boolean;
+
+  layerSequence: number[];
+
   constructor() {
     this.register = this.register.bind(this);
     this.unregister = this.unregister.bind(this);
@@ -26,7 +37,7 @@ class RenderManager {
     this.needsRedraw = true;
   }
 
-  register({ setup, render }) {
+  register({ setup, render }: { setup: Render | undefined; render: Render }) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
       this.needsSetup = true;
@@ -38,12 +49,24 @@ class RenderManager {
     return this.currentLayerId++;
   }
 
-  unregister(layerId) {
+  unregister(layerId: number) {
     this.renderers.delete(layerId);
     this.needsRedraw = true;
   }
 
-  render({ autoclear, pixelRatio, context, width, height }) {
+  render({
+    autoclear,
+    pixelRatio,
+    context,
+    width,
+    height
+  }: {
+    width: number;
+    height: number;
+    context: CanvasRenderingContext2D;
+    pixelRatio: number;
+    autoclear: boolean;
+  }) {
     const renderProps = { context, width, height };
 
     if (this.needsResize) {
@@ -66,7 +89,7 @@ class RenderManager {
       }
 
       for (const layerId of this.layerSequence) {
-        this.renderers.get(layerId)(renderProps);
+        this.renderers.get(layerId)?.(renderProps);
       }
 
       this.needsRedraw = false;
