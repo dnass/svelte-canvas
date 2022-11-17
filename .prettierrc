@@ -1,8 +1,10 @@
 {
-  "semi": true,
-  "printWidth": 80,
-  "trailingComma": "none",
-  "bracketSpacing": true,
   "singleQuote": true,
-  "arrowParens": "avoid"
+  "semi": true,
+  "bracketSpacing": true,
+  "trailingComma": "none",
+  "printWidth": 80,
+  "plugins": ["prettier-plugin-svelte"],
+  "pluginSearchDirs": ["."],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
 }
