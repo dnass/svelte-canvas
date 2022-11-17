@@ -19,7 +19,7 @@ const events = [
 export default function forwardEventsBuilder() {
   const component = get_current_component();
 
-  return (node) => {
+  return (node: Node) => {
     const destructors = events.map((event) =>
       listen(node, event, (e) => bubble(component, e))
     );

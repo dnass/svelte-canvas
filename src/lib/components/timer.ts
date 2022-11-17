@@ -1,6 +1,6 @@
 import { readable } from 'svelte/store';
 
-let frame;
+let frame: number;
 
 const now = Date.now();
 
@@ -11,9 +11,11 @@ function start(set) {
   return () => window.cancelAnimationFrame(frame);
 }
 
-function noop() {}
+function noop() {
+  void 0;
+}
 
-export default readable(
+export default readable<number>(
   Date.now() - now,
   typeof window === 'undefined' ? noop : start
 );

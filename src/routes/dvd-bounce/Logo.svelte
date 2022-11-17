@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { Layer, t } from '$lib';
-    import { onMount } from 'svelte';
+  import { Layer, t, r } from '$lib';
+  import { onMount } from 'svelte';
 
-  const r = () => Math.random() * 200 + 55,
-    randomColor = () => `rgb(${r()},${r()},${r()})`;
+  const random = () => Math.random() * 200 + 55,
+    randomColor = () => `rgb(${random()},${random()},${random()})`;
 
   let logo: HTMLImageElement;
 
   onMount(() => {
-	logo = new Image();
-	logo.src = 'https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg';
-  })
+    logo = new Image();
+    logo.src =
+      'https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg';
+  });
 
   const w = 210,
     h = 107;
@@ -21,7 +22,7 @@
     yflip = 1,
     fill = randomColor();
 
-  $: render = ({ context, width, height }) => {
+  $: render = r(({ context, width, height }) => {
     $t;
     x += 5 * xflip;
     y += 5 * yflip;
@@ -34,7 +35,7 @@
     context.fillRect(0, 0, width, height);
     context.globalCompositeOperation = 'destination-in';
     context.drawImage(logo, x, y, w, h);
-  };
+  });
 </script>
 
 <Layer {render} />

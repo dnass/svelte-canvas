@@ -2,20 +2,24 @@
   export const KEY = {};
 </script>
 
-<script>
+<script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
   import forwardEventsBuilder from '../util/forwardEvents';
   import RenderManager from '../util/renderManager';
 
   export let width = 640,
     height = 640,
-    pixelRatio = undefined,
-    style = null,
+    pixelRatio: number | undefined = undefined,
+    style = '',
     autoclear = true;
 
   export { redraw, getCanvas, getContext };
 
-  let canvas, context, animationLoop, layerRef, layerObserver;
+  let canvas: HTMLCanvasElement;
+  let context: CanvasRenderingContext2D;
+  let animationLoop: number;
+  let layerRef: HTMLDivElement;
+  let layerObserver: MutationObserver;
 
   const forwardEvents = forwardEventsBuilder();
 
@@ -53,7 +57,7 @@
   });
 
   onMount(() => {
-    context = canvas.getContext('2d');
+    context = canvas.getContext('2d')!;
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });
@@ -82,8 +86,8 @@
   style="display: block; width: {width}px; height: {height}px;{style
     ? ` ${style}`
     : ''}"
-  width={width * pixelRatio}
-  height={height * pixelRatio}
+  width={width * (pixelRatio ?? 1)}
+  height={height * (pixelRatio ?? 1)}
   bind:this={canvas}
   use:forwardEvents
 />
