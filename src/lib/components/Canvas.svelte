@@ -15,7 +15,7 @@
 
   export { redraw, getCanvas, getContext };
 
-  let canvas: HTMLCanvasElement | null = null;
+  let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | null = null;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
