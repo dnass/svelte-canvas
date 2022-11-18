@@ -9,7 +9,7 @@
 
   $: ticks = scale.ticks(tickNumber);
 
-  $: render = ({ context, width, height }) => {
+  $: render = ({ context, height }) => {
     context.beginPath();
 
     ticks.forEach((d) => {

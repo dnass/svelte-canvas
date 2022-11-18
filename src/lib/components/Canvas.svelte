@@ -54,7 +54,7 @@
   });
 
   onMount(() => {
-    pixelRatio = window.devicePixelRatio
+    pixelRatio = window.devicePixelRatio;
     context = canvas.getContext('2d')!;
 
     layerObserver = new MutationObserver(getLayerSequence);
