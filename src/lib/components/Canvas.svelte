@@ -16,7 +16,6 @@
 <script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
   import { get_current_component } from 'svelte/internal';
-  import { forwardEventsBuilder } from '../util/forwardEvents';
 
   export let width = 640,
     height = 640,
@@ -31,8 +30,6 @@
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
-
-  const forwardEvents = forwardEventsBuilder(get_current_component());
 
   const manager = new RenderManager();
 
@@ -99,13 +96,22 @@
 </script>
 
 <canvas
+
+  on:focus on:blur
+  on:fullscreenchange on:fullscreenerror on:scroll
+  on:cut on:copy on:paste
+  on:keydown on:keypress on:keyup
+  on:auxclick on:click on:contextmenu on:dblclick on:mousedown on:mouseenter on:mouseleave on:mousemove on:mouseover on:mouseout on:mouseup on:select on:wheel
+  on:drag on:dragend on:dragenter on:dragstart on:dragleave on:dragover on:drop
+  on:touchcancel on:touchend on:touchmove on:touchstart
+  on:pointerover on:pointerenter on:pointerdown on:pointermove on:pointerup on:pointercancel on:pointerout on:pointerleave on:gotpointercapture on:lostpointercapture
+
   style="display: block; width: {width}px; height: {height}px;{style
     ? ` ${style}`
     : ''}"
   width={width * (pixelRatio ?? 1)}
   height={height * (pixelRatio ?? 1)}
   bind:this={canvas}
-  use:forwardEvents
 />
 
 <div style="display: none;" bind:this={layerRef}>
