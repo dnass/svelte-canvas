@@ -47,7 +47,7 @@
       })
   );
 
-  function validDomain<T>(
+  function validDomain(
     domain: [number, number] | [undefined, undefined]
   ): [number, number] {
     return [+(domain[0] ?? 0), +(domain[1] ?? 0)];
