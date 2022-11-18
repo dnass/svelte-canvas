@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: '16.x'
       - name: Install Dependencies
-        run: npm run install
+        run: npm install
       - name: Build Project
         run: npm run build-web
       - name: Setup Pages
