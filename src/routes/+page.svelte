@@ -2,28 +2,34 @@
   interface Example {
     href: string;
     name: string;
+    color: string;
   }
 
   const examples: Example[] = [
     {
       href: '/svelte-canvas/basic',
-      name: 'Basics'
+      name: 'Basics',
+      color: "#40B3FF"
     },
     {
       href: '/svelte-canvas/canvas-svg',
-      name: 'Canvas SVG'
+      name: 'Canvas SVG',
+      color: "#59CD90"
     },
     {
       href: '/svelte-canvas/dvd-bounce',
-      name: 'DVD Bounce'
+      name: 'DVD Bounce',
+      color: "#BF9ACA"
     },
     {
       href: '/svelte-canvas/globe',
-      name: 'Globe'
+      name: 'Globe',
+      color: "#FFE066"
     },
     {
       href: '/svelte-canvas/scatterplot',
-      name: 'Scatterplot'
+      name: 'Scatterplot',
+      color: "#F79D84"
     }
   ];
 </script>
@@ -36,32 +42,72 @@
 
 <section class="wrapper">
   <h1>Svelte Canvas</h1>
+  <code>npm install --save-dev svelte-canvas</code>
   <main class="container">
-    {#each examples as { name, href }}
-      <a class="example" {href}>{name}</a>
+    {#each examples as { name, href, color }}
+      <a class="example" style="--hover: {color}" {href}>{name}</a>
     {/each}
   </main>
 </section>
 
+<footer>
+  <a href="https://github.com/dnass/svelte-canvas">GitHub</a> |
+  <a href="https://www.npmjs.com/package/svelte-canvas">NPM</a>
+</footer>
+
 <style>
   :root {
-    --secondary: rgb(64, 179, 255);
     --primary: rgb(255, 62, 0);
+    --secondary: rgb(103, 103, 120);
+    --blue: #40B3FF;
   }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+  }
+
+  footer a {
+    color: white;
+    font-size: 1rem;
+    padding: 0 10px;
+    text-decoration: none;
+  }
+
   h1,
   a {
     font-family: Overpass, system-ui, sans-serif;
   }
 
+  code {
+    display: block;
+    padding: 0.5rem;
+    background-color: #F6F8FA;
+    font-size: 1rem;
+    border-bottom: 5px solid var(--primary);
+    margin-bottom: 1rem;
+  }
+
   h1 {
-    text-align: center;
     font-size: 4rem;
+    color: var(--secondary);
+    margin-bottom: 0;
   }
 
   .wrapper {
     margin: auto;
     padding: 1.5rem;
     max-width: 60ch;
+    text-align: center;
   }
 
   .container {
@@ -73,19 +119,19 @@
   a.example {
     background-image: linear-gradient(
       90deg,
-      var(--secondary) 80%,
-      var(--primary) 20%
+      var(--hover) 80%,
+      var(--secondary) 20%
     );
-    background-position: 100%;
+    background-position: 90%;
     transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      drop-shadow 0.6s linear;
+      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     background-size: 800%;
     border-radius: 0.5rem;
     font-weight: bold;
     display: block;
     padding: 2rem;
     font-size: 1.2rem;
-    font-weight: 300;
+    font-weight: 600;
     border-radius: 4px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -2px rgba(0, 0, 0, 0.1);
