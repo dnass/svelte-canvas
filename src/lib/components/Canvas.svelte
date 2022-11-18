@@ -4,7 +4,8 @@
 
 <script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
-  import forwardEventsBuilder from '../util/forwardEvents';
+  import { get_current_component } from 'svelte/internal';
+  import { forwardEventsBuilder } from '../util/forwardEvents';
   import RenderManager from '../util/renderManager';
 
   export let width = 640,
@@ -21,7 +22,7 @@
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
 
-  const forwardEvents = forwardEventsBuilder();
+  const forwardEvents = forwardEventsBuilder(get_current_component());
 
   const manager = new RenderManager();
 
