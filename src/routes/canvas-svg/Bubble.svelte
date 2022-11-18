@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '$lib/page.css';
+  import '../../page.css';
   import { Layer, t, type Render } from '$lib';
   import { quadInOut } from 'svelte/easing';
   import { piecewise } from 'd3-interpolate';

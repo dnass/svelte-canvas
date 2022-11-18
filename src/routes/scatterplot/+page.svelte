@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '$lib/page.css';
+  import '../../page.css';
   import type { Margin } from './margin';
   import { onMount } from 'svelte';
   import { Canvas } from '$lib';
@@ -47,13 +47,20 @@
       })
   );
 
+  function assertValidDomain<T>(domain: [T, T] | [undefined, undefined]): [T, T] {
+    if (domain[0] === undefined && domain[1] === undefined) {
+      throw Error("Not a valid domain")
+    }
+    return domain as [T, T]
+  }
+
   $: x = scaleLinear()
-    .domain(extent(points, (d) => d.mpg))
+    .domain(assertValidDomain(extent(points, (d) => d.mpg)))
     .range([margin.left, width - margin.right])
     .nice();
 
   $: y = scaleLinear()
-    .domain(extent(points, (d) => d.hp))
+    .domain(assertValidDomain(extent(points, (d) => d.hp)))
     .range([height - margin.bottom, margin.top])
     .nice();
 
@@ -89,7 +96,7 @@
         y={y(hp)}
         fill="tomato"
         r={id === picked && !click ? 5 : 3}
-        stroke={id === picked && '#000'}
+        stroke={id === picked ? '#000' : null}
       />
     {/each}
   </Canvas>

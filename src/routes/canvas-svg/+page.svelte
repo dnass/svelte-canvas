@@ -1,11 +1,11 @@
 <script lang="ts">
-  import '$lib/page.css';
+  import '../../page.css';
   import { onMount } from 'svelte';
   import { Canvas } from '$lib';
   import { mesh, feature } from 'topojson-client';
   import { geoIdentity, geoPath } from 'd3-geo';
   import Bubble from './Bubble.svelte';
-  import type { Topology } from 'topojson-specification';
+  import type { GeometryCollection, Topology } from 'topojson-specification';
 
   let width = 1000;
   $: height = width * 0.6256;
@@ -13,7 +13,9 @@
   $: projection = geoIdentity().scale(width / 975);
   $: path = geoPath(projection);
 
-  let us: Topology;
+  let us: Topology<{
+    states: GeometryCollection
+  }>;
 
   onMount(async () => {
     const data = await fetch(

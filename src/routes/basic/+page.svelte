@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '$lib/page.css';
+  import '../../page.css';
   import { Canvas, Layer, t, type Render } from '$lib';
 
   let render: Render;

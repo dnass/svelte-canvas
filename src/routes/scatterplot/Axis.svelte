@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Margin } from './margin';
   import { Layer, type Render } from '$lib';
+  import type { ScaleLinear } from 'd3-scale';
 
-  export let scale,
+  export let scale: ScaleLinear<number, number, never>,
     tickSize = 4,
     margin: Margin,
     tickNumber = 10,
@@ -33,9 +34,9 @@
 
     ticks.forEach((d) => {
       if (type === 'x') {
-        context.fillText(d, scale(d), height - margin.bottom + tickSize + 1);
+        context.fillText(String(d), scale(d), height - margin.bottom + tickSize + 1);
       } else if (type === 'y') {
-        context.fillText(d, margin.left - tickSize - 1, scale(d));
+        context.fillText(String(d), margin.left - tickSize - 1, scale(d));
       }
     });
   };

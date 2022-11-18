@@ -1,11 +1,13 @@
 <script lang="ts">
-  import '$lib/page.css';
+  import '../../page.css';
   import { onMount } from 'svelte';
   import { Canvas, Layer, t, type Render } from '$lib';
+  import type { Feature, GeoJsonProperties } from "geojson"
   import { feature } from 'topojson-client';
   import { geoOrthographic, geoPath, geoGraticule10 } from 'd3-geo';
+  import type { Point } from "topojson-specification"
 
-  let map, width: number;
+  let map: Feature<Point, GeoJsonProperties>, width: number;
 
   const projection = geoOrthographic(),
     path = geoPath(projection);
