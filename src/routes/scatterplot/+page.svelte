@@ -47,20 +47,17 @@
       })
   );
 
-  function assertValidDomain<T>(domain: [T, T] | [undefined, undefined]): [T, T] {
-    if (domain[0] === undefined && domain[1] === undefined) {
-      throw Error("Not a valid domain")
-    }
-    return domain as [T, T]
+  function validDomain<T>(domain: [number, number] | [undefined, undefined]): [number, number] {
+    return [+(domain[0] ?? 0), +(domain[1] ?? 0)]
   }
 
   $: x = scaleLinear()
-    .domain(assertValidDomain(extent(points, (d) => d.mpg)))
+    .domain(validDomain(extent(points, (d) => d.mpg)))
     .range([margin.left, width - margin.right])
     .nice();
 
   $: y = scaleLinear()
-    .domain(assertValidDomain(extent(points, (d) => d.hp)))
+    .domain(validDomain(extent(points, (d) => d.hp)))
     .range([height - margin.bottom, margin.top])
     .nice();
 

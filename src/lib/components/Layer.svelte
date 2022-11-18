@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getContext, onDestroy } from 'svelte';
-  import { KEY } from './Canvas.svelte';
+  import { onDestroy } from 'svelte';
+  import { getTypedContext } from './Canvas.svelte';
   import type { Render } from './render';
 
-  const { register, unregister, redraw } = getContext(KEY);
+  const { register, unregister, redraw } = getTypedContext();
 
   export let setup: Render | undefined = undefined;
   export let render: Render = () => undefined;

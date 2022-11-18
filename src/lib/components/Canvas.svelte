@@ -1,12 +1,22 @@
-<script context="module">
+<script context="module" lang="ts">
+  import RenderManager from '../util/renderManager';
+  import { getContext as getCTX } from "svelte"
+  
   export const KEY = Symbol();
+
+  interface TypedContext {
+    register: RenderManager["register"];
+    unregister: RenderManager["unregister"]
+    redraw: RenderManager["redraw"]
+  }
+
+  export const getTypedContext = (): TypedContext => getCTX(KEY)
 </script>
 
 <script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
   import { get_current_component } from 'svelte/internal';
   import { forwardEventsBuilder } from '../util/forwardEvents';
-  import RenderManager from '../util/renderManager';
 
   export let width = 640,
     height = 640,
@@ -69,9 +79,13 @@
     draw();
 
     function getLayerSequence() {
-      const sequence = [...layerRef.children].map(
-        (layer) => +layer.dataset.layerId
-      );
+      const sequence = [...layerRef.children]
+        // use flatmap as a casting system
+        .flatMap(child => child instanceof HTMLElement ? child : [])
+        .filter(layer => layer.dataset.layerId !== undefined)
+        .map(
+          (layer) => +(layer.dataset.layerId ?? 0)
+        );
       manager.layerSequence = sequence;
       manager.redraw();
     }
