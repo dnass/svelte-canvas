@@ -28,26 +28,16 @@
   ];
 </script>
 
-<div class="wrapper">
+<section class="wrapper">
   <h1>Svelte Canvas</h1>
-  <div class="container">
+  <main class="container">
     {#each examples as { name, href }}
       <a class="example" {href}>{name}</a>
     {/each}
-  </div>
-</div>
+  </main>
+</section>
 
 <style>
-  :root {
-    --accent: 64, 179, 255, 0.4;
-    --accentBase: 64, 179, 255;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgba(var(--accent)),
-      rgba(255, 62, 0, 0.4) 30%,
-      white 60%
-    );
-  }
 
   h1,
   a {
@@ -72,26 +62,31 @@
     padding: 0;
   }
   a.example {
-    background-color: white;
-    background-image: var(--accent-gradient);
-    background-size: 400%;
-    border-radius: 0.5rem;
+    background-image: linear-gradient(
+      90deg,
+      rgba(64, 179, 255) 80%,
+      rgba(255, 62, 0) 20%
+    );
     background-position: 100%;
-    transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1), drop-shadow 0.6s linear;
+    background-size: 800%;
+    border-radius: 0.5rem;
     font-weight: bold;
     display: block;
     padding: 2rem;
-    border: 1px solid black;
+    font-size: 1.2rem;
+    font-weight: 100;
     border-radius: 4px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -2px rgba(0, 0, 0, 0.1);
     text-decoration: none;
-    color: #444;
+    color: white;
     text-align: center;
   }
 
   a.example:is(:hover, :focus-within) {
-    background-position: 0;
-    border: 1px solid rgba(var(--accentBase), 25%);
+    box-shadow: 0 10px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      background-position: 88%;
   }
 </style>
