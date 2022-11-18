@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+  import '$lib/page.css';
   import { onMount } from 'svelte';
   import { Canvas } from '$lib';
   import { extent } from 'd3-array';
@@ -11,7 +12,7 @@
   const margin = { top: 10, right: 10, bottom: 25, left: 25 };
 
   let points = [];
-  let width, height;
+  let width: number, height: number;
   let picked = null,
     click = false;
 
@@ -74,23 +75,3 @@
     {/each}
   </Canvas>
 </div>
-
-<style gloabl>
-  div {
-    width: 100%;
-    height: 100%;
-  }
-  html,
-  body {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  body {
-    color: #333;
-    margin: 0;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-</style>

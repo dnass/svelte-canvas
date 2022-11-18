@@ -55,7 +55,10 @@
 
   onMount(() => {
     pixelRatio = window.devicePixelRatio;
-    context = canvas.getContext('2d')!;
+    const browserContext = canvas.getContext('2d');
+    if (!browserContext) {
+      throw Error("No 2D browser context found. This shouldn't happen.");
+    }
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });

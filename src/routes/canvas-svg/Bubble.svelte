@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Layer, t, r } from '$lib';
+  import '$lib/page.css';
+  import { Layer, t, type Render } from '$lib';
   import { quadInOut } from 'svelte/easing';
   import { piecewise } from 'd3-interpolate';
   import { interpolateWarm } from 'd3-scale-chromatic';
@@ -14,7 +15,8 @@
 
   const scale = (t: number) => pieces(quadInOut(t));
 
-  $: render = r(({ context, width }) => {
+  let render: Render;
+  $: render = ({ context, width }) => {
     const { r, alpha } = scale((($t / 25 + i * 3) % 100) / 100);
 
     context.fillStyle = interpolateWarm(1 - i / 50);
@@ -22,7 +24,7 @@
     context.beginPath();
     context.arc(x, y, r * width, 0, Math.PI * 2);
     context.fill();
-  });
+  };
 </script>
 
 <Layer {render} />

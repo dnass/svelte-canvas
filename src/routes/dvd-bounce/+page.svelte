@@ -8,19 +8,3 @@
   <Logo />
   <Background />
 </Canvas>
-
-<style global>
-  html,
-  body {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  body {
-    color: #333;
-    margin: 0;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-</style>

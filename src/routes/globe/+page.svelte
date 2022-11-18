@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
+  import '$lib/page.css';
   import { onMount } from 'svelte';
-  import { Canvas, Layer, t } from '$lib';
+  import { Canvas, Layer, t, type Render } from '$lib';
   import { feature } from 'topojson-client';
   import { geoOrthographic, geoPath, geoGraticule10 } from 'd3-geo';
 
-  let map, width;
+  let map, width: number;
 
   const projection = geoOrthographic(),
     path = geoPath(projection);
@@ -15,6 +16,7 @@
       .then((data) => (map = feature(data, 'land')))
   );
 
+  let graticule: Render; 
   $: graticule = ({ context, width, height }) => {
     projection
       .fitSize([width, height], { type: 'Sphere' })
@@ -24,6 +26,7 @@
     context.beginPath(), path(geoGraticule10()), context.stroke();
   };
 
+  let globe: Render; 
   $: globe = ({ context }) => {
     context.fillStyle = 'tomato';
     context.beginPath(), path(map), context.fill();
@@ -36,19 +39,3 @@
     <Layer render={globe} />
   </Canvas>
 </div>
-
-<style global>
-  html,
-  body {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  body {
-    color: #333;
-    margin: 0;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-</style>

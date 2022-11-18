@@ -6,7 +6,7 @@
   const { register, unregister, redraw } = getContext(KEY);
 
   export let setup: Render | undefined = undefined;
-  export let render: Render = () => {};
+  export let render: Render = () => undefined;
 
   const layerId = register({ setup, render });
 
