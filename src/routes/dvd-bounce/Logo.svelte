@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Layer, t, type Render } from '$lib';
   import { onMount } from 'svelte';
-  import Logo from './DVD_logo.svg';
+  import Logo from './DVD_logo.svg?raw';
 
   const random = () => Math.random() * 200 + 55,
     randomColor = () => `rgb(${random()},${random()},${random()})`;
@@ -10,7 +10,7 @@
 
   onMount(() => {
     logo = new Image();
-    logo.src = Logo;
+    logo.src = `data:image/svg+xml,${encodeURIComponent(Logo)}`;
   });
 
   const w = 210,
