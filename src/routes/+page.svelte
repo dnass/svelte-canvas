@@ -44,6 +44,10 @@
 </section>
 
 <style>
+  :root {
+    --secondary: rgb(64, 179, 255);
+    --primary: rgb(255, 62, 0);
+  }
   h1,
   a {
     font-family: Overpass, system-ui, sans-serif;
@@ -69,8 +73,8 @@
   a.example {
     background-image: linear-gradient(
       90deg,
-      rgba(64, 179, 255) 80%,
-      rgba(255, 62, 0) 20%
+      var(--secondary) 80%,
+      var(--primary) 20%
     );
     background-position: 100%;
     transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1),
