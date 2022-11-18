@@ -6,23 +6,23 @@
 
   const examples: Example[] = [
     {
-      href: './basic',
+      href: '/svelte-canvas/basic',
       name: 'Basics'
     },
     {
-      href: './canvas-svg',
+      href: '/svelte-canvas/canvas-svg',
       name: 'Canvas SVG'
     },
     {
-      href: './dvd-bounce',
+      href: '/svelte-canvas/dvd-bounce',
       name: 'DVD Bounce'
     },
     {
-      href: './globe',
+      href: '/svelte-canvas/globe',
       name: 'Globe'
     },
     {
-      href: './scatterplot',
+      href: '/svelte-canvas/scatterplot',
       name: 'Scatterplot'
     }
   ];
