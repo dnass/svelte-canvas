@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Layer, t, r } from '$lib';
+  import { Layer, t, type Render } from '$lib';
   import { onMount } from 'svelte';
   import Logo from './DVD_logo.svg';
 
@@ -22,7 +22,8 @@
     yflip = 1,
     fill = randomColor();
 
-  $: render = r(({ context, width, height }) => {
+  let render: Render;
+  $: render = ({ context, width, height }) => {
     $t;
     x += 5 * xflip;
     y += 5 * yflip;
@@ -35,7 +36,7 @@
     context.fillRect(0, 0, width, height);
     context.globalCompositeOperation = 'destination-in';
     context.drawImage(logo, x, y, w, h);
-  });
+  };
 </script>
 
 <Layer {render} />

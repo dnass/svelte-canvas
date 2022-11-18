@@ -12,7 +12,7 @@
   $: projection = geoIdentity().scale(width / 975);
   $: path = geoPath(projection);
 
-  let us: Topology;
+  let us;
 
   onMount(async () => {
     const data = await fetch(
@@ -49,9 +49,5 @@
   path {
     stroke: #ccc;
     fill: transparent;
-  }
-
-  label {
-    display: block;
   }
 </style>

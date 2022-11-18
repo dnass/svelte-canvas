@@ -1,14 +1,16 @@
-<script>
-  import { Layer } from '$lib';
+<script lang="ts">
+  import type { Margin } from './margin';
+  import { Layer, type Render } from '$lib';
 
   export let scale,
     tickSize = 4,
-    margin,
+    margin: Margin,
     tickNumber = 10,
     type = 'x';
 
   $: ticks = scale.ticks(tickNumber);
 
+  let render: Render;
   $: render = ({ context, height }) => {
     context.beginPath();
 

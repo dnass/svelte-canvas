@@ -1,5 +1,6 @@
 <script lang="ts">
   import '$lib/page.css';
+  import type { Margin } from './margin';
   import { onMount } from 'svelte';
   import { Canvas } from '$lib';
   import { extent } from 'd3-array';
@@ -9,11 +10,29 @@
   import Point from './Point.svelte';
   import Axis from './Axis.svelte';
 
-  const margin = { top: 10, right: 10, bottom: 25, left: 25 };
+  const margin: Margin = { top: 10, right: 10, bottom: 25, left: 25 };
 
-  let points = [];
+  interface CarData {
+    Name: string;
+    Miles_per_Gallon: number;
+    Cylinders: number;
+    Displacement: number;
+    Horsepower: number;
+    Weight_in_lbs: number;
+    Acceleration: number;
+    Year: string;
+    Origin: string;
+  }
+
+  interface ProcessedCarData {
+    mpg: number;
+    hp: number;
+    id: number;
+  }
+
+  let points: ProcessedCarData[] = [];
   let width: number, height: number;
-  let picked = null,
+  let picked: number | null = null,
     click = false;
 
   onMount(() =>
@@ -21,7 +40,7 @@
       'https://raw.githubusercontent.com/vega/vega/master/docs/data/cars.json'
     )
       .then((data) => data.json())
-      .then((data) => {
+      .then((data: CarData[]) => {
         points = data
           .map((d, id) => ({ mpg: d.Miles_per_Gallon, hp: d.Horsepower, id }))
           .filter((d) => d.mpg && d.hp);

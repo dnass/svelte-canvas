@@ -16,7 +16,7 @@
       .then((data) => (map = feature(data, 'land')))
   );
 
-  let graticule: Render; 
+  let graticule: Render;
   $: graticule = ({ context, width, height }) => {
     projection
       .fitSize([width, height], { type: 'Sphere' })
@@ -26,7 +26,7 @@
     context.beginPath(), path(geoGraticule10()), context.stroke();
   };
 
-  let globe: Render; 
+  let globe: Render;
   $: globe = ({ context }) => {
     context.fillStyle = 'tomato';
     context.beginPath(), path(map), context.fill();

@@ -2,7 +2,7 @@
   import '$lib/page.css';
   import { Canvas, Layer, t, type Render } from '$lib';
 
-  let render: Render; 
+  let render: Render;
   $: render = ({ context, width, height }) => {
     context.fillStyle = `hsl(${$t / 40}, 100%, 50%)`;
     context.beginPath();

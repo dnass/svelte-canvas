@@ -15,8 +15,8 @@
 
   export { redraw, getCanvas, getContext };
 
-  let canvas: HTMLCanvasElement;
-  let context: CanvasRenderingContext2D;
+  let canvas: HTMLCanvasElement | null = null;
+  let context: CanvasRenderingContext2D | null = null;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
@@ -43,6 +43,7 @@
 
   function draw() {
     if (!pixelRatio) return;
+    if (!context) return;
     manager.render({ context, width, height, pixelRatio, autoclear });
     animationLoop = window.requestAnimationFrame(draw);
   }
@@ -59,6 +60,7 @@
     if (!browserContext) {
       throw Error("No 2D browser context found. This shouldn't happen.");
     }
+    context = browserContext;
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });
