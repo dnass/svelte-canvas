@@ -5,6 +5,7 @@
   import { mesh, feature } from 'topojson-client';
   import { geoIdentity, geoPath } from 'd3-geo';
   import Bubble from './Bubble.svelte';
+  import type { Topology } from 'topojson-specification';
 
   let width = 1000;
   $: height = width * 0.6256;
@@ -12,7 +13,7 @@
   $: projection = geoIdentity().scale(width / 975);
   $: path = geoPath(projection);
 
-  let us;
+  let us: Topology;
 
   onMount(async () => {
     const data = await fetch(
