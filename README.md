@@ -8,7 +8,7 @@ Reactive canvas rendering with Svelte.
 
 ## Usage
 
-```
+```html
 <script>
   import { Canvas, Layer, t } from "svelte-canvas";
 
@@ -23,6 +23,17 @@ Reactive canvas rendering with Svelte.
 <Canvas width={640} height={640}>
   <Layer {render} />
 </Canvas>
+```
+
+If you use typescript, add the Render type to your reactive statement:
+
+```ts
+import { ..., type Render } from "svelte-canvas";
+
+let render: Render;
+$: render = ({ context, width, height }) => {
+  // ...
+}
 ```
 
 More examples:
@@ -72,3 +83,7 @@ Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_
 ### t
 
 `t` is a [readable store](https://svelte.dev/docs#readable) that provides the time in milliseconds since initialization. Subscribing to `t` within your render function lets you easily create animations.
+
+### Render
+
+`Render` is a typing for your reactive statements that provides types for the JSON object: `(canvas: CanvasRenderingContext2D, width: number, height: number)`
