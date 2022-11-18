@@ -34,7 +34,11 @@
 
     ticks.forEach((d) => {
       if (type === 'x') {
-        context.fillText(String(d), scale(d), height - margin.bottom + tickSize + 1);
+        context.fillText(
+          String(d),
+          scale(d),
+          height - margin.bottom + tickSize + 1
+        );
       } else if (type === 'y') {
         context.fillText(String(d), margin.left - tickSize - 1, scale(d));
       }

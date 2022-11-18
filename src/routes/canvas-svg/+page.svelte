@@ -14,7 +14,7 @@
   $: path = geoPath(projection);
 
   let us: Topology<{
-    states: GeometryCollection
+    states: GeometryCollection;
   }>;
 
   onMount(async () => {

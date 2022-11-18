@@ -47,8 +47,10 @@
       })
   );
 
-  function validDomain<T>(domain: [number, number] | [undefined, undefined]): [number, number] {
-    return [+(domain[0] ?? 0), +(domain[1] ?? 0)]
+  function validDomain<T>(
+    domain: [number, number] | [undefined, undefined]
+  ): [number, number] {
+    return [+(domain[0] ?? 0), +(domain[1] ?? 0)];
   }
 
   $: x = scaleLinear()

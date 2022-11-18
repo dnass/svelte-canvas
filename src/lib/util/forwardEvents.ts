@@ -5,7 +5,7 @@ import {
   bubble,
   listen,
   prevent_default,
-  stop_propagation,
+  stop_propagation
 } from 'svelte/internal';
 
 // Match old modifiers. (only works on DOM events)
@@ -17,12 +17,18 @@ const newModifierRegex =
 
 export function forwardEventsBuilder(component: SvelteComponent) {
   // This is our pseudo $on function. It is defined on component mount.
-  let $on: (eventType: string, callback: (event: unknown) => void) => () => void;
+  let $on: (
+    eventType: string,
+    callback: (event: unknown) => void
+  ) => () => void;
   // This is a list of events bound before mount.
   const events: [string, (event: unknown) => void][] = [];
 
   // And we override the $on function to forward all bound events.
-  component.$on = (fullEventType: string, callback: (event: unknown) => void) => {
+  component.$on = (
+    fullEventType: string,
+    callback: (event: unknown) => void
+  ) => {
     const eventType = fullEventType;
     let destructor: () => unknown = () => void 0;
     if ($on) {
@@ -170,7 +176,7 @@ export function forwardEventsBuilder(component: SvelteComponent) {
         for (const entry of Object.entries(forwardDestructors)) {
           entry[1]();
         }
-      },
+      }
     };
   };
 }
