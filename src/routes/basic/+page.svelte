@@ -11,10 +11,7 @@
   };
 </script>
 
-<Canvas width={640} height={640}>
+<!-- Center canvas horiz and vertically -->
+<Canvas style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid black; border-radius: 2rem;" width={640} height={640}>
   <Layer {render} />
 </Canvas>
-
-<style>
-  
-</style>

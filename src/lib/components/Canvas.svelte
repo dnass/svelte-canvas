@@ -20,10 +20,12 @@
     height = 640,
     pixelRatio: number | null = null,
     style = '',
-    classes = '',
     autoclear = true;
+  
+  /** Class field. Only works for global classes. */
+  let clazz = ''
 
-  export { redraw, getCanvas, getContext };
+  export { clazz as class, redraw, getCanvas, getContext };
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | null = null;
@@ -146,7 +148,7 @@
     : ''}"
   width={width * (pixelRatio ?? 1)}
   height={height * (pixelRatio ?? 1)}
-  class={classes}
+  class={clazz}
   bind:this={canvas}
 />
 
