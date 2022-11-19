@@ -154,6 +154,6 @@
   a.example:is(:hover, :focus-within) {
     box-shadow: 0 10px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    background-position: 88%;
+    background-position: 77%;
   }
 </style>
