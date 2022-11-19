@@ -20,6 +20,7 @@
     height = 640,
     pixelRatio: number | null = null,
     style = '',
+    classes = '',
     autoclear = true;
 
   export { redraw, getCanvas, getContext };
@@ -145,6 +146,7 @@
     : ''}"
   width={width * (pixelRatio ?? 1)}
   height={height * (pixelRatio ?? 1)}
+  class={classes}
   bind:this={canvas}
 />
 

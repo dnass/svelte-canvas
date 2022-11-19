@@ -14,3 +14,7 @@
 <Canvas width={640} height={640}>
   <Layer {render} />
 </Canvas>
+
+<style>
+  
+</style>
