@@ -21,9 +21,9 @@
     pixelRatio: number | null = null,
     style = '',
     autoclear = true;
-  
+
   /** Class field. Only works for global classes. */
-  let clazz = ''
+  let clazz = '';
 
   export { clazz as class, redraw, getCanvas, getContext };
 

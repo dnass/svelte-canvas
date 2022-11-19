@@ -10,32 +10,32 @@
     {
       href: '/svelte-canvas/basic',
       name: 'Basics',
-      description: "An animated ball!",
-      color: "#40B3FF"
+      description: 'An animated ball!',
+      color: '#40B3FF'
     },
     {
       href: '/svelte-canvas/canvas-svg',
       name: 'Canvas SVG',
-      description: "Fancy map animation",
-      color: "#59CD90"
+      description: 'Fancy map animation',
+      color: '#59CD90'
     },
     {
       href: '/svelte-canvas/dvd-bounce',
       name: 'DVD Bounce',
-      description: "An office classic",
-      color: "#BF9ACA"
+      description: 'An office classic',
+      color: '#BF9ACA'
     },
     {
       href: '/svelte-canvas/globe',
       name: 'Globe',
       description: "'Round the world",
-      color: "#FFE066"
+      color: '#FFE066'
     },
     {
       href: '/svelte-canvas/scatterplot',
       name: 'Scatterplot',
-      description: "Hoverable graph!",
-      color: "#F79D84"
+      description: 'Hoverable graph!',
+      color: '#F79D84'
     }
   ];
 </script>
@@ -51,7 +51,9 @@
   <code>npm install --save-dev svelte-canvas</code>
   <main class="container">
     {#each examples as { name, href, color, description }}
-      <a class="example" style="--hover: {color}" {href}>{name}<br/><span class="description">{description}</span></a>
+      <a class="example" style="--hover: {color}" {href}
+        >{name}<br /><span class="description">{description}</span></a
+      >
     {/each}
   </main>
 </section>
@@ -65,7 +67,7 @@
   :root {
     --primary: rgb(255, 62, 0);
     --secondary: rgb(103, 103, 120);
-    --blue: #40B3FF;
+    --blue: #40b3ff;
   }
 
   footer {
@@ -97,7 +99,7 @@
   code {
     display: block;
     padding: 0.5rem;
-    background-color: #F6F8FA;
+    background-color: #f6f8fa;
     font-size: 1rem;
     border-bottom: 5px solid var(--primary);
     margin-bottom: 1rem;

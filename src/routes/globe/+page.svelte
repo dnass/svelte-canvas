@@ -18,7 +18,7 @@
       .then((data) => (map = feature(data, 'land')))
   );
 
-  $: minDimension = Math.min(width, height)
+  $: minDimension = Math.min(width, height);
 
   let graticule: Render;
   $: graticule = ({ context, width, height }) => {
@@ -38,7 +38,11 @@
 </script>
 
 <div bind:clientWidth={width} bind:clientHeight={height}>
-  <Canvas style="display: block; margin: 0 auto;" width={minDimension} height={minDimension}>
+  <Canvas
+    style="display: block; margin: 0 auto;"
+    width={minDimension}
+    height={minDimension}
+  >
     <Layer setup={({ context }) => path.context(context)} render={graticule} />
     <Layer render={globe} />
   </Canvas>
