@@ -8,7 +8,7 @@ Reactive canvas rendering with Svelte.
 
 ## Usage
 
-```html
+```svelte
 <script>
   import { Canvas, Layer, t } from 'svelte-canvas';
 
@@ -20,9 +20,9 @@ Reactive canvas rendering with Svelte.
   };
 </script>
 
-<canvas width="{640}" height="{640}">
+<Canvas width={640} height={640}>
   <Layer {render} />
-</canvas>
+</Canvas>
 ```
 
 If you use typescript, add the Render type to your reactive statement:
