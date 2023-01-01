@@ -52,9 +52,7 @@
   }
 
   function draw() {
-    if (!pixelRatio) return;
-    if (!context) return;
-    manager.render({ context, width, height, pixelRatio, autoclear });
+    manager.render({ context: context!, width, height, pixelRatio: pixelRatio!, autoclear });
     animationLoop = window.requestAnimationFrame(draw);
   }
 
