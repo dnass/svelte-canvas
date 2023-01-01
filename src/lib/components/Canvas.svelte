@@ -80,7 +80,7 @@
       const sequence = [...layerRef.children].map((layer) => {
         if (layer instanceof HTMLElement)
           return parseInt(layer.dataset.layerId ?? "-1");
-        else return 0;
+        else return -1;
       });
       manager.layerSequence = sequence;
       manager.redraw();
