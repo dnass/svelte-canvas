@@ -79,7 +79,7 @@
     function getLayerSequence() {
       const sequence = [...layerRef.children].map((layer) => {
         if (layer instanceof HTMLElement)
-          return parseInt(layer.dataset.layerId ?? "0");
+          return parseInt(layer.dataset.layerId ?? "-1");
         else return 0;
       });
       manager.layerSequence = sequence;
