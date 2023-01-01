@@ -57,13 +57,7 @@
   }
 
   function draw() {
-    manager.render({
-      context: context!,
-      width,
-      height,
-      pixelRatio: pixelRatio!,
-      autoclear
-    });
+    manager.render({ context: context!, width, height, pixelRatio: pixelRatio!, autoclear });
     animationLoop = window.requestAnimationFrame(draw);
   }
 
@@ -83,11 +77,11 @@
     draw();
 
     function getLayerSequence() {
-      const sequence = [...layerRef.children]
-        // use flatmap as a casting system
-        .flatMap((child) => (child instanceof HTMLElement ? child : []))
-        .filter((layer) => layer.dataset.layerId !== undefined)
-        .map((layer) => +(layer.dataset.layerId ?? 0));
+      const sequence = [...layerRef.children].map((layer) => {
+        if (layer instanceof HTMLElement)
+          return parseInt(layer.dataset.layerId ?? "0");
+        else return 0;
+      });
       manager.layerSequence = sequence;
       manager.redraw();
     }
