@@ -15,6 +15,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
+  import { browser } from '$app/environment';
 
   export let width = 640,
     height = 640,
@@ -47,12 +48,22 @@
     return context;
   }
 
-  if (pixelRatio === undefined) {
-    pixelRatio = 2;
+  if (pixelRatio === undefined || pixelRatio === null) {
+    if (browser) {
+      pixelRatio = window.devicePixelRatio;
+    } else {
+      pixelRatio = 2;
+    }
   }
 
   function draw() {
-    manager.render({ context: context!, width, height, pixelRatio: pixelRatio!, autoclear });
+    manager.render({
+      context: context!,
+      width,
+      height,
+      pixelRatio: pixelRatio!,
+      autoclear
+    });
     animationLoop = window.requestAnimationFrame(draw);
   }
 
@@ -63,7 +74,6 @@
   });
 
   onMount(() => {
-    pixelRatio = window.devicePixelRatio;
     const browserContext = canvas.getContext('2d')!;
     context = browserContext;
 

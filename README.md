@@ -58,7 +58,7 @@ More examples:
 | `height`     | 640                       | Canvas height                                                                                           |
 | `pixelRatio` | `window.devicePixelRatio` | Canvas [pixel ratio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Examples) |
 | `style`      | `null`                    | A CSS style string which will be applied to the canvas element                                          |
-| `class`      | `null`                    | A class string which will be applied to the canvas as class="..." element                                          |
+| `class`      | `null`                    | A class string which will be applied to the canvas as class="..." element                               |
 | `autoclear`  | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
 
 #### Methods
