@@ -8,9 +8,9 @@ Reactive canvas rendering with Svelte.
 
 ## Usage
 
-```
+```svelte
 <script>
-  import { Canvas, Layer, t } from "svelte-canvas";
+  import { Canvas, Layer, t } from 'svelte-canvas';
 
   $: render = ({ context, width, height }) => {
     context.fillStyle = `hsl(${$t / 40}, 100%, 50%)`;
@@ -23,6 +23,17 @@ Reactive canvas rendering with Svelte.
 <Canvas width={640} height={640}>
   <Layer {render} />
 </Canvas>
+```
+
+If you use typescript, add the Render type to your reactive statement:
+
+```ts
+import { ..., type Render } from "svelte-canvas";
+
+let render: Render;
+$: render = ({ context, width, height }) => {
+  // ...
+}
 ```
 
 More examples:
@@ -47,6 +58,7 @@ More examples:
 | `height`     | 640                       | Canvas height                                                                                           |
 | `pixelRatio` | `window.devicePixelRatio` | Canvas [pixel ratio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Examples) |
 | `style`      | `null`                    | A CSS style string which will be applied to the canvas element                                          |
+| `class`      | `null`                    | A class string which will be applied to the canvas as class="..." element                               |
 | `autoclear`  | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
 
 #### Methods
@@ -72,3 +84,7 @@ Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_
 ### t
 
 `t` is a [readable store](https://svelte.dev/docs#readable) that provides the time in milliseconds since initialization. Subscribing to `t` within your render function lets you easily create animations.
+
+### Render
+
+`Render` is a typing for your reactive statements that provides types for the JSON object: `(canvas: CanvasRenderingContext2D, width: number, height: number)`
