@@ -68,8 +68,7 @@
   });
 
   onMount(() => {
-    const browserContext = canvas.getContext('2d')!;
-    context = browserContext;
+    context = canvas.getContext('2d')!;
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });

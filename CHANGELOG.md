@@ -1,3 +1,9 @@
+## 0.8.0
+
+- TypeScript support.
+- New [demo site](https://dnass.github.io/svelte-canvas/).
+- Add `class` prop to `Canvas` component. (h/t [LeoDog896](https://github.com/LeoDog896) for all changes)
+
 ## 0.7.0
 
 - Remove `priority` prop from `Layer`. Layers are now guaranteed to render in the order they appear.
