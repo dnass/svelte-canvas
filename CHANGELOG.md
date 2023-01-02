@@ -1,3 +1,7 @@
+## 0.8.1
+
+- Remove SvelteKit `browser` check.
+
 ## 0.8.0
 
 - TypeScript support.

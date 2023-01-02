@@ -15,7 +15,6 @@
 
 <script lang="ts">
   import { onMount, onDestroy, setContext } from 'svelte';
-  import { browser } from '$app/environment';
 
   export let width = 640,
     height = 640,
@@ -49,7 +48,7 @@
   }
 
   if (pixelRatio === undefined || pixelRatio === null) {
-    if (browser) {
+    if (typeof window !== 'undefined') {
       pixelRatio = window.devicePixelRatio;
     } else {
       pixelRatio = 2;
@@ -57,7 +56,13 @@
   }
 
   function draw() {
-    manager.render({ context: context!, width, height, pixelRatio: pixelRatio!, autoclear });
+    manager.render({
+      context: context!,
+      width,
+      height,
+      pixelRatio: pixelRatio!,
+      autoclear
+    });
     animationLoop = window.requestAnimationFrame(draw);
   }
 
@@ -78,7 +83,7 @@
     function getLayerSequence() {
       const sequence = [...layerRef.children].map((layer) => {
         if (layer instanceof HTMLElement)
-          return parseInt(layer.dataset.layerId ?? "-1");
+          return parseInt(layer.dataset.layerId ?? '-1');
         else return -1;
       });
       manager.layerSequence = sequence;
