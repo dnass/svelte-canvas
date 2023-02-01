@@ -7,8 +7,23 @@
 
   export let setup: Render | undefined = undefined;
   export let render: Render = () => undefined;
+  export let pointerenter;
+  export let pointerleave;
+  export let pointerdown;
+  export let pointerup;
+  export let pointermove;
+  export let click;
 
-  const layerId = register({ setup, render });
+  const handlers = {
+    pointerenter,
+    pointerleave,
+    pointerdown,
+    pointerup,
+    pointermove,
+    click
+  };
+
+  const layerId = register({ setup, render, handlers });
 
   onDestroy(() => unregister(layerId));
 

@@ -1,13 +1,14 @@
 <script context="module" lang="ts">
-  import RenderManager from '../util/renderManager';
+  import LayerManager from '../util/layerManager';
+  // import trackerProxy from '../util/trackerProxy';
   import { getContext as getCTX } from 'svelte';
 
   export const KEY = Symbol();
 
   interface TypedContext {
-    register: RenderManager['register'];
-    unregister: RenderManager['unregister'];
-    redraw: RenderManager['redraw'];
+    register: LayerManager['register'];
+    unregister: LayerManager['unregister'];
+    redraw: LayerManager['redraw'];
   }
 
   export const getTypedContext = (): TypedContext => getCTX(KEY);
@@ -20,7 +21,8 @@
     height = 640,
     pixelRatio: number | null = null,
     style = '',
-    autoclear = true;
+    autoclear = true,
+    layerEvents = true;
 
   /** Class field. Only works for global classes. */
   let clazz = '';
@@ -29,11 +31,13 @@
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | null = null;
+  let trackerCanvas: HTMLCanvasElement | null = null;
+  let trackerCtx: CanvasRenderingContext2D | null = null;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
 
-  const manager = new RenderManager();
+  const manager = new LayerManager();
 
   function redraw() {
     manager.redraw();
@@ -73,7 +77,48 @@
   });
 
   onMount(() => {
-    context = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d')!;
+
+    if (layerEvents) {
+      trackerCanvas = document.createElement('canvas');
+      trackerCtx = trackerCanvas.getContext('2d', {
+        willReadFrequently: true
+      })!;
+      context = new Proxy(ctx, {
+        get(target, property, receiver) {
+          const val = target[property];
+          if (typeof val !== 'function') return val;
+
+          return function (...args) {
+            if (property === 'drawImage') {
+              trackerCtx.fillStyle = manager.renderingLayerColor;
+              trackerCtx.fillRect(...args.slice(1));
+            }
+            if (!['drawImage', 'setTransform'].includes(property)) {
+              Reflect.apply(val, trackerCtx, args);
+            }
+
+            return Reflect.apply(val, this === receiver ? target : this, args);
+          };
+        },
+        set: function (target, property, newValue) {
+          target[property] = newValue;
+
+          if (['fillStyle', 'strokeStyle'].includes(property)) {
+            trackerCtx[property] = manager.renderingLayerColor;
+          } else if (
+            !['filter', 'shadowBlur', 'globalCompositeOperation'].includes(
+              property
+            )
+          ) {
+            trackerCtx[property] = newValue;
+          }
+          return target;
+        }
+      });
+    } else {
+      context = ctx;
+    }
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });
@@ -97,7 +142,25 @@
     layerObserver.disconnect();
   });
 
+  const handleLayerEvent = (e: PointerEvent) => {
+    if (!layerEvents) return;
+
+    if (e.type === 'pointermove') {
+      const color = trackerCtx
+        ?.getImageData(e.offsetX, e.offsetY, 1, 1)
+        .data.slice(0, 3)
+        .join(',');
+      manager.setActiveLayer(color, e);
+    }
+
+    manager.callLayerHandler(e);
+  };
+
   $: width, height, pixelRatio, autoclear, manager.resize();
+  $: if (trackerCanvas) {
+    trackerCanvas.width = width;
+    trackerCanvas.height = height;
+  }
 </script>
 
 <canvas
@@ -113,7 +176,7 @@
   on:keypress
   on:keyup
   on:auxclick
-  on:click
+  on:click={handleLayerEvent}
   on:contextmenu
   on:dblclick
   on:mousedown
@@ -138,9 +201,9 @@
   on:touchstart
   on:pointerover
   on:pointerenter
-  on:pointerdown
-  on:pointermove
-  on:pointerup
+  on:pointerdown={handleLayerEvent}
+  on:pointermove={handleLayerEvent}
+  on:pointerup={handleLayerEvent}
   on:pointercancel
   on:pointerout
   on:pointerleave
