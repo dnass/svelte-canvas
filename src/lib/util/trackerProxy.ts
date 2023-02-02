@@ -1,13 +1,14 @@
 import { rgbToId } from '../util/color';
 
+type ContextKeys = Exclude<keyof CanvasRenderingContext2D, 'canvas'>;
+
 const EXCLUDED_GETTERS = ['drawImage', 'setTransform'];
 const EXCLUDED_SETTERS = ['filter', 'shadowBlur', 'globalCompositeOperation'];
-const COLOR_OVERRIDES = ['fillStyle', 'strokeStyle'];
+const FILL_OVERRIDES = ['drawImage', 'fill', 'fillRect', 'fillText'];
+const STROKE_OVERRIDES = ['stroke', 'strokeRect', 'strokeText'];
 
 const hasKey = <T extends object>(obj: T, k: keyof any): k is keyof T =>
   k in obj;
-
-type ContextKeys = Exclude<keyof CanvasRenderingContext2D, 'canvas'>;
 
 class TrackerProxy {
   canvas: HTMLCanvasElement;
@@ -31,8 +32,15 @@ class TrackerProxy {
         if (typeof val !== 'function') return val;
 
         return function (...args: any[]) {
-          if (property === 'drawImage') {
+          if (FILL_OVERRIDES.includes(property as string)) {
             trackerContext.fillStyle = renderingLayerColor();
+          }
+
+          if (STROKE_OVERRIDES.includes(property as string)) {
+            trackerContext.strokeStyle = renderingLayerColor();
+          }
+
+          if (property === 'drawImage') {
             const [x, y, w, h] = args.slice(1, 5);
             trackerContext.fillRect(x, y, w, h);
           }
@@ -47,10 +55,7 @@ class TrackerProxy {
       set(target, property: ContextKeys, newValue) {
         (target[property] as any) = newValue;
 
-        if (COLOR_OVERRIDES.includes(property as string)) {
-          (trackerContext[property] as ContextKeys) =
-            renderingLayerColor() as any;
-        } else if (!EXCLUDED_SETTERS.includes(property as string)) {
+        if (!EXCLUDED_SETTERS.includes(property as string)) {
           (trackerContext[property] as ContextKeys) = newValue;
         }
 
