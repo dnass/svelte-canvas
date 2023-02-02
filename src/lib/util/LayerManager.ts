@@ -1,17 +1,17 @@
 import type { Render } from '$lib/components/render';
+import { idToRgb } from '../util/color';
 
 class LayerManager {
   currentLayerId: number;
   setups: Map<number, Render>;
   renderers: Map<number, Render>;
-  layerColorHash: Map<string, Object>;
-  layerColors: Map<number, string>;
+  handlers: Map<number, Object>;
   needsSetup: boolean;
   needsResize: boolean;
   needsRedraw: boolean;
-  renderingLayerColor: string;
-  activeLayerColor: string;
-  activeLayerHandlers: Object;
+  renderingLayerId: number | undefined;
+  activeLayerId: number | undefined;
+  activeLayerHandlers: Object | undefined;
 
   layerSequence: number[];
 
@@ -20,14 +20,12 @@ class LayerManager {
     this.unregister = this.unregister.bind(this);
     this.redraw = this.redraw.bind(this);
     this.resize = this.resize.bind(this);
-    this.render = this.render.bind(this);
-    this.getRenderingLayerColor = this.getRenderingLayerColor.bind(this);
+    this.renderingLayerColor = this.renderingLayerColor.bind(this);
 
-    this.currentLayerId = 0;
+    this.currentLayerId = 1;
     this.setups = new Map();
     this.renderers = new Map();
-    this.layerColorHash = new Map();
-    this.layerColors = new Map();
+    this.handlers = new Map();
 
     this.needsSetup = false;
     this.needsResize = true;
@@ -45,17 +43,6 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  newColor() {
-    while (true) {
-      const color = [...new Array(3)]
-        .map(() => Math.floor(Math.random() * 255))
-        .join(',');
-      if (!this.layerColorHash.has(color)) {
-        return color;
-      }
-    }
-  }
-
   register({
     setup,
     render,
@@ -65,11 +52,6 @@ class LayerManager {
     render: Render;
     handlers: Object;
   }) {
-    const color = this.newColor();
-    const colorString = `rgb(${color})`;
-    this.layerColorHash.set(color, handlers);
-    this.layerColors.set(this.currentLayerId, colorString);
-
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
       this.needsSetup = true;
@@ -77,15 +59,15 @@ class LayerManager {
 
     this.renderers.set(this.currentLayerId, render);
 
+    this.handlers.set(this.currentLayerId, handlers);
+
     this.needsRedraw = true;
     return this.currentLayerId++;
   }
 
   unregister(layerId: number) {
     this.renderers.delete(layerId);
-    const color = this.layerColors.get(layerId);
-    this.layerColors.delete(layerId);
-    this.layerColorHash.delete(color);
+    this.handlers.delete(layerId);
     this.needsRedraw = true;
   }
 
@@ -124,7 +106,7 @@ class LayerManager {
       }
 
       for (const layerId of this.layerSequence) {
-        this.renderingLayerColor = this.layerColors.get(layerId);
+        this.renderingLayerId = layerId;
         this.renderers.get(layerId)?.(renderProps);
       }
 
@@ -132,23 +114,24 @@ class LayerManager {
     }
   }
 
-  setActiveLayer(color, e) {
-    if (this.activeLayerColor !== color) {
+  setActiveLayer(layer: number, e: PointerEvent | MouseEvent) {
+    if (this.activeLayerId !== layer) {
       this.callLayerHandler(new PointerEvent('pointerleave', e));
-      this.activeLayerColor = color;
-      this.activeLayerHandlers = this.layerColorHash.get(color);
+      this.activeLayerId = layer;
+      this.activeLayerHandlers = this.handlers.get(layer);
       this.callLayerHandler(new PointerEvent('pointerenter', e));
     }
 
     this.callLayerHandler(e);
   }
 
-  callLayerHandler(e) {
-    this.activeLayerHandlers?.[e.type]?.(e);
+  callLayerHandler(e: PointerEvent | MouseEvent) {
+    const type = e.type as keyof typeof this.activeLayerHandlers;
+    this.activeLayerHandlers?.[type]?.(e);
   }
 
-  getRenderingLayerColor() {
-    return this.renderingLayerColor;
+  renderingLayerColor() {
+    return idToRgb(this.renderingLayerId);
   }
 }
 

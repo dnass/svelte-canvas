@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
-  import LayerManager from '../util/layerManager';
-  // import trackerProxy from '../util/trackerProxy';
+  import LayerManager from '../util/LayerManager';
+  import TrackerProxy from '../util/trackerProxy';
   import { getContext as getCTX } from 'svelte';
 
   export const KEY = Symbol();
@@ -31,8 +31,7 @@
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | null = null;
-  let trackerCanvas: HTMLCanvasElement | null = null;
-  let trackerCtx: CanvasRenderingContext2D | null = null;
+  let canvasProxy: any;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
@@ -80,42 +79,8 @@
     const ctx = canvas.getContext('2d')!;
 
     if (layerEvents) {
-      trackerCanvas = document.createElement('canvas');
-      trackerCtx = trackerCanvas.getContext('2d', {
-        willReadFrequently: true
-      })!;
-      context = new Proxy(ctx, {
-        get(target, property, receiver) {
-          const val = target[property];
-          if (typeof val !== 'function') return val;
-
-          return function (...args) {
-            if (property === 'drawImage') {
-              trackerCtx.fillStyle = manager.renderingLayerColor;
-              trackerCtx.fillRect(...args.slice(1));
-            }
-            if (!['drawImage', 'setTransform'].includes(property)) {
-              Reflect.apply(val, trackerCtx, args);
-            }
-
-            return Reflect.apply(val, this === receiver ? target : this, args);
-          };
-        },
-        set: function (target, property, newValue) {
-          target[property] = newValue;
-
-          if (['fillStyle', 'strokeStyle'].includes(property)) {
-            trackerCtx[property] = manager.renderingLayerColor;
-          } else if (
-            !['filter', 'shadowBlur', 'globalCompositeOperation'].includes(
-              property
-            )
-          ) {
-            trackerCtx[property] = newValue;
-          }
-          return target;
-        }
-      });
+      canvasProxy = new TrackerProxy(ctx, manager.renderingLayerColor);
+      context = canvasProxy.proxy;
     } else {
       context = ctx;
     }
@@ -142,25 +107,20 @@
     layerObserver.disconnect();
   });
 
-  const handleLayerEvent = (e: PointerEvent) => {
+  const handleLayerEvent = (e: PointerEvent | MouseEvent) => {
     if (!layerEvents) return;
 
     if (e.type === 'pointermove') {
-      const color = trackerCtx
-        ?.getImageData(e.offsetX, e.offsetY, 1, 1)
-        .data.slice(0, 3)
-        .join(',');
-      manager.setActiveLayer(color, e);
+      const id = canvasProxy.getIdAtPixel(e.offsetX, e.offsetY);
+      manager.setActiveLayer(id, e);
     }
 
     manager.callLayerHandler(e);
   };
 
   $: width, height, pixelRatio, autoclear, manager.resize();
-  $: if (trackerCanvas) {
-    trackerCanvas.width = width;
-    trackerCanvas.height = height;
-  }
+
+  $: canvasProxy?.setCanvasSize(width, height);
 </script>
 
 <canvas
