@@ -1,4 +1,5 @@
 import type { Render } from '$lib/components/render';
+import type { EventHandler, EventHandlers } from '$lib/components/layerEvents';
 import { idToRgb } from '../util/color';
 
 class LayerManager {
@@ -9,10 +10,9 @@ class LayerManager {
   needsSetup: boolean;
   needsResize: boolean;
   needsRedraw: boolean;
-  renderingLayerId: number | undefined;
-  activeLayerId: number | undefined;
-  activeLayerHandlers: Object | undefined;
-
+  renderingLayerId: number;
+  activeLayerId: number;
+  activeLayerHandlers: EventHandlers | undefined;
   layerSequence: number[];
 
   constructor() {
@@ -30,6 +30,9 @@ class LayerManager {
     this.needsSetup = false;
     this.needsResize = true;
     this.needsRedraw = true;
+
+    this.renderingLayerId = 0;
+    this.activeLayerId = 0;
 
     this.layerSequence = [];
   }
@@ -50,7 +53,7 @@ class LayerManager {
   }: {
     setup: Render | undefined;
     render: Render;
-    handlers: Object;
+    handlers: EventHandlers;
   }) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
@@ -126,8 +129,9 @@ class LayerManager {
   }
 
   callLayerHandler(e: PointerEvent | MouseEvent) {
-    const type = e.type as keyof typeof this.activeLayerHandlers;
-    this.activeLayerHandlers?.[type]?.(e);
+    const type = e.type as keyof EventHandlers;
+    const handler = this.activeLayerHandlers?.[type];
+    handler?.(e);
   }
 
   renderingLayerColor() {
