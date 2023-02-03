@@ -2,11 +2,11 @@
   import { onDestroy, createEventDispatcher } from 'svelte';
   import { getTypedContext } from './Canvas.svelte';
   import type { Render } from './render';
-  import type { LayerEvent } from './layerEvent';
+  import type { LayerEvents } from './layerEvent';
 
   const { register, unregister, redraw } = getTypedContext();
 
-  const dispatcher = createEventDispatcher<LayerEvent>();
+  const dispatcher = createEventDispatcher<LayerEvents>();
 
   export let setup: Render | undefined = undefined;
   export let render: Render = () => undefined;

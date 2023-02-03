@@ -1,6 +1,6 @@
 import type { createEventDispatcher } from 'svelte';
 
-export type Event =
+export type Events =
   | 'click'
   | 'contextmenu'
   | 'dblclick'
@@ -21,10 +21,14 @@ export type Event =
   | 'pointerup'
   | 'pointercancel';
 
-export type LayerEvent = {
-  [E in Event]: { x: number; y: number };
+export type LayerEventDetail = { x?: number; y?: number };
+
+export type LayerEvents = {
+  [E in Events]: LayerEventDetail;
 };
 
+export type LayerEvent = CustomEvent<LayerEventDetail>;
+
 export type LayerEventDispatcher = ReturnType<
-  typeof createEventDispatcher<LayerEvent>
+  typeof createEventDispatcher<LayerEvents>
 >;

@@ -1,5 +1,9 @@
 import type { Render } from '$lib/components/render';
-import type { Event, LayerEventDispatcher } from '$lib/components/layerEvent';
+import type {
+  Events,
+  LayerEventDetail,
+  LayerEventDispatcher
+} from '$lib/components/layerEvent';
 import type { ContextProxy } from './contextProxy';
 
 class LayerManager {
@@ -135,19 +139,18 @@ class LayerManager {
   dispatchLayerEvent(e: MouseEvent | TouchEvent) {
     if (!this.activeLayerDispatcher) return;
 
-    let detail;
+    let detail: LayerEventDetail = {};
 
     if (e instanceof TouchEvent && e.touches.length) {
       const rect = (<HTMLCanvasElement>e.target).getBoundingClientRect();
-      detail = {
-        x: e.touches[0].clientX - rect.left,
-        y: e.touches[0].clientY - rect.top
-      };
+      detail.x = e.touches[0].clientX - rect.left;
+      detail.y = e.touches[0].clientY - rect.top;
     } else if (e instanceof MouseEvent) {
-      detail = { x: e.offsetX, y: e.offsetY };
+      detail.x = e.offsetX;
+      detail.y = e.offsetY;
     }
 
-    this.activeLayerDispatcher(<Event>e.type, detail);
+    this.activeLayerDispatcher(<Events>e.type, detail);
   }
 
   getRenderingLayerId() {
