@@ -1,8 +1,6 @@
-import type { ContextProxy } from '$lib/util/contextProxy';
-
 export interface Render {
   (params: {
-    context: CanvasRenderingContext2D | ContextProxy;
+    context: CanvasRenderingContext2D;
     width: number;
     height: number;
   }): void;

@@ -62,7 +62,7 @@
 
   function draw() {
     manager.render({
-      context: context!,
+      context: <CanvasRenderingContext2D>context!,
       width,
       height,
       pixelRatio: pixelRatio!,

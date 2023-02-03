@@ -4,7 +4,6 @@ import type {
   LayerEventDetail,
   LayerEventDispatcher
 } from '$lib/components/layerEvent';
-import type { ContextProxy } from './contextProxy';
 
 class LayerManager {
   currentLayerId: number;
@@ -87,7 +86,7 @@ class LayerManager {
   }: {
     width: number;
     height: number;
-    context: CanvasRenderingContext2D | ContextProxy;
+    context: CanvasRenderingContext2D;
     pixelRatio: number;
     autoclear: boolean;
   }) {
@@ -126,14 +125,14 @@ class LayerManager {
       this.dispatchLayerEvent(new PointerEvent('pointerleave', e));
       this.dispatchLayerEvent(new MouseEvent('mouseleave', e));
 
-      this.activeLayerId = layer;
-      this.activeLayerDispatcher = this.dispatchers.get(layer);
+    this.activeLayerId = layer;
+    this.activeLayerDispatcher = this.dispatchers.get(layer);
 
       this.dispatchLayerEvent(new PointerEvent('pointerenter', e));
       this.dispatchLayerEvent(new MouseEvent('mouseenter', e));
     }
 
-    this.dispatchLayerEvent(e);
+      this.dispatchLayerEvent(e);
   }
 
   dispatchLayerEvent(e: MouseEvent | TouchEvent) {
