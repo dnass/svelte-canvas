@@ -1,6 +1,5 @@
 <script context="module" lang="ts">
-  import LayerManager from '../util/LayerManager';
-  import TrackerProxy from '../util/trackerProxy';
+  import LayerManager from '$lib/util/LayerManager';
   import { getContext as getCTX } from 'svelte';
 
   export const KEY = Symbol();
@@ -15,6 +14,10 @@
 </script>
 
 <script lang="ts">
+  import {
+    createContextProxy,
+    type ContextProxy
+  } from '$lib/util/contextProxy';
   import { onMount, onDestroy, setContext } from 'svelte';
 
   export let width = 640,
@@ -30,8 +33,7 @@
   export { clazz as class, redraw, getCanvas, getContext };
 
   let canvas: HTMLCanvasElement;
-  let context: CanvasRenderingContext2D | null = null;
-  let canvasProxy: any;
+  let context: CanvasRenderingContext2D | ContextProxy | null = null;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
@@ -79,8 +81,8 @@
     const ctx = canvas.getContext('2d')!;
 
     if (layerEvents) {
-      canvasProxy = new TrackerProxy(ctx, manager.renderingLayerColor);
-      context = canvasProxy.proxy;
+      context = createContextProxy(ctx);
+      context._renderingLayerId = manager.getRenderingLayerId;
     } else {
       context = ctx;
     }
@@ -107,20 +109,24 @@
     layerObserver.disconnect();
   });
 
-  const handleLayerEvent = (e: PointerEvent | MouseEvent) => {
+  const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
     if (!layerEvents) return;
 
-    if (e.type === 'pointermove') {
-      const id = canvasProxy.getIdAtPixel(e.offsetX, e.offsetY);
+    if (
+      e instanceof MouseEvent &&
+      (e.type === 'pointermove' || e.type === 'mousemove')
+    ) {
+      const { offsetX: x, offsetY: y } = e;
+      const id = (context as ContextProxy)?._getLayerIdAtPixel(x, y);
       manager.setActiveLayer(id, e);
     }
 
-    manager.callLayerHandler(e);
+    manager.dispatchLayerEvent(e);
   };
 
   $: width, height, pixelRatio, autoclear, manager.resize();
 
-  $: canvasProxy?.setCanvasSize(width, height);
+  $: (context as ContextProxy)?._setCanvasSize?.(width, height);
 </script>
 
 <canvas
@@ -137,17 +143,17 @@
   on:keyup
   on:auxclick
   on:click={handleLayerEvent}
-  on:contextmenu
-  on:dblclick
-  on:mousedown
-  on:mouseenter
-  on:mouseleave
-  on:mousemove
+  on:contextmenu={handleLayerEvent}
+  on:dblclick={handleLayerEvent}
+  on:mousedown={handleLayerEvent}
+  on:mouseenter={handleLayerEvent}
+  on:mouseleave={handleLayerEvent}
+  on:mousemove={handleLayerEvent}
+  on:mouseup={handleLayerEvent}
   on:mouseover
   on:mouseout
-  on:mouseup
   on:select
-  on:wheel
+  on:wheel={handleLayerEvent}
   on:drag
   on:dragend
   on:dragenter
@@ -155,18 +161,18 @@
   on:dragleave
   on:dragover
   on:drop
-  on:touchcancel
-  on:touchend
-  on:touchmove
-  on:touchstart
-  on:pointerover
-  on:pointerenter
+  on:touchcancel={handleLayerEvent}
+  on:touchend={handleLayerEvent}
+  on:touchmove={handleLayerEvent}
+  on:touchstart={handleLayerEvent}
+  on:pointerenter={handleLayerEvent}
+  on:pointerleave={handleLayerEvent}
   on:pointerdown={handleLayerEvent}
   on:pointermove={handleLayerEvent}
   on:pointerup={handleLayerEvent}
-  on:pointercancel
+  on:pointercancel={handleLayerEvent}
+  on:pointerover
   on:pointerout
-  on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
   style="display: block; width: {width}px; height: {height}px;{style
