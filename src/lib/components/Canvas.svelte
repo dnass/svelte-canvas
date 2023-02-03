@@ -117,7 +117,7 @@
       (e.type === 'pointermove' || e.type === 'mousemove')
     ) {
       const { offsetX: x, offsetY: y } = e;
-      const id = (context as ContextProxy)?._getLayerIdAtPixel(x, y);
+      const id = (<ContextProxy>context)?._getLayerIdAtPixel(x, y);
       manager.setActiveLayer(id, e);
     }
 
@@ -126,7 +126,7 @@
 
   $: width, height, pixelRatio, autoclear, manager.resize();
 
-  $: (context as ContextProxy)?._setCanvasSize?.(width, height);
+  $: (<ContextProxy>context)?._setCanvasSize?.(width, height);
 </script>
 
 <canvas

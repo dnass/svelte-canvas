@@ -21,11 +21,11 @@ const COLOR_OVERRIDES = [
 const createContextProxy = (context: CanvasRenderingContext2D) => {
   let renderingLayerId: () => number;
   const canvas = document.createElement('canvas');
-  const trackerContext = canvas.getContext('2d', {
+  const proxyContext = <ContextProxy>(canvas.getContext('2d', {
     willReadFrequently: true
-  }) as unknown as ContextProxy;
+  }) as unknown);
 
-  return new Proxy(context as unknown as ContextProxy, {
+  return new Proxy(<ContextProxy>(context as unknown), {
     get(target, property: keyof ContextProxy) {
       if (property === '_setCanvasSize') {
         return (width: number, height: number) => {
@@ -36,7 +36,7 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
 
       if (property === '_getLayerIdAtPixel') {
         return (x: number, y: number) => {
-          const pixel = trackerContext.getImageData(x, y, 1, 1).data;
+          const pixel = proxyContext.getImageData(x, y, 1, 1).data;
           return rgbToId(pixel[0], pixel[1], pixel[2]);
         };
       }
@@ -47,18 +47,16 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
       return function (...args: any[]) {
         if (COLOR_OVERRIDES.includes(property)) {
           const layerColor = idToRgb(renderingLayerId());
-          trackerContext.fillStyle = layerColor;
-          trackerContext.strokeStyle = layerColor;
+          proxyContext.fillStyle = layerColor;
+          proxyContext.strokeStyle = layerColor;
         }
 
         if (property === 'drawImage') {
-          trackerContext.fillRect(
-            ...(args as Parameters<CanvasRect['fillRect']>)
-          );
+          proxyContext.fillRect(...(<Parameters<CanvasRect['fillRect']>>args));
         }
 
         if (!EXCLUDED_GETTERS.includes(property)) {
-          Reflect.apply(val, trackerContext, args);
+          Reflect.apply(val, proxyContext, args);
         }
 
         return Reflect.apply(val, target, args);
@@ -70,10 +68,10 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
         return true;
       }
 
-      (target[property] as ContextProxy) = newValue;
+      (<ContextProxy>target[property]) = newValue;
 
       if (!EXCLUDED_SETTERS.includes(property)) {
-        (trackerContext[property] as ContextProxy) = newValue;
+        (<ContextProxy>proxyContext[property]) = newValue;
       }
 
       return true;
