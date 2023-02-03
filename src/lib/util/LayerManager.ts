@@ -1,18 +1,18 @@
 import type { Render } from '$lib/components/render';
-import type { EventHandler, EventHandlers } from '$lib/components/layerEvents';
-import { idToRgb } from '../util/color';
+import type { Event, LayerEventDispatcher } from '$lib/components/layerEvent';
+import type { ContextProxy } from './contextProxy';
 
 class LayerManager {
   currentLayerId: number;
   setups: Map<number, Render>;
   renderers: Map<number, Render>;
-  handlers: Map<number, Object>;
+  dispatchers: Map<number, LayerEventDispatcher>;
   needsSetup: boolean;
   needsResize: boolean;
   needsRedraw: boolean;
   renderingLayerId: number;
   activeLayerId: number;
-  activeLayerHandlers: EventHandlers | undefined;
+  activeLayerDispatcher: LayerEventDispatcher | undefined;
   layerSequence: number[];
 
   constructor() {
@@ -20,12 +20,12 @@ class LayerManager {
     this.unregister = this.unregister.bind(this);
     this.redraw = this.redraw.bind(this);
     this.resize = this.resize.bind(this);
-    this.renderingLayerColor = this.renderingLayerColor.bind(this);
+    this.getRenderingLayerId = this.getRenderingLayerId.bind(this);
 
     this.currentLayerId = 1;
     this.setups = new Map();
     this.renderers = new Map();
-    this.handlers = new Map();
+    this.dispatchers = new Map();
 
     this.needsSetup = false;
     this.needsResize = true;
@@ -49,11 +49,11 @@ class LayerManager {
   register({
     setup,
     render,
-    handlers
+    dispatcher
   }: {
     setup: Render | undefined;
     render: Render;
-    handlers: EventHandlers;
+    dispatcher: LayerEventDispatcher;
   }) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
@@ -62,7 +62,7 @@ class LayerManager {
 
     this.renderers.set(this.currentLayerId, render);
 
-    this.handlers.set(this.currentLayerId, handlers);
+    this.dispatchers.set(this.currentLayerId, dispatcher);
 
     this.needsRedraw = true;
     return this.currentLayerId++;
@@ -70,7 +70,7 @@ class LayerManager {
 
   unregister(layerId: number) {
     this.renderers.delete(layerId);
-    this.handlers.delete(layerId);
+    this.dispatchers.delete(layerId);
     this.needsRedraw = true;
   }
 
@@ -83,7 +83,7 @@ class LayerManager {
   }: {
     width: number;
     height: number;
-    context: CanvasRenderingContext2D;
+    context: CanvasRenderingContext2D | ContextProxy;
     pixelRatio: number;
     autoclear: boolean;
   }) {
@@ -117,25 +117,41 @@ class LayerManager {
     }
   }
 
-  setActiveLayer(layer: number, e: PointerEvent | MouseEvent) {
+  setActiveLayer(layer: number, e: MouseEvent | TouchEvent) {
     if (this.activeLayerId !== layer) {
-      this.callLayerHandler(new PointerEvent('pointerleave', e));
+      this.dispatchLayerEvent(new PointerEvent('pointerleave', e));
+      this.dispatchLayerEvent(new MouseEvent('mouseleave', e));
+
       this.activeLayerId = layer;
-      this.activeLayerHandlers = this.handlers.get(layer);
-      this.callLayerHandler(new PointerEvent('pointerenter', e));
+      this.activeLayerDispatcher = this.dispatchers.get(layer);
+
+      this.dispatchLayerEvent(new PointerEvent('pointerenter', e));
+      this.dispatchLayerEvent(new MouseEvent('mouseenter', e));
     }
 
-    this.callLayerHandler(e);
+    this.dispatchLayerEvent(e);
   }
 
-  callLayerHandler(e: PointerEvent | MouseEvent) {
-    const type = e.type as keyof EventHandlers;
-    const handler = this.activeLayerHandlers?.[type];
-    handler?.(e);
+  dispatchLayerEvent(e: MouseEvent | TouchEvent) {
+    if (!this.activeLayerDispatcher) return;
+
+    let detail;
+
+    if (e instanceof TouchEvent && e.touches.length) {
+      const rect = (<HTMLCanvasElement>e.target).getBoundingClientRect();
+      detail = {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    } else if (e instanceof MouseEvent) {
+      detail = { x: e.offsetX, y: e.offsetY };
+    }
+
+    this.activeLayerDispatcher(<Event>e.type, detail);
   }
 
-  renderingLayerColor() {
-    return idToRgb(this.renderingLayerId);
+  getRenderingLayerId() {
+    return this.renderingLayerId;
   }
 }
 
