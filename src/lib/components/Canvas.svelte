@@ -109,27 +109,51 @@
     layerObserver.disconnect();
   });
 
+  const handleLayerMouseMove = (e: MouseEvent) => {
+    const { offsetX: x, offsetY: y } = e;
+    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    manager.setActiveLayer(id, e);
+    manager.dispatchLayerEvent(e);
+  };
+
+  const handleLayerTouchStart = (e: TouchEvent) => {
+    const { clientX: x, clientY: y } = e.touches[0];
+    const { left, top } = canvas.getBoundingClientRect();
+    const id = (<ContextProxy>context)._getLayerIdAtPixel(x - left, y - top);
+    manager.setActiveLayer(id, e);
+    manager.dispatchLayerEvent(e);
+  };
+
   const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
-    if (!layerEvents) return;
-
-    if (
-      e instanceof MouseEvent &&
-      (e.type === 'pointermove' || e.type === 'mousemove')
-    ) {
-      const { offsetX: x, offsetY: y } = e;
-      const id = (<ContextProxy>context)?._getLayerIdAtPixel(x, y);
-      manager.setActiveLayer(id, e);
-    }
-
+    if (e instanceof TouchEvent) e.preventDefault();
     manager.dispatchLayerEvent(e);
   };
 
   $: width, height, pixelRatio, autoclear, manager.resize();
 
-  $: (<ContextProxy>context)?._setCanvasSize?.(width, height);
+  $: (<ContextProxy>context)?._setCanvasSize(width, height);
 </script>
 
 <canvas
+  on:touchstart|preventDefault={handleLayerTouchStart}
+  on:mousemove={handleLayerMouseMove}
+  on:pointermove={handleLayerMouseMove}
+  on:click={handleLayerEvent}
+  on:contextmenu={handleLayerEvent}
+  on:dblclick={handleLayerEvent}
+  on:mousedown={handleLayerEvent}
+  on:mouseenter={handleLayerEvent}
+  on:mouseleave={handleLayerEvent}
+  on:mouseup={handleLayerEvent}
+  on:wheel={handleLayerEvent}
+  on:touchcancel|preventDefault={handleLayerEvent}
+  on:touchend|preventDefault={handleLayerEvent}
+  on:touchmove|preventDefault={handleLayerEvent}
+  on:pointerenter={handleLayerEvent}
+  on:pointerleave={handleLayerEvent}
+  on:pointerdown={handleLayerEvent}
+  on:pointerup={handleLayerEvent}
+  on:pointercancel={handleLayerEvent}
   on:focus
   on:blur
   on:fullscreenchange
@@ -142,18 +166,18 @@
   on:keypress
   on:keyup
   on:auxclick
-  on:click={handleLayerEvent}
-  on:contextmenu={handleLayerEvent}
-  on:dblclick={handleLayerEvent}
-  on:mousedown={handleLayerEvent}
-  on:mouseenter={handleLayerEvent}
-  on:mouseleave={handleLayerEvent}
-  on:mousemove={handleLayerEvent}
-  on:mouseup={handleLayerEvent}
+  on:click
+  on:contextmenu
+  on:dblclick
+  on:mousedown
+  on:mouseenter
+  on:mouseleave
+  on:mousemove
   on:mouseover
   on:mouseout
+  on:mouseup
   on:select
-  on:wheel={handleLayerEvent}
+  on:wheel
   on:drag
   on:dragend
   on:dragenter
@@ -161,18 +185,18 @@
   on:dragleave
   on:dragover
   on:drop
-  on:touchcancel={handleLayerEvent}
-  on:touchend={handleLayerEvent}
-  on:touchmove={handleLayerEvent}
-  on:touchstart={handleLayerEvent}
-  on:pointerenter={handleLayerEvent}
-  on:pointerleave={handleLayerEvent}
-  on:pointerdown={handleLayerEvent}
-  on:pointermove={handleLayerEvent}
-  on:pointerup={handleLayerEvent}
-  on:pointercancel={handleLayerEvent}
+  on:touchcancel
+  on:touchend
+  on:touchmove
+  on:touchstart
   on:pointerover
+  on:pointerenter
+  on:pointerdown
+  on:pointermove
+  on:pointerup
+  on:pointercancel
   on:pointerout
+  on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
   style="display: block; width: {width}px; height: {height}px;{style

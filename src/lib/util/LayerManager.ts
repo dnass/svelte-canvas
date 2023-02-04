@@ -134,13 +134,11 @@ class LayerManager {
     if (e instanceof MouseEvent) {
       this.dispatchLayerEvent(new PointerEvent('pointerenter', e));
       this.dispatchLayerEvent(new MouseEvent('mouseenter', e));
-      this.dispatchLayerEvent(e);
     }
   }
 
   dispatchLayerEvent(e: MouseEvent | TouchEvent) {
     if (!this.activeLayerDispatcher) return;
-    console.log(e.type);
 
     let detail: LayerEventDetail = {};
 
