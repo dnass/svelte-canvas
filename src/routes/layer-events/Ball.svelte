@@ -45,8 +45,8 @@
 
   const onMove = (e: CanvasLayerEvent) => {
     if (dragging) {
-      _x.set(<number>e.detail.x);
-      _y.set(<number>e.detail.y);
+      _x.set(e.detail.x);
+      _y.set(e.detail.y);
     }
   };
 </script>

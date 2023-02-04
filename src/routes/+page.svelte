@@ -10,8 +10,26 @@
     {
       href: '/svelte-canvas/basic',
       name: 'Basics',
-      description: 'An animated ball!',
+      description: 'An animated ball',
       color: '#40B3FF'
+    },
+    {
+      href: '/svelte-canvas/layer-events',
+      name: 'Layer Events',
+      description: 'Layer-level event handling',
+      color: '#FF97D8'
+    },
+    {
+      href: '/svelte-canvas/scatterplot',
+      name: 'Scatterplot',
+      description: 'Interactive dataviz',
+      color: '#F79D84'
+    },
+    {
+      href: '/svelte-canvas/globe',
+      name: 'Globe',
+      description: "'Round the world",
+      color: '#FFE066'
     },
     {
       href: '/svelte-canvas/canvas-svg',
@@ -24,18 +42,6 @@
       name: 'DVD Bounce',
       description: 'An office classic',
       color: '#BF9ACA'
-    },
-    {
-      href: '/svelte-canvas/globe',
-      name: 'Globe',
-      description: "'Round the world",
-      color: '#FFE066'
-    },
-    {
-      href: '/svelte-canvas/scatterplot',
-      name: 'Scatterplot',
-      description: 'Hoverable graph!',
-      color: '#F79D84'
     }
   ];
 </script>

@@ -25,7 +25,7 @@ Reactive canvas rendering with Svelte.
 </Canvas>
 ```
 
-If you use typescript, add the Render type to your reactive statement:
+If you use TypeScript, add the Render type to your reactive statement:
 
 ```ts
 import { ..., type Render } from "svelte-canvas";
@@ -50,16 +50,17 @@ More examples:
 
 `Canvas` is the top-level element. It's a Svelte wrapper around an [HTML `<canvas>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas).
 
-#### Parameters
+#### Props
 
-| parameter    | default                   | description                                                                                             |
-| ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `width`      | 640                       | Canvas width                                                                                            |
-| `height`     | 640                       | Canvas height                                                                                           |
-| `pixelRatio` | `window.devicePixelRatio` | Canvas [pixel ratio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Examples) |
-| `style`      | `null`                    | A CSS style string which will be applied to the canvas element                                          |
-| `class`      | `null`                    | A class string which will be applied to the canvas element                                              |
-| `autoclear`  | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
+| prop          | default                   | description                                                                                             |
+| ------------- | ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `width`       | 640                       | Canvas width                                                                                            |
+| `height`      | 640                       | Canvas height                                                                                           |
+| `pixelRatio`  | `window.devicePixelRatio` | Canvas [pixel ratio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Examples) |
+| `style`       | `null`                    | A CSS style string which will be applied to the canvas element                                          |
+| `class`       | `null`                    | A class string which will be applied to the canvas element                                              |
+| `autoclear`   | `true`                    | If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle           |
+| `layerEvents` | `false`                   | If `true`, enables event handlers on child `Layer` components                                           |
 
 #### Methods
 
@@ -69,10 +70,6 @@ More examples:
 | `getContext` | Returns the canvas's 2D rendering context     |
 | `redraw`     | Forces a re-render of the canvas              |
 
-#### Events
-
-All DOM events on the `<canvas>` element are forwarded to the `Canvas` component, so [handling an event](https://svelte.dev/docs#Element_directives) is as simple as `<Canvas on:click={handleClick}>`.
-
 ### Layer
 
 `Layer` is a layer to be rendered onto the canvas. It takes two props, `setup` and `render` Both take functions with a single argument that receives an object with the properties `context`, `width`, and `height`. `context` is the [2D rendering context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) of the parent canvas. `width` and `height` are the canvas's dimensions.
@@ -80,6 +77,32 @@ All DOM events on the `<canvas>` element are forwarded to the `Canvas` component
 `setup` is optional and is called once at initialization. `render` is called every time the canvas redraws.
 
 Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_a_statement_as_reactive) allows `svelte-canvas` to re-render anytime the values that the function depends on change.
+
+### Event handling
+
+All DOM events on the `<canvas>` element are forwarded to the `Canvas` component, so [handling an event](https://svelte.dev/docs#Element_directives) is as simple as `<Canvas on:click={handleClick}>`.
+
+Individual `Layer` instances can also handle events that fall within their bounds when the `layerEvents` prop on the parent `Canvas` component is `true`. Event handlers registered with the `on:` directive receive a `CustomEvent` with properties `detail.x` and `detail.y` representing the coordinates of the event relative to the parent canvas.
+
+```ts
+<script>
+  import { Canvas, Layer, type CanvasLayerEvent } from 'svelte-canvas';
+
+  const render = ({ context }) => {
+    ...
+  };
+
+  const handleClick = (e: CanvasLayerEvent) => console.log(e.detail.x, e.detail.y)
+</script>
+
+<Canvas width={640} height={640}>
+  <Layer {render} on:click={handleClick} />
+</Canvas>
+```
+
+Supported event types are `'click' | 'contextmenu' | 'dblclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
+
+This is an experimental feature that may have a negative performance impact.
 
 ### t
 
