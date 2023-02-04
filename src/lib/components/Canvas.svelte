@@ -24,7 +24,6 @@
     autoclear = true,
     layerEvents = false;
 
-  /** Class field. Only works for global classes. */
   let clazz = '';
 
   export { clazz as class, redraw, getCanvas, getContext };
@@ -127,8 +126,6 @@
   };
 
   $: width, height, pixelRatio, autoclear, manager.resize();
-
-  $: (<ContextProxy>context)?._setCanvasSize?.(width, height);
 </script>
 
 <canvas

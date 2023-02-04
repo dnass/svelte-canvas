@@ -1,7 +1,6 @@
 import { idToRgb, rgbToId } from './color';
 
 export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
-  _setCanvasSize(width: number, height: number): void;
   _getLayerIdAtPixel(x: number, y: number): number;
   _renderingLayerId: (() => number) | undefined;
 }
@@ -20,20 +19,27 @@ const COLOR_OVERRIDES = [
 
 const createContextProxy = (context: CanvasRenderingContext2D) => {
   let renderingLayerId: () => number;
+
   const canvas = document.createElement('canvas');
   const proxyContext = <ContextProxy>(canvas.getContext('2d', {
     willReadFrequently: true
   }) as unknown);
 
+  const resizeCanvas = () => {
+    const { a: pixelRatio } = context.getTransform();
+    canvas.width = context.canvas.width / pixelRatio;
+    canvas.height = context.canvas.height / pixelRatio;
+  };
+
+  const canvasSizeObserver = new MutationObserver(resizeCanvas);
+  canvasSizeObserver.observe(context.canvas, {
+    attributeFilter: ['width', 'height']
+  });
+
+  resizeCanvas();
+
   return new Proxy(<ContextProxy>(context as unknown), {
     get(target, property: keyof ContextProxy) {
-      if (property === '_setCanvasSize') {
-        return (width: number, height: number) => {
-          canvas.width = width;
-          canvas.height = height;
-        };
-      }
-
       if (property === '_getLayerIdAtPixel') {
         return (x: number, y: number) => {
           const pixel = proxyContext.getImageData(x, y, 1, 1).data;
@@ -45,14 +51,18 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
       if (typeof val !== 'function') return val;
 
       return function (...args: any[]) {
-        if (COLOR_OVERRIDES.includes(property)) {
-          const layerColor = idToRgb(renderingLayerId());
-          proxyContext.fillStyle = layerColor;
-          proxyContext.strokeStyle = layerColor;
+        if (property === 'setTransform') {
+          resizeCanvas();
         }
 
         if (property === 'drawImage') {
           proxyContext.fillRect(...(<Parameters<CanvasRect['fillRect']>>args));
+        }
+
+        if (COLOR_OVERRIDES.includes(property)) {
+          const layerColor = idToRgb(renderingLayerId());
+          proxyContext.fillStyle = layerColor;
+          proxyContext.strokeStyle = layerColor;
         }
 
         if (!EXCLUDED_GETTERS.includes(property)) {
