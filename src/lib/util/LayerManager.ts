@@ -1,9 +1,9 @@
-import type { Render } from '$lib/components/render';
+import type { Render } from '../components/render';
 import type {
   Events,
   LayerEventDetail,
   LayerEventDispatcher
-} from '$lib/components/layerEvent';
+} from '../components/layerEvent';
 
 class LayerManager {
   currentLayerId: number;

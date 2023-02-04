@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import LayerManager from '$lib/util/LayerManager';
+  import LayerManager from '../util/LayerManager';
   import { getContext as getCTX } from 'svelte';
 
   export const KEY = Symbol();
@@ -14,10 +14,7 @@
 </script>
 
 <script lang="ts">
-  import {
-    createContextProxy,
-    type ContextProxy
-  } from '$lib/util/contextProxy';
+  import { createContextProxy, type ContextProxy } from '../util/contextProxy';
   import { onMount, onDestroy, setContext } from 'svelte';
 
   export let width = 640,
@@ -25,7 +22,7 @@
     pixelRatio: number | null = null,
     style = '',
     autoclear = true,
-    layerEvents = true;
+    layerEvents = false;
 
   /** Class field. Only works for global classes. */
   let clazz = '';

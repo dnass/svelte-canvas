@@ -1,4 +1,4 @@
-import { idToRgb, rgbToId } from '$lib/util/color';
+import { idToRgb, rgbToId } from './color';
 
 export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
   _setCanvasSize(width: number, height: number): void;
