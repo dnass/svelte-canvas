@@ -114,7 +114,7 @@
   };
 
   const handleLayerTouchStart = (e: TouchEvent) => {
-    const { clientX: x, clientY: y } = e.touches[0];
+    const { clientX: x, clientY: y } = e.changedTouches[0];
     const { left, top } = canvas.getBoundingClientRect();
     const id = (<ContextProxy>context)._getLayerIdAtPixel(x - left, y - top);
     manager.setActiveLayer(id, e);
