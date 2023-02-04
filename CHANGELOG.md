@@ -1,3 +1,7 @@
+## 0.9.0
+
+- Add layer-level hit detection and event handling.
+
 ## 0.8.1
 
 - Remove SvelteKit `browser` check.

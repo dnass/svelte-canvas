@@ -1,39 +1,40 @@
 <script context="module" lang="ts">
-  import RenderManager from '../util/renderManager';
+  import LayerManager from '../util/LayerManager';
   import { getContext as getCTX } from 'svelte';
 
   export const KEY = Symbol();
 
   interface TypedContext {
-    register: RenderManager['register'];
-    unregister: RenderManager['unregister'];
-    redraw: RenderManager['redraw'];
+    register: LayerManager['register'];
+    unregister: LayerManager['unregister'];
+    redraw: LayerManager['redraw'];
   }
 
   export const getTypedContext = (): TypedContext => getCTX(KEY);
 </script>
 
 <script lang="ts">
+  import { createContextProxy, type ContextProxy } from '../util/contextProxy';
   import { onMount, onDestroy, setContext } from 'svelte';
 
   export let width = 640,
     height = 640,
     pixelRatio: number | null = null,
     style = '',
-    autoclear = true;
+    autoclear = true,
+    layerEvents = false;
 
-  /** Class field. Only works for global classes. */
   let clazz = '';
 
   export { clazz as class, redraw, getCanvas, getContext };
 
   let canvas: HTMLCanvasElement;
-  let context: CanvasRenderingContext2D | null = null;
+  let context: CanvasRenderingContext2D | ContextProxy | null = null;
   let animationLoop: number;
   let layerRef: HTMLDivElement;
   let layerObserver: MutationObserver;
 
-  const manager = new RenderManager();
+  const manager = new LayerManager();
 
   function redraw() {
     manager.redraw();
@@ -57,7 +58,7 @@
 
   function draw() {
     manager.render({
-      context: context!,
+      context: <CanvasRenderingContext2D>context!,
       width,
       height,
       pixelRatio: pixelRatio!,
@@ -73,7 +74,14 @@
   });
 
   onMount(() => {
-    context = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d')!;
+
+    if (layerEvents) {
+      context = createContextProxy(ctx);
+      context._renderingLayerId = manager.getRenderingLayerId;
+    } else {
+      context = ctx;
+    }
 
     layerObserver = new MutationObserver(getLayerSequence);
     layerObserver.observe(layerRef, { childList: true });
@@ -97,10 +105,49 @@
     layerObserver.disconnect();
   });
 
+  const handleLayerMouseMove = (e: MouseEvent) => {
+    const { offsetX: x, offsetY: y } = e;
+    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    manager.setActiveLayer(id, e);
+    manager.dispatchLayerEvent(e);
+  };
+
+  const handleLayerTouchStart = (e: TouchEvent) => {
+    const { clientX: x, clientY: y } = e.changedTouches[0];
+    const { left, top } = canvas.getBoundingClientRect();
+    const id = (<ContextProxy>context)._getLayerIdAtPixel(x - left, y - top);
+    manager.setActiveLayer(id, e);
+    manager.dispatchLayerEvent(e);
+  };
+
+  const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
+    if (window.TouchEvent && e instanceof TouchEvent) e.preventDefault();
+    manager.dispatchLayerEvent(e);
+  };
+
   $: width, height, pixelRatio, autoclear, manager.resize();
 </script>
 
 <canvas
+  on:touchstart|preventDefault={layerEvents ? handleLayerTouchStart : null}
+  on:mousemove={layerEvents ? handleLayerMouseMove : null}
+  on:pointermove={layerEvents ? handleLayerMouseMove : null}
+  on:click={layerEvents ? handleLayerEvent : null}
+  on:contextmenu={layerEvents ? handleLayerEvent : null}
+  on:dblclick={layerEvents ? handleLayerEvent : null}
+  on:mousedown={layerEvents ? handleLayerEvent : null}
+  on:mouseenter={layerEvents ? handleLayerEvent : null}
+  on:mouseleave={layerEvents ? handleLayerEvent : null}
+  on:mouseup={layerEvents ? handleLayerEvent : null}
+  on:wheel={layerEvents ? handleLayerEvent : null}
+  on:touchcancel|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:touchend|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:touchmove|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:pointerenter={layerEvents ? handleLayerEvent : null}
+  on:pointerleave={layerEvents ? handleLayerEvent : null}
+  on:pointerdown={layerEvents ? handleLayerEvent : null}
+  on:pointerup={layerEvents ? handleLayerEvent : null}
+  on:pointercancel={layerEvents ? handleLayerEvent : null}
   on:focus
   on:blur
   on:fullscreenchange
@@ -146,15 +193,16 @@
   on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
-  style="display: block; width: {width}px; height: {height}px;{style
-    ? ` ${style}`
-    : ''}"
   width={width * (pixelRatio ?? 1)}
   height={height * (pixelRatio ?? 1)}
   class={clazz}
+  style:display="block"
+  style:width="{width}px"
+  style:height="{height}px"
+  {style}
   bind:this={canvas}
 />
 
-<div style="display: none;" bind:this={layerRef}>
+<div style:display="none" bind:this={layerRef}>
   <slot />
 </div>
