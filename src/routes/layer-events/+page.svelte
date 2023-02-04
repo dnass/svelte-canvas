@@ -4,26 +4,26 @@
   import Ball from './Ball.svelte';
 
   let balls = [
-    ['#f00', 320, 213],
-    ['#0f0', 213, 400],
-    ['#00f', 427, 400]
+    { color: '#f00', x: 320, y: 213 },
+    { color: '#0f0', x: 213, y: 400 },
+    { color: '#00f', x: 427, y: 400 }
   ];
 
-  const reorder = (color) => {
+  const reorder = (color: string) => {
     balls = balls
-      .filter(([c]) => c !== color)
-      .concat([[color, ...balls.find(([c]) => c === color).slice(1)]]);
+      .filter((c) => c.color !== color)
+      .concat(balls.filter((c) => c.color === color));
   };
 </script>
 
-<!-- Center canvas horiz and vertically -->
 <Canvas
-  style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 2rem;"
+  style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid black; border-radius: 2rem;"
   width={640}
   height={640}
   pixelRatio={2}
+  layerEvents={true}
 >
-  {#each balls as [color, x, y] (color)}
+  {#each balls as { color, x, y } (color)}
     <Ball {color} {x} {y} {reorder} />
   {/each}
 </Canvas>
