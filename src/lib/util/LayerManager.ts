@@ -143,10 +143,20 @@ class LayerManager {
     if (window.TouchEvent && e instanceof TouchEvent) {
       const { left, top } = (<Element>e.target).getBoundingClientRect();
       const { clientX, clientY } = e.changedTouches[0];
-      const detail: LayerEventDetail = { x: clientX - left, y: clientY - top };
+      const detail: LayerEventDetail = {
+        x: clientX - left,
+        y: clientY - top,
+        originalEvent: e
+      };
+
       this.activeLayerDispatcher(<Events>e.type, detail);
     } else if (e instanceof MouseEvent) {
-      const detail: LayerEventDetail = { x: e.offsetX, y: e.offsetY };
+      const detail: LayerEventDetail = {
+        x: e.offsetX,
+        y: e.offsetY,
+        originalEvent: e
+      };
+
       this.activeLayerDispatcher(<Events>e.type, detail);
     }
   }

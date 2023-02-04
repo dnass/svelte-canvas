@@ -82,7 +82,7 @@ Declaring your `render` function [reactively](https://svelte.dev/docs#3_$_marks_
 
 All DOM events on the `<canvas>` element are forwarded to the `Canvas` component, so [handling an event](https://svelte.dev/docs#Element_directives) is as simple as `<Canvas on:click={handleClick}>`.
 
-Individual `Layer` instances can also handle events that fall within their bounds when the `layerEvents` prop on the parent `Canvas` component is `true`. Event handlers registered with the `on:` directive receive a `CustomEvent` with properties `detail.x` and `detail.y` representing the coordinates of the event relative to the parent canvas.
+Individual `Layer` instances can also handle events that fall within their bounds when the `layerEvents` prop on the parent `Canvas` component is `true`. Event handlers registered with the `on:` directive receive a `CustomEvent` with properties `detail.x` and `detail.y` representing the coordinates of the event relative to the parent canvas, as well as `detail.originalEvent`, which contains the original `canvas` DOM event.
 
 ```ts
 <script>

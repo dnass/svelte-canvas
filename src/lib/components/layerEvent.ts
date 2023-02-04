@@ -21,7 +21,11 @@ export type Events =
   | 'pointerup'
   | 'pointercancel';
 
-export type LayerEventDetail = { x: number; y: number };
+export type LayerEventDetail = {
+  x: number;
+  y: number;
+  originalEvent: MouseEvent | TouchEvent;
+};
 
 export type LayerEvents = {
   [E in Events]: LayerEventDetail;
