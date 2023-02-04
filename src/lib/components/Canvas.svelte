@@ -199,15 +199,16 @@
   on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
-  style="display: block; width: {width}px; height: {height}px;{style
-    ? ` ${style}`
-    : ''}"
   width={width * (pixelRatio ?? 1)}
   height={height * (pixelRatio ?? 1)}
   class={clazz}
+  style:display="block"
+  style:width="{width}px"
+  style:height="{height}px"
+  {style}
   bind:this={canvas}
 />
 
-<div style="display: none;" bind:this={layerRef}>
+<div style:display="none" bind:this={layerRef}>
   <slot />
 </div>
