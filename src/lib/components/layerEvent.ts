@@ -27,7 +27,7 @@ export type LayerEvents = {
   [E in Events]: LayerEventDetail;
 };
 
-export type LayerEvent = CustomEvent<LayerEventDetail>;
+export type CanvasLayerEvent = CustomEvent<LayerEventDetail>;
 
 export type LayerEventDispatcher = ReturnType<
   typeof createEventDispatcher<LayerEvents>

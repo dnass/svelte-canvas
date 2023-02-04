@@ -142,7 +142,7 @@ class LayerManager {
 
     let detail: LayerEventDetail = {};
 
-    if (e instanceof TouchEvent && e.touches.length) {
+    if (window.TouchEvent && e instanceof TouchEvent && e.touches.length) {
       const rect = (<HTMLCanvasElement>e.target).getBoundingClientRect();
       detail.x = e.touches[0].clientX - rect.left;
       detail.y = e.touches[0].clientY - rect.top;

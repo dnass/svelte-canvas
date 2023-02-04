@@ -122,35 +122,35 @@
   };
 
   const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
-    if (e instanceof TouchEvent) e.preventDefault();
+    if (window.TouchEvent && e instanceof TouchEvent) e.preventDefault();
     manager.dispatchLayerEvent(e);
   };
 
   $: width, height, pixelRatio, autoclear, manager.resize();
 
-  $: (<ContextProxy>context)?._setCanvasSize(width, height);
+  $: (<ContextProxy>context)?._setCanvasSize?.(width, height);
 </script>
 
 <canvas
-  on:touchstart|preventDefault={handleLayerTouchStart}
-  on:mousemove={handleLayerMouseMove}
-  on:pointermove={handleLayerMouseMove}
-  on:click={handleLayerEvent}
-  on:contextmenu={handleLayerEvent}
-  on:dblclick={handleLayerEvent}
-  on:mousedown={handleLayerEvent}
-  on:mouseenter={handleLayerEvent}
-  on:mouseleave={handleLayerEvent}
-  on:mouseup={handleLayerEvent}
-  on:wheel={handleLayerEvent}
-  on:touchcancel|preventDefault={handleLayerEvent}
-  on:touchend|preventDefault={handleLayerEvent}
-  on:touchmove|preventDefault={handleLayerEvent}
-  on:pointerenter={handleLayerEvent}
-  on:pointerleave={handleLayerEvent}
-  on:pointerdown={handleLayerEvent}
-  on:pointerup={handleLayerEvent}
-  on:pointercancel={handleLayerEvent}
+  on:touchstart|preventDefault={layerEvents ? handleLayerTouchStart : null}
+  on:mousemove={layerEvents ? handleLayerMouseMove : null}
+  on:pointermove={layerEvents ? handleLayerMouseMove : null}
+  on:click={layerEvents ? handleLayerEvent : null}
+  on:contextmenu={layerEvents ? handleLayerEvent : null}
+  on:dblclick={layerEvents ? handleLayerEvent : null}
+  on:mousedown={layerEvents ? handleLayerEvent : null}
+  on:mouseenter={layerEvents ? handleLayerEvent : null}
+  on:mouseleave={layerEvents ? handleLayerEvent : null}
+  on:mouseup={layerEvents ? handleLayerEvent : null}
+  on:wheel={layerEvents ? handleLayerEvent : null}
+  on:touchcancel|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:touchend|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:touchmove|preventDefault={layerEvents ? handleLayerEvent : null}
+  on:pointerenter={layerEvents ? handleLayerEvent : null}
+  on:pointerleave={layerEvents ? handleLayerEvent : null}
+  on:pointerdown={layerEvents ? handleLayerEvent : null}
+  on:pointerup={layerEvents ? handleLayerEvent : null}
+  on:pointercancel={layerEvents ? handleLayerEvent : null}
   on:focus
   on:blur
   on:fullscreenchange
