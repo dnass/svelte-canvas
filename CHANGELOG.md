@@ -1,3 +1,8 @@
+# 0.9.1
+
+- Fix layer events when `globalAlpha` and `drawImage` are used.
+- Use `@sveltejs/package@2`.
+
 ## 0.9.0
 
 - Add layer-level hit detection and event handling.

@@ -30,9 +30,7 @@
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | ContextProxy | null = null;
-  let animationLoop: number;
   let layerRef: HTMLDivElement;
-  let layerObserver: MutationObserver;
 
   const manager = new LayerManager();
 
@@ -56,17 +54,6 @@
     }
   }
 
-  function draw() {
-    manager.render({
-      context: <CanvasRenderingContext2D>context!,
-      width,
-      height,
-      pixelRatio: pixelRatio!,
-      autoclear
-    });
-    animationLoop = window.requestAnimationFrame(draw);
-  }
-
   setContext(KEY, {
     register: manager.register,
     unregister: manager.unregister,
@@ -83,27 +70,10 @@
       context = ctx;
     }
 
-    layerObserver = new MutationObserver(getLayerSequence);
-    layerObserver.observe(layerRef, { childList: true });
-    getLayerSequence();
-    draw();
-
-    function getLayerSequence() {
-      const sequence = [...layerRef.children].map((layer) => {
-        if (layer instanceof HTMLElement)
-          return parseInt(layer.dataset.layerId ?? '-1');
-        else return -1;
-      });
-      manager.layerSequence = sequence;
-      manager.redraw();
-    }
+    manager.setup(<CanvasRenderingContext2D>context, layerRef);
   });
 
-  onDestroy(() => {
-    if (typeof window === 'undefined') return;
-    window.cancelAnimationFrame(animationLoop);
-    layerObserver.disconnect();
-  });
+  onDestroy(() => manager.destroy());
 
   const handleLayerMouseMove = (e: MouseEvent) => {
     const { offsetX: x, offsetY: y } = e;
@@ -125,6 +95,12 @@
     manager.dispatchLayerEvent(e);
   };
 
+  $: _pixelRatio = pixelRatio ?? 1;
+
+  $: manager.width = width;
+  $: manager.height = height;
+  $: manager.pixelRatio = _pixelRatio;
+  $: manager.autoclear = autoclear;
   $: width, height, pixelRatio, autoclear, manager.resize();
 </script>
 
@@ -193,8 +169,8 @@
   on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
-  width={width * (pixelRatio ?? 1)}
-  height={height * (pixelRatio ?? 1)}
+  width={width * _pixelRatio}
+  height={height * _pixelRatio}
   class={clazz}
   style:display="block"
   style:width="{width}px"

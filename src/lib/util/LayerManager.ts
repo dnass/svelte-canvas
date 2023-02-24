@@ -7,16 +7,31 @@ import type {
 
 class LayerManager {
   currentLayerId: number;
+
   setups: Map<number, Render>;
   renderers: Map<number, Render>;
   dispatchers: Map<number, LayerEventDispatcher>;
+
   needsSetup: boolean;
   needsResize: boolean;
   needsRedraw: boolean;
+
+  context?: CanvasRenderingContext2D;
+
+  width?: number;
+  height?: number;
+  autoclear?: boolean;
+  pixelRatio?: number;
+
+  renderLoop?: number;
+
+  layerObserver?: MutationObserver;
+  layerRef?: HTMLElement;
+  layerSequence: number[];
+
   renderingLayerId: number;
   activeLayerId: number;
-  activeLayerDispatcher: LayerEventDispatcher | undefined;
-  layerSequence: number[];
+  activeLayerDispatcher?: LayerEventDispatcher;
 
   constructor() {
     this.register = this.register.bind(this);
@@ -54,7 +69,7 @@ class LayerManager {
     render,
     dispatcher
   }: {
-    setup: Render | undefined;
+    setup?: Render;
     render: Render;
     dispatcher: LayerEventDispatcher;
   }) {
@@ -77,20 +92,35 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  render({
-    autoclear,
-    pixelRatio,
-    context,
-    width,
-    height
-  }: {
-    width: number;
-    height: number;
-    context: CanvasRenderingContext2D;
-    pixelRatio: number;
-    autoclear: boolean;
-  }) {
-    const renderProps = { context, width, height };
+  setup(context: CanvasRenderingContext2D, layerRef: HTMLElement) {
+    this.context = context;
+    this.layerRef = layerRef;
+    this.observeLayerSequence();
+    this.startRenderLoop();
+  }
+
+  observeLayerSequence() {
+    this.layerObserver = new MutationObserver(() => this.getLayerSequence);
+    this.layerObserver.observe(<HTMLElement>this.layerRef, { childList: true });
+    this.getLayerSequence();
+  }
+
+  getLayerSequence() {
+    const layers = [...(<HTMLElement>this.layerRef).children] as HTMLElement[];
+    this.layerSequence = layers.map((layer) => +(layer.dataset.layerId ?? -1));
+    this.redraw();
+  }
+
+  startRenderLoop() {
+    this.render();
+    this.renderLoop = requestAnimationFrame(() => this.startRenderLoop());
+  }
+
+  render() {
+    const context = <CanvasRenderingContext2D>this.context;
+    const width = this.width!;
+    const height = this.height!;
+    const pixelRatio = this.pixelRatio!;
 
     if (this.needsResize) {
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -99,7 +129,7 @@ class LayerManager {
 
     if (this.needsSetup) {
       for (const [layerId, setup] of this.setups) {
-        setup(renderProps);
+        setup({ context, width, height });
         this.setups.delete(layerId);
       }
 
@@ -107,13 +137,13 @@ class LayerManager {
     }
 
     if (this.needsRedraw) {
-      if (autoclear) {
+      if (this.autoclear) {
         context.clearRect(0, 0, width, height);
       }
 
       for (const layerId of this.layerSequence) {
         this.renderingLayerId = layerId;
-        this.renderers.get(layerId)?.(renderProps);
+        this.renderers.get(layerId)?.({ context, width, height });
       }
 
       this.needsRedraw = false;
@@ -163,6 +193,13 @@ class LayerManager {
 
   getRenderingLayerId() {
     return this.renderingLayerId;
+  }
+
+  destroy() {
+    if (typeof window === 'undefined') return;
+
+    (<MutationObserver>this.layerObserver).disconnect();
+    cancelAnimationFrame(<number>this.renderLoop);
   }
 }
 
