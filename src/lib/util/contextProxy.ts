@@ -60,14 +60,16 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
           resizeCanvas();
         }
 
-        if (property === 'drawImage') {
-          proxyContext.fillRect(...(<Parameters<CanvasRect['fillRect']>>args));
-        }
-
         if (COLOR_OVERRIDES.includes(property)) {
           const layerColor = idToRgb(renderingLayerId());
           proxyContext.fillStyle = layerColor;
           proxyContext.strokeStyle = layerColor;
+        }
+
+        if (property === 'drawImage') {
+          proxyContext.fillRect(
+            ...(<Parameters<CanvasRect['fillRect']>>args.slice(1))
+          );
         }
 
         if (!EXCLUDED_GETTERS.includes(property)) {
