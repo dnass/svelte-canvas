@@ -1,3 +1,7 @@
+# 0.9.2
+
+- Fix new layers not being observed.
+
 # 0.9.1
 
 - Fix layer events when `globalAlpha` and `drawImage` are used.

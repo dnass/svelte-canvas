@@ -100,7 +100,7 @@ class LayerManager {
   }
 
   observeLayerSequence() {
-    this.layerObserver = new MutationObserver(() => this.getLayerSequence);
+    this.layerObserver = new MutationObserver(this.getLayerSequence.bind(this));
     this.layerObserver.observe(<HTMLElement>this.layerRef, { childList: true });
     this.getLayerSequence();
   }
