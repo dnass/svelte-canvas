@@ -6,7 +6,12 @@ export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
 }
 
 const EXCLUDED_GETTERS = ['drawImage', 'setTransform'];
-const EXCLUDED_SETTERS = ['filter', 'shadowBlur', 'globalCompositeOperation'];
+const EXCLUDED_SETTERS = [
+  'filter',
+  'shadowBlur',
+  'globalCompositeOperation',
+  'globalAlpha'
+];
 const COLOR_OVERRIDES = [
   'drawImage',
   'fill',
