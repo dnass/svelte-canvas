@@ -10,7 +10,7 @@ const EXCLUDED_SETTERS = [
   'filter',
   'shadowBlur',
   'globalCompositeOperation',
-  'globalAlpha'
+  'globalAlpha',
 ];
 const COLOR_OVERRIDES = [
   'drawImage',
@@ -19,7 +19,7 @@ const COLOR_OVERRIDES = [
   'fillText',
   'stroke',
   'strokeRect',
-  'strokeText'
+  'strokeText',
 ];
 
 const createContextProxy = (context: CanvasRenderingContext2D) => {
@@ -27,7 +27,7 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
 
   const canvas = document.createElement('canvas');
   const proxyContext = <ContextProxy>(canvas.getContext('2d', {
-    willReadFrequently: true
+    willReadFrequently: true,
   }) as unknown);
 
   const resizeCanvas = () => {
@@ -38,7 +38,7 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
 
   const canvasSizeObserver = new MutationObserver(resizeCanvas);
   canvasSizeObserver.observe(context.canvas, {
-    attributeFilter: ['width', 'height']
+    attributeFilter: ['width', 'height'],
   });
 
   resizeCanvas();
@@ -68,7 +68,7 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
 
         if (property === 'drawImage') {
           proxyContext.fillRect(
-            ...(<Parameters<CanvasRect['fillRect']>>args.slice(1))
+            ...(<Parameters<CanvasRect['fillRect']>>args.slice(1)),
           );
         }
 
@@ -92,7 +92,7 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
       }
 
       return true;
-    }
+    },
   });
 };
 

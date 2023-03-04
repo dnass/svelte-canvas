@@ -2,7 +2,7 @@
   "singleQuote": true,
   "semi": true,
   "bracketSpacing": true,
-  "trailingComma": "none",
+  "trailingComma": "all",
   "printWidth": 80,
   "plugins": ["prettier-plugin-svelte"],
   "pluginSearchDirs": ["."],

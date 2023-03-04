@@ -57,7 +57,7 @@
   setContext(KEY, {
     register: manager.register,
     unregister: manager.unregister,
-    redraw: manager.redraw
+    redraw: manager.redraw,
   });
 
   onMount(() => {

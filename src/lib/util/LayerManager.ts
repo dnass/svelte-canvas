@@ -2,7 +2,7 @@ import type { Render } from '../components/render';
 import type {
   Events,
   LayerEventDetail,
-  LayerEventDispatcher
+  LayerEventDispatcher,
 } from '../components/layerEvent';
 
 class LayerManager {
@@ -67,7 +67,7 @@ class LayerManager {
   register({
     setup,
     render,
-    dispatcher
+    dispatcher,
   }: {
     setup?: Render;
     render: Render;
@@ -176,7 +176,7 @@ class LayerManager {
       const detail: LayerEventDetail = {
         x: clientX - left,
         y: clientY - top,
-        originalEvent: e
+        originalEvent: e,
       };
 
       this.activeLayerDispatcher(<Events>e.type, detail);
@@ -184,7 +184,7 @@ class LayerManager {
       const detail: LayerEventDetail = {
         x: e.offsetX,
         y: e.offsetY,
-        originalEvent: e
+        originalEvent: e,
       };
 
       this.activeLayerDispatcher(<Events>e.type, detail);
