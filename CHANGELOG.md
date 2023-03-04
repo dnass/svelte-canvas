@@ -1,3 +1,7 @@
+# 0.9.3
+
+- Fix layer events and autoclear when transforms are applied to the canvas.
+
 # 0.9.2
 
 - Fix new layers not being observed.
