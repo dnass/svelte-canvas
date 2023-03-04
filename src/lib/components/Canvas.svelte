@@ -76,16 +76,19 @@
   onDestroy(() => manager.destroy());
 
   const handleLayerMouseMove = (e: MouseEvent) => {
-    const { offsetX: x, offsetY: y } = e;
+    const x = e.offsetX * _pixelRatio;
+    const y = e.offsetY * _pixelRatio;
     const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };
 
   const handleLayerTouchStart = (e: TouchEvent) => {
-    const { clientX: x, clientY: y } = e.changedTouches[0];
+    const { clientX, clientY } = e.changedTouches[0];
     const { left, top } = canvas.getBoundingClientRect();
-    const id = (<ContextProxy>context)._getLayerIdAtPixel(x - left, y - top);
+    const x = (clientX - left) * _pixelRatio;
+    const y = (clientY - top) * _pixelRatio;
+    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };
