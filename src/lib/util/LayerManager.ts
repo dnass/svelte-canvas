@@ -2,7 +2,7 @@ import type { Render } from '../components/render';
 import type {
   Events,
   LayerEventDetail,
-  LayerEventDispatcher
+  LayerEventDispatcher,
 } from '../components/layerEvent';
 
 class LayerManager {
@@ -13,7 +13,6 @@ class LayerManager {
   dispatchers: Map<number, LayerEventDispatcher>;
 
   needsSetup: boolean;
-  needsResize: boolean;
   needsRedraw: boolean;
 
   context?: CanvasRenderingContext2D;
@@ -37,7 +36,6 @@ class LayerManager {
     this.register = this.register.bind(this);
     this.unregister = this.unregister.bind(this);
     this.redraw = this.redraw.bind(this);
-    this.resize = this.resize.bind(this);
     this.getRenderingLayerId = this.getRenderingLayerId.bind(this);
 
     this.currentLayerId = 1;
@@ -46,7 +44,6 @@ class LayerManager {
     this.dispatchers = new Map();
 
     this.needsSetup = false;
-    this.needsResize = true;
     this.needsRedraw = true;
 
     this.renderingLayerId = 0;
@@ -59,15 +56,10 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  resize() {
-    this.needsResize = true;
-    this.needsRedraw = true;
-  }
-
   register({
     setup,
     render,
-    dispatcher
+    dispatcher,
   }: {
     setup?: Render;
     render: Render;
@@ -122,11 +114,6 @@ class LayerManager {
     const height = this.height!;
     const pixelRatio = this.pixelRatio!;
 
-    if (this.needsResize) {
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      this.needsResize = false;
-    }
-
     if (this.needsSetup) {
       for (const [layerId, setup] of this.setups) {
         setup({ context, width, height });
@@ -137,6 +124,8 @@ class LayerManager {
     }
 
     if (this.needsRedraw) {
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
       if (this.autoclear) {
         context.clearRect(0, 0, width, height);
       }
@@ -176,7 +165,7 @@ class LayerManager {
       const detail: LayerEventDetail = {
         x: clientX - left,
         y: clientY - top,
-        originalEvent: e
+        originalEvent: e,
       };
 
       this.activeLayerDispatcher(<Events>e.type, detail);
@@ -184,7 +173,7 @@ class LayerManager {
       const detail: LayerEventDetail = {
         x: e.offsetX,
         y: e.offsetY,
-        originalEvent: e
+        originalEvent: e,
       };
 
       this.activeLayerDispatcher(<Events>e.type, detail);

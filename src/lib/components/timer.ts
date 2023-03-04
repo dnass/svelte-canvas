@@ -17,5 +17,5 @@ function noop() {
 
 export const timer = readable<number>(
   Date.now() - now,
-  typeof window === 'undefined' ? noop : start
+  typeof window === 'undefined' ? noop : start,
 );
