@@ -104,7 +104,7 @@
   $: manager.height = height;
   $: manager.pixelRatio = _pixelRatio;
   $: manager.autoclear = autoclear;
-  $: width, height, pixelRatio, autoclear, manager.resize();
+  $: width, height, pixelRatio, autoclear, manager.redraw();
 </script>
 
 <canvas
