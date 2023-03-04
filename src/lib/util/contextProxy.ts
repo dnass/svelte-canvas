@@ -2,7 +2,7 @@ import { idToRgb, rgbToId } from './color';
 
 export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
   _getLayerIdAtPixel(x: number, y: number): number;
-  _renderingLayerId: (() => number) | undefined;
+  _renderingLayerId: () => number;
 }
 
 const EXCLUDED_GETTERS = ['drawImage'];
@@ -46,8 +46,8 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
     get(target, property: keyof ContextProxy) {
       if (property === '_getLayerIdAtPixel') {
         return (x: number, y: number) => {
-          const pixel = proxyContext.getImageData(x, y, 1, 1).data;
-          return rgbToId(pixel[0], pixel[1], pixel[2]);
+          const [r, g, b] = proxyContext.getImageData(x, y, 1, 1).data;
+          return rgbToId(r, g, b);
         };
       }
 
@@ -62,9 +62,8 @@ const createContextProxy = (context: CanvasRenderingContext2D) => {
         }
 
         if (property === 'drawImage') {
-          proxyContext.fillRect(
-            ...(<Parameters<CanvasRect['fillRect']>>args.slice(1)),
-          );
+          const rectArgs = args.slice(1) as Parameters<CanvasRect['fillRect']>;
+          proxyContext.fillRect(...rectArgs);
         }
 
         if (!EXCLUDED_GETTERS.includes(property)) {
