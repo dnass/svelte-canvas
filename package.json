@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^2.0.1",
-    "@sveltejs/kit": "^1.8.3",
+    "@sveltejs/kit": "^1.15.1",
     "@sveltejs/package": "^2.0.2",
     "@types/d3-array": "^3.0.3",
     "@types/d3-delaunay": "^6.0.1",
