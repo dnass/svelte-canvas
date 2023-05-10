@@ -28,6 +28,9 @@
 
   export { clazz as class, redraw, getCanvas, getContext };
 
+  let devicePixelRatio: number | undefined;
+  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
+
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | ContextProxy | null = null;
   let layerRef: HTMLDivElement;
@@ -44,14 +47,6 @@
 
   function getContext() {
     return context;
-  }
-
-  if (pixelRatio === undefined || pixelRatio === null) {
-    if (typeof window !== 'undefined') {
-      pixelRatio = window.devicePixelRatio;
-    } else {
-      pixelRatio = 2;
-    }
   }
 
   setContext(KEY, {
@@ -98,14 +93,14 @@
     manager.dispatchLayerEvent(e);
   };
 
-  $: _pixelRatio = pixelRatio ?? 1;
-
   $: manager.width = width;
   $: manager.height = height;
   $: manager.pixelRatio = _pixelRatio;
   $: manager.autoclear = autoclear;
-  $: width, height, pixelRatio, autoclear, manager.redraw();
+  $: width, height, _pixelRatio, autoclear, manager.redraw();
 </script>
+
+<svelte:window bind:devicePixelRatio />
 
 <canvas
   on:touchstart|preventDefault={layerEvents ? handleLayerTouchStart : null}
