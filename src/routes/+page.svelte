@@ -8,41 +8,41 @@
 
   const examples: Example[] = [
     {
-      href: '/svelte-canvas/basic',
-      name: 'Basics',
-      description: 'An animated ball',
-      color: '#40B3FF'
+      href: '/svelte-canvas/hello-world',
+      name: 'Hello World',
+      description: 'Rendering simple text',
+      color: '#40B3FF',
     },
     {
       href: '/svelte-canvas/layer-events',
       name: 'Layer Events',
       description: 'Layer-level event handling',
-      color: '#FF97D8'
+      color: '#FF97D8',
     },
     {
       href: '/svelte-canvas/scatterplot',
       name: 'Scatterplot',
       description: 'Interactive dataviz',
-      color: '#F79D84'
+      color: '#F79D84',
     },
     {
       href: '/svelte-canvas/globe',
       name: 'Globe',
       description: "'Round the world",
-      color: '#FFE066'
+      color: '#FFE066',
     },
     {
       href: '/svelte-canvas/canvas-svg',
       name: 'Canvas SVG',
       description: 'Fancy map animation',
-      color: '#59CD90'
+      color: '#59CD90',
     },
     {
       href: '/svelte-canvas/dvd-bounce',
       name: 'DVD Bounce',
       description: 'An office classic',
-      color: '#BF9ACA'
-    }
+      color: '#BF9ACA',
+    },
   ];
 </script>
 
@@ -57,51 +57,15 @@
   <code>npm install --save-dev svelte-canvas</code>
   <main class="container">
     {#each examples as { name, href, color, description }}
-      <a class="example" style="--hover: {color}" {href}
-        >{name}<br /><span class="description">{description}</span></a
-      >
+      <a class="example" style="--hover: {color}" {href}>
+        {name}
+        <span class="description">{description}</span>
+      </a>
     {/each}
   </main>
 </section>
 
-<footer>
-  <a href="https://github.com/dnass/svelte-canvas">GitHub</a> |
-  <a href="https://www.npmjs.com/package/svelte-canvas">NPM</a>
-</footer>
-
 <style>
-  :root {
-    --primary: rgb(255, 62, 0);
-    --secondary: rgb(103, 103, 120);
-    --blue: #40b3ff;
-  }
-
-  footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: var(--blue);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: white;
-  }
-
-  footer a {
-    color: white;
-    font-size: 1rem;
-    padding: 0 10px;
-    text-decoration: none;
-  }
-
-  h1,
-  a {
-    font-family: Overpass, system-ui, sans-serif;
-  }
-
   code {
     display: block;
     padding: 0.5rem;
@@ -114,7 +78,7 @@
   h1 {
     font-size: 4rem;
     color: var(--secondary);
-    margin-bottom: 0;
+    margin: 0;
   }
 
   .wrapper {
@@ -130,6 +94,7 @@
     gap: 1rem;
     padding: 0;
   }
+
   a.example {
     background-image: linear-gradient(
       90deg,
@@ -157,6 +122,7 @@
   a.example span.description {
     font-size: 0.8rem;
     font-weight: 400;
+    display: block;
   }
 
   a.example:is(:hover, :focus-within) {

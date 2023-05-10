@@ -1,10 +1,9 @@
-<script lang="ts">
-  import { Layer, type Render, type CanvasLayerEvent } from '$lib';
+<script>
+  import { Layer } from '$lib';
   import { spring } from 'svelte/motion';
 
-  export let x: number, y: number, color: string, reorder: (id: string) => void;
+  export let x, y, color, reorder;
 
-  let render: Render;
   let dragging = false;
 
   const _x = spring(x, { stiffness: 0.15, damping: 0.2 });
@@ -43,7 +42,7 @@
     radius.set(80);
   };
 
-  const onMove = (e: CanvasLayerEvent) => {
+  const onMove = (e) => {
     if (dragging) {
       _x.set(e.detail.x);
       _y.set(e.detail.y);

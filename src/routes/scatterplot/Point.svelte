@@ -1,18 +1,17 @@
-<script lang="ts">
-  import { Layer, type Render } from '$lib';
+<script>
+  import { Layer } from '$lib';
   import { spring } from 'svelte/motion';
 
   export let x = 0,
     y = 0,
     r = 1,
     fill = 'black',
-    stroke: string | null = null,
+    stroke = null,
     strokeWidth = 1;
 
   const radius = spring(r, { stiffness: 0.15, damping: 0.3 });
   $: radius.set(r);
 
-  let render: Render;
   $: render = ({ context }) => {
     context.fillStyle = fill;
     context.beginPath();

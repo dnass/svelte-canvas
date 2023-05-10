@@ -7,10 +7,4 @@
   <App />
 </div>
 
-<Code
-  files={[
-    'dvd-bounce/App.svelte',
-    'dvd-bounce/Background.svelte',
-    'dvd-bounce/Logo.svelte',
-  ]}
-/>
+<Code files={['hello-world/App.svelte']} />

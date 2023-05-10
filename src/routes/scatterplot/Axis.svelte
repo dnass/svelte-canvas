@@ -1,17 +1,14 @@
-<script lang="ts">
-  import type { Margin } from './margin';
-  import { Layer, type Render } from '$lib';
-  import type { ScaleLinear } from 'd3-scale';
+<script>
+  import { Layer } from '$lib';
 
-  export let scale: ScaleLinear<number, number, never>,
+  export let scale,
     tickSize = 4,
-    margin: Margin,
+    margin,
     tickNumber = 10,
     type = 'x';
 
   $: ticks = scale.ticks(tickNumber);
 
-  let render: Render;
   $: render = ({ context, height }) => {
     context.beginPath();
 
@@ -34,13 +31,9 @@
 
     ticks.forEach((d) => {
       if (type === 'x') {
-        context.fillText(
-          String(d),
-          scale(d),
-          height - margin.bottom + tickSize + 1
-        );
+        context.fillText(d, scale(d), height - margin.bottom + tickSize + 1);
       } else if (type === 'y') {
-        context.fillText(String(d), margin.left - tickSize - 1, scale(d));
+        context.fillText(d, margin.left - tickSize - 1, scale(d));
       }
     });
   };
