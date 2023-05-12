@@ -1,6 +1,6 @@
 <script lang="ts">
   import { HighlightSvelte } from 'svelte-highlight';
-  import hybrid from 'svelte-highlight/styles/hybrid';
+  import theme from 'svelte-highlight/styles/onedark';
 
   export let files: string[],
     transform: (code: string) => string = (code) => code;
@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-  {@html hybrid}
+  {@html theme}
 </svelte:head>
 
 {#if contents}
@@ -43,7 +43,7 @@
   .code {
     height: auto;
     width: 100%;
-    max-width: 800px;
+    max-width: 100ch;
     border-radius: 4px;
     overflow: hidden;
     font-size: 1rem;
