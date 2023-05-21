@@ -5,7 +5,7 @@
     context.font = '72px sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillStyle = `hsl(${$t / 40}, 100%, 50%)`;
+    context.fillStyle = `hsl(${$t / 25}, 100%, 50%)`;
     context.fillText('hello world', width / 2, height / 2);
   };
 </script>

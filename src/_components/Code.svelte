@@ -1,6 +1,6 @@
 <script lang="ts">
   import { HighlightSvelte } from 'svelte-highlight';
-  import theme from 'svelte-highlight/styles/onedark';
+  import 'svelte-highlight/styles/onedark.css';
 
   export let files: string[],
     transform: (code: string) => string = (code) => code;
@@ -11,19 +11,17 @@
 
   $: titles = files.map((name) => name.split('/').pop());
 
-  Promise.all(files.map((file) => import(`../routes/${file}?raw`))).then(
-    (modules) => {
-      contents = modules.map((module) => {
-        const content = module.default.trim().replace('$lib', 'svelte-canvas');
-        return transform(content);
-      });
-    },
-  );
+  Promise.all(
+    files.map(
+      (file) => import(/* @vite-ignore */ `../_pages/examples/${file}?raw`),
+    ),
+  ).then((modules) => {
+    contents = modules.map((module) => {
+      const content = module.default.trim().replace('$lib', 'svelte-canvas');
+      return transform(content);
+    });
+  });
 </script>
-
-<svelte:head>
-  {@html theme}
-</svelte:head>
 
 {#if contents}
   <div class="code">
@@ -43,7 +41,7 @@
   .code {
     height: auto;
     width: 100%;
-    max-width: 100ch;
+    max-width: 800px;
     border-radius: 4px;
     overflow: hidden;
     font-size: 1rem;

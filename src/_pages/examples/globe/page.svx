@@ -1,9 +1,13 @@
+---
+title: Globe
+---
+
 <script>
   import App from './App.svelte';
-  import Code from '../../components/Code.svelte';
+  import Code from '../../../_components/Code.svelte';
 </script>
 
-<div>
+<div class='border'>
   <App />
 </div>
 

@@ -1,0 +1,20 @@
+---
+title: Canvas + SVG
+---
+
+<script lang="ts">
+  import App from './App.svelte';
+  import Code from '../../../_components/Code.svelte';
+</script>
+
+<div class='border'>
+  <App />
+</div>
+
+<Code files={['canvas-svg/App.svelte', 'canvas-svg/Bubble.svelte']} />
+
+<style>
+  div {
+    width: 960px;
+  }
+</style>

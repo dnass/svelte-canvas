@@ -8,7 +8,7 @@
   import Point from './Point.svelte';
   import Axis from './Axis.svelte';
 
-  const margin = { top: 10, right: 10, bottom: 25, left: 25 };
+  const margin = { top: 24, right: 24, bottom: 36, left: 36 };
 
   let points = [];
   let width, height;

@@ -1,6 +1,10 @@
+---
+title: Layer Events
+---
+
 <script>
   import App from './App.svelte';
-  import Code from '../../components/Code.svelte';
+  import Code from '../../../_components/Code.svelte';
 </script>
 
 <div class="border">

@@ -6,8 +6,16 @@
 
   let width;
 
+  $: pad = width * 0.02;
+
   $: projection = geoOrthographic()
-    .fitSize([width, width], { type: 'Sphere' })
+    .fitExtent(
+      [
+        [pad, pad],
+        [width - pad, width - pad],
+      ],
+      { type: 'Sphere' },
+    )
     .rotate([$t / 50, -10]);
 
   $: path = geoPath(projection);

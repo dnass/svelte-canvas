@@ -46,12 +46,6 @@
   ];
 </script>
 
-<svelte:head>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Overpass:wght@100;200;300;400;500;600&display=swap');
-  </style>
-</svelte:head>
-
 <section class="wrapper">
   <h1>Svelte Canvas</h1>
   <code>npm install --save-dev svelte-canvas</code>

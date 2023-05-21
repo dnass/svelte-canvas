@@ -5,7 +5,7 @@
   import { geoIdentity, geoPath } from 'd3-geo';
   import Bubble from './Bubble.svelte';
 
-  let width = 1000;
+  let width = 960;
   $: height = width * 0.6256;
 
   $: projection = geoIdentity().scale(width / 975);
