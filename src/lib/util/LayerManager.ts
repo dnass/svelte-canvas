@@ -1,3 +1,5 @@
+import { get, type Readable } from 'svelte/store';
+import { timer } from './timer';
 import type { Render } from '../components/render';
 import type {
   Events,
@@ -11,6 +13,8 @@ class LayerManager {
   setups: Map<number, Render>;
   renderers: Map<number, Render>;
   dispatchers: Map<number, LayerEventDispatcher>;
+
+  timer: Readable<number>;
 
   needsSetup: boolean;
   needsRedraw: boolean;
@@ -43,6 +47,8 @@ class LayerManager {
     this.setups = new Map();
     this.renderers = new Map();
     this.dispatchers = new Map();
+
+    this.timer = timer();
 
     this.needsSetup = false;
     this.needsRedraw = true;
@@ -117,7 +123,7 @@ class LayerManager {
 
     if (this.needsSetup) {
       for (const [layerId, setup] of this.setups) {
-        setup({ context, width, height });
+        setup({ context, width, height, time: 0 });
         this.setups.delete(layerId);
       }
 
@@ -131,9 +137,11 @@ class LayerManager {
         context.clearRect(0, 0, width, height);
       }
 
+      const time = get(this.timer);
+
       for (const layerId of this.layerSequence) {
         this.renderingLayerId = layerId;
-        this.renderers.get(layerId)?.({ context, width, height });
+        this.renderers.get(layerId)?.({ context, width, height, time });
       }
 
       this.needsRedraw = this.autoplay!;
