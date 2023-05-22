@@ -21,12 +21,13 @@
     height = 640,
     pixelRatio: number | null = null,
     style = '',
+    autoplay = false,
     autoclear = true,
     layerEvents = false;
 
-  let clazz = '';
+  let className = '';
 
-  export { clazz as class, redraw, getCanvas, getContext };
+  export { className as class, redraw, getCanvas, getContext };
 
   let devicePixelRatio: number | undefined;
   $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
@@ -65,7 +66,7 @@
       context = ctx;
     }
 
-    manager.setup(<CanvasRenderingContext2D>context, layerRef);
+    manager.init(<CanvasRenderingContext2D>context, layerRef);
   });
 
   onDestroy(() => manager.destroy());
@@ -96,6 +97,7 @@
   $: manager.width = width;
   $: manager.height = height;
   $: manager.pixelRatio = _pixelRatio;
+  $: manager.autoplay = autoplay;
   $: manager.autoclear = autoclear;
   $: width, height, _pixelRatio, autoclear, manager.redraw();
 </script>
@@ -169,7 +171,7 @@
   on:lostpointercapture
   width={width * _pixelRatio}
   height={height * _pixelRatio}
-  class={clazz}
+  class={className}
   style:display="block"
   style:width="{width}px"
   style:height="{height}px"

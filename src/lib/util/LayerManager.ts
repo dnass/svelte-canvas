@@ -19,6 +19,7 @@ class LayerManager {
 
   width?: number;
   height?: number;
+  autoplay?: boolean;
   autoclear?: boolean;
   pixelRatio?: number;
 
@@ -84,7 +85,7 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  setup(context: CanvasRenderingContext2D, layerRef: HTMLElement) {
+  init(context: CanvasRenderingContext2D, layerRef: HTMLElement) {
     this.context = context;
     this.layerRef = layerRef;
     this.observeLayerSequence();
@@ -135,7 +136,7 @@ class LayerManager {
         this.renderers.get(layerId)?.({ context, width, height });
       }
 
-      this.needsRedraw = false;
+      this.needsRedraw = this.autoplay!;
     }
   }
 
