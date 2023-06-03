@@ -1,5 +1,5 @@
 export interface Render {
-  (params: {
+  (props: {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;

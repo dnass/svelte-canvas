@@ -47,7 +47,7 @@
   }
 
   function getContext() {
-    return context;
+    return <CanvasRenderingContext2D>context;
   }
 
   setContext(KEY, {
@@ -90,7 +90,6 @@
   };
 
   const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
-    if (window.TouchEvent && e instanceof TouchEvent) e.preventDefault();
     manager.dispatchLayerEvent(e);
   };
 
