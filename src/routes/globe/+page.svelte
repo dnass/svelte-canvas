@@ -15,7 +15,7 @@
   onMount(() =>
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json')
       .then((data) => data.json())
-      .then((data) => (map = feature(data, 'land')))
+      .then((data) => (map = feature(data, 'land'))),
   );
 
   $: minDimension = Math.min(width, height);

@@ -37,7 +37,7 @@
         context.fillText(
           String(d),
           scale(d),
-          height - margin.bottom + tickSize + 1
+          height - margin.bottom + tickSize + 1,
         );
       } else if (type === 'y') {
         context.fillText(String(d), margin.left - tickSize - 1, scale(d));

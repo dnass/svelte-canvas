@@ -11,38 +11,38 @@
       href: '/svelte-canvas/basic',
       name: 'Basics',
       description: 'An animated ball',
-      color: '#40B3FF'
+      color: '#40B3FF',
     },
     {
       href: '/svelte-canvas/layer-events',
       name: 'Layer Events',
       description: 'Layer-level event handling',
-      color: '#FF97D8'
+      color: '#FF97D8',
     },
     {
       href: '/svelte-canvas/scatterplot',
       name: 'Scatterplot',
       description: 'Interactive dataviz',
-      color: '#F79D84'
+      color: '#F79D84',
     },
     {
       href: '/svelte-canvas/globe',
       name: 'Globe',
       description: "'Round the world",
-      color: '#FFE066'
+      color: '#FFE066',
     },
     {
       href: '/svelte-canvas/canvas-svg',
       name: 'Canvas SVG',
       description: 'Fancy map animation',
-      color: '#59CD90'
+      color: '#59CD90',
     },
     {
       href: '/svelte-canvas/dvd-bounce',
       name: 'DVD Bounce',
       description: 'An office classic',
-      color: '#BF9ACA'
-    }
+      color: '#BF9ACA',
+    },
   ];
 </script>
 

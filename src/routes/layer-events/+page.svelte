@@ -6,7 +6,7 @@
   let balls = [
     { color: '#f00', x: 320, y: 213 },
     { color: '#0f0', x: 213, y: 400 },
-    { color: '#00f', x: 427, y: 400 }
+    { color: '#00f', x: 427, y: 400 },
   ];
 
   const reorder = (color: string) => {

@@ -19,7 +19,7 @@
 
   onMount(async () => {
     const data = await fetch(
-      'https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json'
+      'https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json',
     );
     us = await data.json();
   });
