@@ -37,18 +37,18 @@
 
   onMount(() =>
     fetch(
-      'https://raw.githubusercontent.com/vega/vega/master/docs/data/cars.json'
+      'https://raw.githubusercontent.com/vega/vega/master/docs/data/cars.json',
     )
       .then((data) => data.json())
       .then((data: CarData[]) => {
         points = data
           .map((d, id) => ({ mpg: d.Miles_per_Gallon, hp: d.Horsepower, id }))
           .filter((d) => d.mpg && d.hp);
-      })
+      }),
   );
 
   function validDomain(
-    domain: [number, number] | [undefined, undefined]
+    domain: [number, number] | [undefined, undefined],
   ): [number, number] {
     return [+(domain[0] ?? 0), +(domain[1] ?? 0)];
   }
@@ -66,7 +66,7 @@
   $: delaunay = Delaunay.from(
     points,
     (d) => x(d.mpg),
-    (d) => y(d.hp)
+    (d) => y(d.hp),
   );
 </script>
 

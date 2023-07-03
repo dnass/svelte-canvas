@@ -10,7 +10,7 @@
   const pieces = piecewise([
     { r: 0.005, alpha: 0.1 },
     { r: 0.02, alpha: 0.9 },
-    { r: 0.005, alpha: 0.1 }
+    { r: 0.005, alpha: 0.1 },
   ]);
 
   const scale = (t: number) => pieces(quadInOut(t));
