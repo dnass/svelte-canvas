@@ -1,0 +1,14 @@
+---
+title: Getting Started
+---
+
+<script lang="ts">
+  import Code from '../_components/Code.svelte';
+</script>
+
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
+
+## {title}
+

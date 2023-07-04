@@ -8,10 +8,15 @@ export async function load({ params }) {
     const file = await import(/* @vite-ignore */ route);
 
     const { default: page, metadata } = file;
+    const category = path.startsWith('examples')
+      ? 'Examples'
+      : path.startsWith('components')
+      ? 'Components'
+      : null;
 
     return {
       page,
-      category: path.startsWith('examples') ? 'Examples' : null,
+      category,
       ...metadata,
     };
   } catch (e) {

@@ -5,7 +5,6 @@ const menu = {
   Components: {
     Canvas: '/components/canvas',
     Layer: '/components/layer',
-    t: '/components/t',
   },
   Examples: {
     'Hello World': '/examples/hello-world',

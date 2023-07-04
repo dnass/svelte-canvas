@@ -1,30 +1,33 @@
 <script lang="ts">
-  import { HighlightSvelte } from 'svelte-highlight';
+  import Highlight, { HighlightSvelte } from 'svelte-highlight';
+  import typescript from 'svelte-highlight/languages/typescript';
   import 'svelte-highlight/styles/onedark.css';
 
-  export let files: string[],
-    transform: (code: string) => string = (code) => code;
+  export let files: string[] = [],
+    text = '',
+    lang = 'svelte';
 
-  let contents: string[];
+  let contents: string[] = [];
 
   let selectedFile = 0;
 
   $: titles = files.map((name) => name.split('/').pop());
 
+  $: code = contents.length ? contents[selectedFile] : text.trim();
+
   Promise.all(
-    files.map(
-      (file) => import(/* @vite-ignore */ `../_pages/examples/${file}?raw`),
-    ),
+    files.map((file) => {
+      return import(/* @vite-ignore */ `../_pages/examples/${file}?raw`);
+    }),
   ).then((modules) => {
     contents = modules.map((module) => {
-      const content = module.default.trim().replace('$lib', 'svelte-canvas');
-      return transform(content);
+      return module.default.trim().replace('$lib', 'svelte-canvas');
     });
   });
 </script>
 
-{#if contents}
-  <div class="code">
+<div class="code">
+  {#if contents}
     <div class="hljs title">
       {#each titles as title, i}
         <button
@@ -33,23 +36,32 @@
         >
       {/each}
     </div>
-    <HighlightSvelte code={contents[selectedFile]} />
-  </div>
-{/if}
+  {/if}
+  {#if lang === 'ts'}
+    <Highlight {code} language={typescript} />
+  {:else}
+    <HighlightSvelte {code} />
+  {/if}
+</div>
 
 <style>
   .code {
     height: auto;
     width: 100%;
-    max-width: 800px;
+    max-width: 100ch;
     border-radius: 4px;
     overflow: hidden;
     font-size: 1rem;
     line-height: 1.25;
+    overflow-x: scroll;
   }
 
-  :global(.code pre) {
+  .code :global(pre) {
     margin: 0;
+  }
+
+  .code :global(code) {
+    padding: 0.75rem;
   }
 
   .title {

@@ -17,24 +17,15 @@
 {/each}
 
 <style>
-  a {
-    color: var(--secondary);
-    text-decoration: none;
-  }
-
   a.active {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--primary);
-  }
-
-  a:hover {
-    text-decoration: underline;
   }
 
   p {
     text-transform: uppercase;
     font-size: 0.8rem;
-    font-weight: 700;
-    margin: 1rem 0 0.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.25rem;
   }
 </style>
