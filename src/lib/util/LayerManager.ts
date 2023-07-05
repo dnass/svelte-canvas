@@ -1,5 +1,3 @@
-import { get, type Readable } from 'svelte/store';
-import { timer } from './timer';
 import type { Render } from '../components/render';
 import type {
   Events,
@@ -14,7 +12,7 @@ class LayerManager {
   renderers: Map<number, Render>;
   dispatchers: Map<number, LayerEventDispatcher>;
 
-  timer: Readable<number>;
+  startTime: number;
 
   needsSetup: boolean;
   needsRedraw: boolean;
@@ -48,7 +46,7 @@ class LayerManager {
     this.renderers = new Map();
     this.dispatchers = new Map();
 
-    this.timer = timer();
+    this.startTime = Date.now();
 
     this.needsSetup = false;
     this.needsRedraw = true;
@@ -137,7 +135,7 @@ class LayerManager {
         context.clearRect(0, 0, width, height);
       }
 
-      const time = get(this.timer);
+      const time = Date.now() - this.startTime;
 
       for (const layerId of this.layerSequence) {
         this.renderingLayerId = layerId;
