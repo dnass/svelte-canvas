@@ -1,0 +1,86 @@
+:root {
+  --bg-dark: #111114;
+  --bg: #1b1b20;
+  --bgdark: #282c34;
+  --primary: #ff6347;
+  --secondary: #b8b8c4;
+  --body: #dcdcdc;
+  --blue: #40b3ff;
+}
+
+* {
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+html {
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: var(--body);
+  box-sizing: border-box;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+a {
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary);
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+h3,
+h4 {
+  position: relative;
+  margin: 0.5rem 0 0;
+}
+
+:is(h3, h4):hover .icon-link:before {
+  content: '#';
+  display: block;
+  position: absolute;
+  left: 0;
+  padding: 0 0.25em;
+  transform: translateX(-100%);
+}
+
+code {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.9em;
+  background-color: var(--bgdark);
+  padding: 3px 4px;
+  border-radius: 2px;
+  font-size: 0.9rem;
+}

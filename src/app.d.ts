@@ -9,3 +9,5 @@ declare namespace App {
   // interface Error {}
   // interface Platform {}
 }
+
+declare const VERSION: string;
