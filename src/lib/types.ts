@@ -1,5 +1,14 @@
 import type { createEventDispatcher } from 'svelte';
 
+export interface Render {
+  (props: {
+    context: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+    time: number;
+  }): void;
+}
+
 export type Events =
   | 'click'
   | 'contextmenu'
@@ -36,3 +45,12 @@ export type CanvasLayerEvent = CustomEvent<LayerEventDetail>;
 export type LayerEventDispatcher = ReturnType<
   typeof createEventDispatcher<LayerEvents>
 >;
+
+export type ResizeEvent = {
+  resize: { width: number; height: number };
+};
+
+export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
+  _getLayerIdAtPixel(x: number, y: number): number;
+  _renderingLayerId: () => number;
+}

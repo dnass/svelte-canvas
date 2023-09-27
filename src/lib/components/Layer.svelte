@@ -1,8 +1,7 @@
 <script lang="ts">
+  import type { Render, LayerEvents } from '../types';
   import { afterUpdate, onDestroy, createEventDispatcher } from 'svelte';
   import { getRegisterLayer } from './Canvas.svelte';
-  import type { Render } from './render';
-  import type { LayerEvents } from './layerEvent';
 
   export let setup: Render | undefined = undefined;
   export let render: Render = () => undefined;

@@ -1,13 +1,14 @@
 <script context="module" lang="ts">
-  import LayerManager from '../util/LayerManager';
   import { getContext as getCtx } from 'svelte';
+  import LayerManager from '../util/LayerManager';
 
   const KEY = Symbol();
   export const getRegisterLayer = (): LayerManager['register'] => getCtx(KEY);
 </script>
 
 <script lang="ts">
-  import { createContextProxy, type ContextProxy } from '../util/contextProxy';
+  import type { ResizeEvent, ContextProxy } from '../types';
+  import { createContextProxy } from '../util/contextProxy';
   import {
     onMount,
     onDestroy,
@@ -33,9 +34,7 @@
 
   export { className as class, redraw, getCanvas, getContext };
 
-  const dispatch = createEventDispatcher<{
-    resize: { width: number; height: number };
-  }>();
+  const dispatch = createEventDispatcher<ResizeEvent>();
 
   const manager = new LayerManager();
   setContext(KEY, manager.register);

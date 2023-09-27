@@ -1,9 +1,5 @@
+import type { ContextProxy } from '../types';
 import { idToRgb, rgbToId } from './color';
-
-export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
-  _getLayerIdAtPixel(x: number, y: number): number;
-  _renderingLayerId: () => number;
-}
 
 const EXCLUDED_GETTERS = ['drawImage'];
 const EXCLUDED_SETTERS = [
