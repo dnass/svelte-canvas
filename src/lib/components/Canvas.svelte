@@ -43,6 +43,10 @@
   let parentObserver: ResizeObserver;
 
 
+  const dispatch = createEventDispatcher<{
+    resize: { width: number; height: number };
+  }>();
+
   const manager = new LayerManager();
 
   function redraw() {
@@ -128,6 +132,8 @@
   $: layerMouseMoveHandler = layerEvents ? handleLayerMouseMove : null;
   $: layerTouchStartHandler = layerEvents ? handleLayerTouchStart : null;
   $: layerEventHandler = layerEvents ? handleLayerEvent : null;
+
+  $: dispatch('resize', { width: _width, height: _height });
 </script>
 
 <svelte:window bind:devicePixelRatio />
