@@ -15,10 +15,15 @@
 
 <script lang="ts">
   import { createContextProxy, type ContextProxy } from '../util/contextProxy';
-  import { onMount, onDestroy, setContext } from 'svelte';
+  import {
+    onMount,
+    onDestroy,
+    setContext,
+    createEventDispatcher,
+  } from 'svelte';
 
-  export let width = 640,
-    height = 640,
+  export let width: number | null = null,
+    height: number | null = null,
     pixelRatio: number | null = null,
     style = '',
     autoplay = false,
@@ -35,6 +40,8 @@
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | ContextProxy | null = null;
   let layerRef: HTMLDivElement;
+  let parentObserver: ResizeObserver;
+
 
   const manager = new LayerManager();
 
@@ -57,6 +64,13 @@
   });
 
   onMount(() => {
+    parentObserver = new ResizeObserver(([{ contentRect }]) => {
+      if (inheritWidth) width = contentRect.width;
+      if (inheritHeight) height = contentRect.height;
+    });
+
+    parentObserver.observe(canvas.parentElement!);
+
     const ctx = canvas.getContext('2d')!;
 
     if (layerEvents) {
@@ -69,7 +83,10 @@
     manager.init(<CanvasRenderingContext2D>context, layerRef);
   });
 
-  onDestroy(() => manager.destroy());
+  onDestroy(() => {
+    manager.destroy();
+    parentObserver?.disconnect();
+  });
 
   const handleLayerMouseMove = (e: MouseEvent) => {
     const x = e.offsetX * _pixelRatio;
@@ -93,36 +110,55 @@
     manager.dispatchLayerEvent(e);
   };
 
-  $: manager.width = width;
-  $: manager.height = height;
+  $: inheritWidth = !$$props.width;
+  $: inheritHeight = !$$props.height;
+
+  $: _width = width ?? 0;
+  $: _height = height ?? 0;
+
+  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
+
+  $: manager.width = _width;
+  $: manager.height = _height;
   $: manager.pixelRatio = _pixelRatio;
   $: manager.autoplay = autoplay;
   $: manager.autoclear = autoclear;
   $: width, height, _pixelRatio, autoclear, manager.redraw();
+
+  $: layerMouseMoveHandler = layerEvents ? handleLayerMouseMove : null;
+  $: layerTouchStartHandler = layerEvents ? handleLayerTouchStart : null;
+  $: layerEventHandler = layerEvents ? handleLayerEvent : null;
 </script>
 
 <svelte:window bind:devicePixelRatio />
 
 <canvas
-  on:touchstart|preventDefault={layerEvents ? handleLayerTouchStart : null}
-  on:mousemove={layerEvents ? handleLayerMouseMove : null}
-  on:pointermove={layerEvents ? handleLayerMouseMove : null}
-  on:click={layerEvents ? handleLayerEvent : null}
-  on:contextmenu={layerEvents ? handleLayerEvent : null}
-  on:dblclick={layerEvents ? handleLayerEvent : null}
-  on:mousedown={layerEvents ? handleLayerEvent : null}
-  on:mouseenter={layerEvents ? handleLayerEvent : null}
-  on:mouseleave={layerEvents ? handleLayerEvent : null}
-  on:mouseup={layerEvents ? handleLayerEvent : null}
-  on:wheel={layerEvents ? handleLayerEvent : null}
-  on:touchcancel|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:touchend|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:touchmove|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:pointerenter={layerEvents ? handleLayerEvent : null}
-  on:pointerleave={layerEvents ? handleLayerEvent : null}
-  on:pointerdown={layerEvents ? handleLayerEvent : null}
-  on:pointerup={layerEvents ? handleLayerEvent : null}
-  on:pointercancel={layerEvents ? handleLayerEvent : null}
+  bind:this={canvas}
+  class={className}
+  width={_width * _pixelRatio}
+  height={_height * _pixelRatio}
+  style:width={inheritWidth ? '100%' : `${_width}px`}
+  style:height={inheritHeight ? '100%' : `${_height}px`}
+  {style}
+  on:touchstart|preventDefault={layerTouchStartHandler}
+  on:mousemove={layerMouseMoveHandler}
+  on:pointermove={layerMouseMoveHandler}
+  on:click={layerEventHandler}
+  on:contextmenu={layerEventHandler}
+  on:dblclick={layerEventHandler}
+  on:mousedown={layerEventHandler}
+  on:mouseenter={layerEventHandler}
+  on:mouseleave={layerEventHandler}
+  on:mouseup={layerEventHandler}
+  on:wheel={layerEventHandler}
+  on:touchcancel|preventDefault={layerEventHandler}
+  on:touchend|preventDefault={layerEventHandler}
+  on:touchmove|preventDefault={layerEventHandler}
+  on:pointerenter={layerEventHandler}
+  on:pointerleave={layerEventHandler}
+  on:pointerdown={layerEventHandler}
+  on:pointerup={layerEventHandler}
+  on:pointercancel={layerEventHandler}
   on:focus
   on:blur
   on:fullscreenchange
@@ -168,14 +204,6 @@
   on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
-  width={width * _pixelRatio}
-  height={height * _pixelRatio}
-  class={className}
-  style:display="block"
-  style:width="{width}px"
-  style:height="{height}px"
-  {style}
-  bind:this={canvas}
 />
 
 <div style:display="none" bind:this={layerRef}>
