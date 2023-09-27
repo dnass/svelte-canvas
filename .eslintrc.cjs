@@ -4,21 +4,19 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'plugin:svelte/recommended',
+    'plugin:svelte/prettier',
   ],
-  plugins: ['svelte3', '@typescript-eslint'],
+  plugins: ['@typescript-eslint'],
   ignorePatterns: ['*.cjs'],
-  overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
-  settings: {
-    'svelte3/typescript': () => require('typescript')
-  },
+  overrides: [{ files: ['*.svelte'], processor: 'svelte-eslint-parser' }],
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2020
+    ecmaVersion: 2020,
   },
   env: {
     browser: true,
     es2017: true,
-    node: true
-  }
+    node: true,
+  },
 };
