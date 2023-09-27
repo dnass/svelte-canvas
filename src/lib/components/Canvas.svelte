@@ -1,16 +1,9 @@
 <script context="module" lang="ts">
   import LayerManager from '../util/LayerManager';
-  import { getContext as getCTX } from 'svelte';
+  import { getContext as getCtx } from 'svelte';
 
-  export const KEY = Symbol();
-
-  interface TypedContext {
-    register: LayerManager['register'];
-    unregister: LayerManager['unregister'];
-    redraw: LayerManager['redraw'];
-  }
-
-  export const getTypedContext = (): TypedContext => getCTX(KEY);
+  const KEY = Symbol();
+  export const getRegisterLayer = (): LayerManager['register'] => getCtx(KEY);
 </script>
 
 <script lang="ts">
@@ -30,24 +23,22 @@
     autoclear = true,
     layerEvents = false;
 
-  let className = '';
-
-  export { className as class, redraw, getCanvas, getContext };
-
-  let devicePixelRatio: number | undefined;
-  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
-
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | ContextProxy | null = null;
   let layerRef: HTMLDivElement;
   let parentObserver: ResizeObserver;
 
+  let devicePixelRatio: number | undefined;
+  let className = '';
+
+  export { className as class, redraw, getCanvas, getContext };
 
   const dispatch = createEventDispatcher<{
     resize: { width: number; height: number };
   }>();
 
   const manager = new LayerManager();
+  setContext(KEY, manager.register);
 
   function redraw() {
     manager.redraw();
@@ -61,12 +52,6 @@
     return <CanvasRenderingContext2D>context;
   }
 
-  setContext(KEY, {
-    register: manager.register,
-    unregister: manager.unregister,
-    redraw: manager.redraw,
-  });
-
   onMount(() => {
     parentObserver = new ResizeObserver(([{ contentRect }]) => {
       if (inheritWidth) width = contentRect.width;
@@ -79,7 +64,7 @@
 
     if (layerEvents) {
       context = createContextProxy(ctx);
-      context._renderingLayerId = manager.getRenderingLayerId;
+      context._renderingLayerId = () => manager.renderingLayerId;
     } else {
       context = ctx;
     }

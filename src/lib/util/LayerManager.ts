@@ -39,7 +39,6 @@ class LayerManager {
     this.register = this.register.bind(this);
     this.unregister = this.unregister.bind(this);
     this.redraw = this.redraw.bind(this);
-    this.getRenderingLayerId = this.getRenderingLayerId.bind(this);
 
     this.currentLayerId = 1;
     this.setups = new Map();
@@ -80,7 +79,12 @@ class LayerManager {
     this.dispatchers.set(this.currentLayerId, dispatcher);
 
     this.needsRedraw = true;
-    return this.currentLayerId++;
+
+    return {
+      redraw: this.redraw,
+      unregister: () => this.unregister(this.currentLayerId),
+      layerId: this.currentLayerId++,
+    };
   }
 
   unregister(layerId: number) {
@@ -185,10 +189,6 @@ class LayerManager {
 
       this.activeLayerDispatcher(<Events>e.type, detail);
     }
-  }
-
-  getRenderingLayerId() {
-    return this.renderingLayerId;
   }
 
   destroy() {

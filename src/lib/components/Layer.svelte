@@ -1,21 +1,20 @@
 <script lang="ts">
-  import { onDestroy, createEventDispatcher } from 'svelte';
-  import { getTypedContext } from './Canvas.svelte';
+  import { afterUpdate, onDestroy, createEventDispatcher } from 'svelte';
+  import { getRegisterLayer } from './Canvas.svelte';
   import type { Render } from './render';
   import type { LayerEvents } from './layerEvent';
-
-  const { register, unregister, redraw } = getTypedContext();
-
-  const dispatcher = createEventDispatcher<LayerEvents>();
 
   export let setup: Render | undefined = undefined;
   export let render: Render = () => undefined;
 
-  const layerId = register({ setup, render, dispatcher });
+  const dispatcher = createEventDispatcher<LayerEvents>();
+  const register = getRegisterLayer();
+  const layer = { setup, render, dispatcher };
 
-  onDestroy(() => unregister(layerId));
+  const { layerId, unregister, redraw } = register(layer);
 
-  $: render, redraw();
+  afterUpdate(redraw);
+  onDestroy(unregister);
 </script>
 
 <div data-layer-id={layerId} />
