@@ -1,7 +1,7 @@
 <script>
   import '../page.css';
   import { page } from '$app/stores';
-  import { browser } from '$app/environment';
+  import { browser, version } from '$app/environment';
   import NavMenu from '../_components/NavMenu.svelte';
 
   export let data;
@@ -37,7 +37,14 @@
       </button>
       <h1>
         <a href="/svelte-canvas">svelte-canvas</a>
-        <span>{VERSION}</span>
+        <a
+          target="_blank"
+          href="https://github.com/dnass/svelte-canvas/blob/master/CHANGELOG.md"
+        >
+          <span>
+            {version}
+          </span>
+        </a>
       </h1>
       <a
         class="github"
@@ -119,14 +126,15 @@
   main {
     width: 100%;
     max-width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-offset, 0vh));
     display: grid;
+    grid-template-columns: minmax(auto, 80ch);
+    grid-auto-rows: min-content;
     overflow-x: auto;
     overflow-y: hidden;
     gap: 2rem;
     background-color: var(--bg);
     padding: 1.5rem 1.5rem 2rem;
-    grid-template-columns: minmax(auto, 80ch);
   }
 
   .article {
@@ -137,6 +145,7 @@
     .page {
       --header-pad: 0.75rem;
       --header-height: 2rem;
+      --header-offset: calc(var(--header-height) + var(--header-pad) * 2);
     }
 
     .header {
@@ -145,6 +154,7 @@
       z-index: 1;
       padding: var(--header-pad) 1.5rem;
       background-color: var(--bg-dark);
+      border-bottom: 1px solid var(--bg-light);
     }
 
     h1 {
@@ -153,13 +163,13 @@
 
     .menu,
     main {
-      margin-top: calc(var(--header-height) + var(--header-pad) * 2);
+      margin-top: var(--header-offset);
     }
 
     .menu {
       transform: translateX(-100%);
       opacity: 0;
-      transition-property: transform opacity visibility;
+      transition-property: transform, opacity, visibility;
       transition-duration: 0.2s;
       transition-timing-function: ease-in-out;
       position: fixed;
@@ -200,6 +210,7 @@
       gap: 3rem;
       padding: var(--margin-top) 2rem 4rem var(--gutter-width);
       grid-column: 2;
+      border-left: 1px solid var(--bg-light);
     }
 
     button {
