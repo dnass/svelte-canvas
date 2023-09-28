@@ -49,8 +49,3 @@ export type LayerEventDispatcher = ReturnType<
 export type ResizeEvent = {
   resize: { width: number; height: number };
 };
-
-export interface ContextProxy extends Omit<CanvasRenderingContext2D, 'canvas'> {
-  _getLayerIdAtPixel(x: number, y: number): number;
-  _renderingLayerId: () => number;
-}

@@ -7,8 +7,11 @@
 </script>
 
 <script lang="ts">
-  import type { ResizeEvent, ContextProxy } from '../types';
-  import { createContextProxy } from '../util/contextProxy';
+  import type { ResizeEvent } from '../types';
+  import {
+    createHitCanvas,
+    type HitCanvasRenderingContext2D,
+  } from 'hit-canvas';
   import {
     onMount,
     onDestroy,
@@ -25,7 +28,8 @@
     layerEvents = false;
 
   let canvas: HTMLCanvasElement;
-  let context: CanvasRenderingContext2D | ContextProxy | null = null;
+  let context: CanvasRenderingContext2D | HitCanvasRenderingContext2D | null =
+    null;
   let layerRef: HTMLDivElement;
   let parentObserver: ResizeObserver;
 
@@ -59,13 +63,13 @@
 
     parentObserver.observe(canvas.parentElement!);
 
-    const ctx = canvas.getContext('2d')!;
-
     if (layerEvents) {
-      context = createContextProxy(ctx);
-      context._renderingLayerId = () => manager.renderingLayerId;
+      context = createHitCanvas(canvas);
+      manager.onRenderingLayerIdChange((id) => {
+        (<HitCanvasRenderingContext2D>context).setCurrentLayerId(id);
+      });
     } else {
-      context = ctx;
+      context = canvas.getContext('2d');
     }
 
     manager.init(<CanvasRenderingContext2D>context, layerRef);
@@ -79,7 +83,7 @@
   const handleLayerMouseMove = (e: MouseEvent) => {
     const x = e.offsetX * _pixelRatio;
     const y = e.offsetY * _pixelRatio;
-    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };
@@ -89,7 +93,7 @@
     const { left, top } = canvas.getBoundingClientRect();
     const x = (clientX - left) * _pixelRatio;
     const y = (clientY - top) * _pixelRatio;
-    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };

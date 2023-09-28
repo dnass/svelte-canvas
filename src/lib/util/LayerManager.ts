@@ -31,9 +31,9 @@ class LayerManager {
   layerRef?: HTMLElement;
   layerSequence: number[];
 
-  renderingLayerId: number;
   activeLayerId: number;
   activeLayerDispatcher?: LayerEventDispatcher;
+  renderingLayerIdChangeCallback?: (layerId: number) => void;
 
   constructor() {
     this.register = this.register.bind(this);
@@ -50,7 +50,6 @@ class LayerManager {
     this.needsSetup = false;
     this.needsRedraw = true;
 
-    this.renderingLayerId = 0;
     this.activeLayerId = 0;
 
     this.layerSequence = [];
@@ -142,7 +141,7 @@ class LayerManager {
       const time = Date.now() - this.startTime;
 
       for (const layerId of this.layerSequence) {
-        this.renderingLayerId = layerId;
+        this.renderingLayerIdChangeCallback?.(layerId);
         this.renderers.get(layerId)?.({ context, width, height, time });
       }
 
@@ -189,6 +188,10 @@ class LayerManager {
 
       this.activeLayerDispatcher(<Events>e.type, detail);
     }
+  }
+
+  onRenderingLayerIdChange(callback: (layerId: number) => void) {
+    this.renderingLayerIdChangeCallback = callback;
   }
 
   destroy() {
