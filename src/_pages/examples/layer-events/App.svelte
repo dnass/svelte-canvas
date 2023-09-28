@@ -3,9 +3,9 @@
   import Ball from './Ball.svelte';
 
   let balls = [
-    { color: '#f00', x: 320, y: 213 },
-    { color: '#0f0', x: 213, y: 400 },
-    { color: '#00f', x: 427, y: 400 },
+    { color: 'tomato', x: 0.5, y: 0.333 },
+    { color: 'goldenrod', x: 0.333, y: 0.625 },
+    { color: 'mediumturquoise', x: 0.667, y: 0.625 },
   ];
 
   const reorder = (color) => {
@@ -15,8 +15,14 @@
   };
 </script>
 
-<Canvas layerEvents={true}>
+<Canvas layerEvents>
   {#each balls as { color, x, y } (color)}
-    <Ball {color} {x} {y} {reorder} />
+    <Ball
+      {color}
+      {x}
+      {y}
+      on:mousedown={() => reorder(color)}
+      on:touchstart={() => reorder(color)}
+    />
   {/each}
 </Canvas>

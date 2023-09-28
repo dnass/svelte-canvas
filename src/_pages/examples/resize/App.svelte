@@ -5,7 +5,7 @@
   let colors = ['tomato', 'goldenrod', 'mediumturquoise'];
 </script>
 
-<Canvas layerEvents={true}>
+<Canvas layerEvents>
   {#each colors as color, i (color)}
     {@const c = (i + 1) * 80}
     <ResizableLayer

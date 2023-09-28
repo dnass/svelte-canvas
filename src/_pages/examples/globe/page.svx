@@ -4,20 +4,9 @@ title: Globe
 
 <script>
   import App from './App.svelte';
-  import Code from '../../../_components/Code.svelte';
+  import Example from '../../../_components/Example.svelte';
 </script>
 
-<div class='border'>
+<Example files={['globe/App.svelte']}>
   <App />
-</div>
-
-<Code
-  files={['globe/App.svelte', 'globe/Graticule.svelte', 'globe/Land.svelte']}
-/>
-
-<style>
-  div {
-    width: 100%;
-    max-width: 640px;
-  }
-</style>
+</Example>

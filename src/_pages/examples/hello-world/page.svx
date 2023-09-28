@@ -4,11 +4,9 @@ title: Hello World
 
 <script>
   import App from './App.svelte';
-  import Code from '../../../_components/Code.svelte';
+  import Example from '../../../_components/Example.svelte';
 </script>
 
-<div class="border">
+<Example aspectRatio="2/1" files={['hello-world/App.svelte']}>
   <App />
-</div>
-
-<Code files={['hello-world/App.svelte']} />
+</Example>

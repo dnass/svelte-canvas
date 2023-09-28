@@ -2,13 +2,18 @@
   import { Layer } from '$lib';
   import { spring } from 'svelte/motion';
 
-  export let x, y, color, reorder;
+  export let x, y, color;
 
   let dragging = false;
 
-  const _x = spring(x, { stiffness: 0.15, damping: 0.2 });
-  const _y = spring(y, { stiffness: 0.15, damping: 0.2 });
+  let _x, _y;
+
   const radius = spring(80, { stiffness: 0.15, damping: 0.2 });
+
+  $: setup = ({ width, height }) => {
+    _x = spring(width * x, { stiffness: 0.15, damping: 0.2 });
+    _y = spring(height * y, { stiffness: 0.15, damping: 0.2 });
+  };
 
   $: render = ({ context }) => {
     context.globalCompositeOperation = 'screen';
@@ -26,13 +31,12 @@
   };
 
   const onLeave = () => {
-    document.body.style.cursor = 'default';
+    document.body.style.cursor = 'auto';
     dragging = false;
     radius.set(80);
   };
 
   const onDown = () => {
-    reorder(color);
     dragging = true;
     radius.set(120);
   };
@@ -51,13 +55,16 @@
 </script>
 
 <Layer
+  {setup}
   {render}
   on:mouseenter={onEnter}
   on:mouseleave={onLeave}
   on:mousedown={onDown}
+  on:mousedown
   on:mousemove={onMove}
   on:mouseup={onUp}
   on:touchstart={onDown}
+  on:touchstart
   on:touchmove={onMove}
   on:touchend={onUp}
 />

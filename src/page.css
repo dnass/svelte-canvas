@@ -1,7 +1,7 @@
 :root {
   --bg-dark: #111114;
   --bg: #1b1b20;
-  --bgdark: #282c34;
+  --bg-light: #282c34;
   --primary: #ff6347;
   --secondary: #b8b8c4;
   --body: #dcdcdc;
@@ -79,7 +79,7 @@ h4 {
 code {
   font-family: 'Source Code Pro', monospace;
   font-size: 0.9em;
-  background-color: var(--bgdark);
+  background-color: var(--bg-light);
   padding: 3px 4px;
   border-radius: 2px;
   font-size: 0.9rem;

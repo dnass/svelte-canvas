@@ -44,33 +44,33 @@
   );
 </script>
 
-<div bind:clientWidth={width} bind:clientHeight={height}>
-  <Canvas
-    {width}
-    {height}
-    style="cursor: pointer"
-    on:mousemove={({ offsetX, offsetY }) => {
-      const i = delaunay.find(offsetX, offsetY);
-      if (i) {
-        picked = points[i].id;
-        points.push(points.splice(i, 1)[0]);
-        points = points;
-      }
-    }}
-    on:mouseout={() => (picked = null)}
-    on:mousedown={() => (click = true)}
-    on:mouseup={() => (click = false)}
-  >
-    <Axis type="x" scale={x} tickNumber={8} {margin} />
-    <Axis type="y" scale={y} tickNumber={10} {margin} />
-    {#each points as { mpg, hp, id } (id)}
-      <Point
-        x={x(mpg)}
-        y={y(hp)}
-        fill="tomato"
-        r={id === picked && !click ? 5 : 3}
-        stroke={id === picked ? '#000' : null}
-      />
-    {/each}
-  </Canvas>
-</div>
+<Canvas
+  style="cursor: pointer"
+  on:resize={({ detail }) => {
+    width = detail.width;
+    height = detail.height;
+  }}
+  on:mousemove={({ offsetX, offsetY }) => {
+    const i = delaunay.find(offsetX, offsetY);
+    if (i) {
+      picked = points[i].id;
+      points.push(points.splice(i, 1)[0]);
+      points = points;
+    }
+  }}
+  on:mouseout={() => (picked = null)}
+  on:mousedown={() => (click = true)}
+  on:mouseup={() => (click = false)}
+>
+  <Axis type="x" scale={x} tickNumber={8} {margin} />
+  <Axis type="y" scale={y} tickNumber={10} {margin} />
+  {#each points as { mpg, hp, id } (id)}
+    <Point
+      x={x(mpg)}
+      y={y(hp)}
+      fill="tomato"
+      r={id === picked && !click ? 5 : 3}
+      stroke={id === picked ? '#eee' : null}
+    />
+  {/each}
+</Canvas>

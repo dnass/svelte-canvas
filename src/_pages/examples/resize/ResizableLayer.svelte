@@ -2,12 +2,9 @@
   import Handle from './ResizableLayerHandle.svelte';
   import Surface from './ResizableLayerSurface.svelte';
 
-  const N = 1,
-    S = 2,
-    E = 4,
-    W = 8;
-  const handles = [N, S, E, W, N | E, N | W, S | E, S | W],
-    surface = N | S | E | W;
+  const [N, S, E, W] = [1, 2, 4, 8],
+    HANDLES = [N, S, E, W, N | E, N | W, S | E, S | W],
+    SURFACE = N | S | E | W;
 
   export let initialBounds = { x0: 160, y0: 160, x1: 480, y1: 480 };
 
@@ -18,17 +15,17 @@
 
   $: bounds = { x0, y0, x1, y1 };
   $: active = Boolean(hoveredHandle || draggedHandle);
-  $: sortedHandles = handles.sort((a, b) =>
+  $: sortedHandles = HANDLES.sort((a, b) =>
     a === hoveredHandle ? 1 : b === hoveredHandle ? -1 : 0,
   );
 
   const setCursor = ({ style }) => ({
-    update: ({ active }) => (style.cursor = active ? 'pointer' : 'default'),
+    update: (cursor) => (style.cursor = cursor),
   });
 </script>
 
 <svelte:body
-  use:setCursor={{ active, bounds }}
+  use:setCursor={active ? 'pointer' : 'auto'}
   on:mousemove={({ movementX, movementY }) => {
     x0 += draggedHandle & W && movementX;
     y0 += draggedHandle & N && movementY;
@@ -43,9 +40,9 @@
 <Surface
   {bounds}
   show={active}
-  on:mouseenter={() => (hoveredHandle = surface)}
+  on:mouseenter={() => (hoveredHandle = SURFACE)}
   on:mouseleave={() => (hoveredHandle = null)}
-  on:mousedown={() => (draggedHandle = surface)}
+  on:mousedown={() => (draggedHandle = SURFACE)}
   on:mousedown
 />
 

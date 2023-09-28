@@ -1,18 +1,23 @@
 <script lang="ts">
+  import Code from './Code.svelte';
+
   export let width: string = '100%',
-    aspectRatio: string | null = '1';
+    aspectRatio: string = '1',
+    files: string[] = [];
 </script>
 
 <div style:max-width={width} style:aspect-ratio={aspectRatio}>
   <slot />
 </div>
 
+<Code copy {files} />
+
 <style>
   div {
     width: 100%;
     justify-self: center;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     overflow: hidden;
-    border: 4px solid var(--secondary);
+    background-color: var(--bg-light);
   }
 </style>

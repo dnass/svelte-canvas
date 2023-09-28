@@ -4,11 +4,9 @@ title: Layer Events
 
 <script>
   import App from './App.svelte';
-  import Code from '../../../_components/Code.svelte';
+  import Example from '../../../_components/Example.svelte';
 </script>
 
-<div class="border">
+<Example files={['layer-events/App.svelte', 'layer-events/Ball.svelte']}>
   <App />
-</div>
-
-<Code files={['layer-events/App.svelte', 'layer-events/Ball.svelte']} />
+</Example>

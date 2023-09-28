@@ -1,8 +1,7 @@
 <script>
-  import { Layer, t } from '$lib';
+  import { Layer } from '$lib';
   import { quadInOut } from 'svelte/easing';
-  import { piecewise } from 'd3-interpolate';
-  import { interpolateWarm } from 'd3-scale-chromatic';
+  import { piecewise, interpolateRgbBasis } from 'd3-interpolate';
 
   export let x, y, i;
 
@@ -13,11 +12,16 @@
   ]);
 
   const scale = (t) => pieces(quadInOut(t));
+  const interpolate = interpolateRgbBasis([
+    'tomato',
+    'goldenrod',
+    'mediumturquoise',
+  ]);
 
-  $: render = ({ context, width }) => {
-    const { r, alpha } = scale((($t / 25 + i * 3) % 100) / 100);
+  $: render = ({ context, width, time }) => {
+    const { r, alpha } = scale(((time / 25 + i * 3) % 100) / 100);
 
-    context.fillStyle = interpolateWarm(1 - i / 50);
+    context.fillStyle = interpolate(1 - i / 50);
     context.globalAlpha = alpha;
     context.beginPath();
     context.arc(x, y, r * width, 0, Math.PI * 2);

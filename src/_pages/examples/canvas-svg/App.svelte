@@ -5,8 +5,7 @@
   import { geoIdentity, geoPath } from 'd3-geo';
   import Bubble from './Bubble.svelte';
 
-  let width = 960;
-  $: height = width * 0.6256;
+  let width;
 
   $: projection = geoIdentity().scale(width / 975);
   $: path = geoPath(projection);
@@ -27,13 +26,17 @@
     : [];
 </script>
 
-<div bind:clientWidth={width} style:height="{height}px">
-  <svg {width} {height}>
+<div>
+  <svg>
     {#if us}
       <path d={path(mesh(us, us.objects.states))} />
     {/if}
   </svg>
-  <Canvas {width} {height} style="position: absolute">
+  <Canvas
+    on:resize={({ detail }) => (width = detail.width)}
+    style="position: absolute"
+    autoplay
+  >
     {#each centroids as [x, y], i}
       <Bubble {x} {y} {i} />
     {/each}
@@ -42,11 +45,14 @@
 
 <style>
   div {
-    width: 100%;
+    position: relative;
+    height: 100%;
   }
 
   svg {
     position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
   path {

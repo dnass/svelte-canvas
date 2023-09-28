@@ -1,15 +1,15 @@
 <script>
-  import { Canvas, Layer, t } from '$lib';
-
-  $: render = ({ context, width, height }) => {
-    context.font = '72px sans-serif';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillStyle = `hsl(${$t / 25}, 100%, 50%)`;
-    context.fillText('hello world', width / 2, height / 2);
-  };
+  import { Canvas, Layer } from '$lib';
 </script>
 
-<Canvas>
-  <Layer {render} />
+<Canvas autoplay>
+  <Layer
+    render={({ context, width, height, time }) => {
+      context.font = `${width / 10}px sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillStyle = `oklch(70% 0.4 ${time / 25}deg)`;
+      context.fillText('hello world', width / 2, height / 2);
+    }}
+  />
 </Canvas>

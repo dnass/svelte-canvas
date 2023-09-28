@@ -6,6 +6,7 @@ export async function load({ params }) {
 
   try {
     const file = await import(/* @vite-ignore */ route);
+    console.log(file);
 
     const { default: page, metadata } = file;
     const category = path.startsWith('examples')
@@ -20,6 +21,6 @@ export async function load({ params }) {
       ...metadata,
     };
   } catch (e) {
-    throw error(404);
+    console.log(e);
   }
 }

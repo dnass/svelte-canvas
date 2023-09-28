@@ -4,7 +4,7 @@
   import Logo from './Logo.svelte';
 </script>
 
-<Canvas width={960} height={640}>
+<Canvas autoplay>
   <Logo />
   <Background />
 </Canvas>

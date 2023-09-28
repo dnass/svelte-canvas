@@ -4,24 +4,15 @@ title: Scatterplot
 
 <script>
   import App from './App.svelte';
-  import Code from '../../../_components/Code.svelte';
+  import Example from '../../../_components/Example.svelte';
 </script>
 
-<div class='border'>
-  <App />
-</div>
-
-<Code
+<Example
   files={[
     'scatterplot/App.svelte',
     'scatterplot/Axis.svelte',
     'scatterplot/Point.svelte',
   ]}
-/>
-
-<style>
-  div {
-    max-width: 640px;
-    width: 100%;
-  }
-</style>
+>
+  <App />
+</Example>

@@ -3,6 +3,7 @@ title: Getting Started
 ---
 
 <script lang="ts">
+  import {Canvas} from '$lib'
   import Code from '../_components/Code.svelte';
 </script>
 
@@ -12,3 +13,4 @@ title: Getting Started
 
 ## {title}
 
+<Code lang="ts" text="npm install svelte-canvas" />

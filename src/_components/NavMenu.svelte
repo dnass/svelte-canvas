@@ -7,9 +7,7 @@
 {#each Object.entries(items) as [title, value]}
   {#if typeof value === 'string'}
     {@const href = `/svelte-canvas${value}`}
-    <div class="menu-item">
-      <a class:active={$page.url.pathname === href} {href}>{title}</a>
-    </div>
+    <a class:active={$page.url.pathname === href} {href}>{title}</a>
   {:else if typeof value === 'object'}
     <p>{title}</p>
     <svelte:self items={value} />
@@ -17,6 +15,10 @@
 {/each}
 
 <style>
+  a {
+    display: block;
+  }
+
   a.active {
     font-weight: 600;
     color: var(--primary);

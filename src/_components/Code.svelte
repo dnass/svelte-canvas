@@ -67,7 +67,7 @@
   .code {
     height: auto;
     width: 100%;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     overflow: hidden;
     font-family: 'Fira Mono', monospace;
     font-size: 0.9rem;

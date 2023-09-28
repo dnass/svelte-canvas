@@ -1,0 +1,119 @@
+---
+title: Canvas
+---
+
+<script lang="ts">
+  import Code from '../../../_components/Code.svelte';
+</script>
+
+## {title}
+
+`Canvas` is the top-level element. It's a Svelte wrapper around an HTML `<canvas>` element. Only [`Layer` components](/svelte-canvas/components/layer), or components that wrap a `Layer`, are valid children of `Canvas`.
+
+### Props
+
+#### `width`
+
+<Code lang='ts' text='width: number = canvas.parentElement.clientWidth;' />
+
+#### `height`
+
+<Code lang='ts' text='height: number = canvas.parentElement.clientHeight;' />
+
+#### `pixelRatio`
+
+If unset, the canvas will use Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel ratio.
+
+<Code lang='ts' text='pixelRatio: number = window.devicePixelRatio ?? 2;' />
+
+
+#### `style`
+
+A CSS style string which will be applied to the canvas element.
+
+<Code lang='ts' text='style: string | null = null;' />
+
+#### `class`
+
+A class string which will be applied to the canvas element.
+
+<Code lang='ts' text='class: string | null = null;' />
+
+#### `autoplay`
+
+If `true`, will trigger a render with each tick of the animation loop. Otherwise, will only render when a child layer's render dependencies change.
+
+<Code lang='ts' text='autoplay: boolean = false;' />
+
+#### `autoclear`
+
+If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle.
+
+<Code lang='ts' text='autoclear: boolean = true;' />
+
+#### `layerEvents`
+
+If `true`, enables event handling on child `Layer` components. This has a performance cost, so it's disabled by default.
+
+<Code lang='ts' text='layerEvents: boolean = false;' />
+
+### Methods
+
+#### `getCanvas`
+
+Returns a reference to the canvas DOM element.
+
+<Code lang='ts' text='getCanvas(): HTMLCanvasElement;' />
+
+<Code text={`
+<script>
+  let canvas;
+  $: canvas?.getCanvas(); // HTMLCanvasElement
+</script>\n
+
+<Canvas bind:this={canvas} />
+`} />
+
+#### `getContext`
+
+Returns a reference to the canvas's 2D rendering context.
+
+<Code lang='ts' text='getContext(): CanvasRenderingContext2D;' />
+
+<Code text={`
+<script>
+  let canvas;
+  $: canvas?.getContext(); // CanvasRenderingContext2D
+</script>\n
+
+<Canvas bind:this={canvas} />
+`} />
+
+#### `redraw`
+
+Forces a re-render of the canvas.
+
+<Code lang='ts' text='redraw(): void;' />
+
+<Code text={`
+<script>
+  let canvas;
+  $: canvas?.redraw();
+</script>\n
+
+<Canvas bind:this={canvas} />
+`} />
+
+### Events
+
+#### `resize`
+
+Fires when the canvas is resized.
+
+<Code lang='ts' text={'resize: CustomEvent<{ width: number; height: number; }>;'} />
+
+<Code text={'<Canvas on:resize={(e) => console.log(e.detail.width)} />'} />
+
+### Event handling
+
+Event handling is also possible at the layer level. See the [`Layer` component](/svelte-canvas/components/layer) for more information.

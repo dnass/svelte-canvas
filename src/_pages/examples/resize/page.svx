@@ -4,18 +4,16 @@ title: Resizable Layer
 
 <script>
   import App from './App.svelte';
-  import Code from '../../../_components/Code.svelte';
+  import Example from '../../../_components/Example.svelte';
 </script>
 
-<div class="border">
-  <App />
-</div>
-
-<Code
+<Example
   files={[
     'resize/App.svelte',
     'resize/ResizableLayer.svelte',
     'resize/ResizableLayerHandle.svelte',
     'resize/ResizableLayerSurface.svelte',
   ]}
-/>
+>
+  <App />
+</Example>
