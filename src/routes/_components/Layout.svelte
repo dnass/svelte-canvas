@@ -1,10 +1,11 @@
-<script>
-  import '../page.css';
+<script lang="ts">
+  import './page.css';
   import { page } from '$app/stores';
   import { browser, version } from '$app/environment';
-  import NavMenu from '../_components/NavMenu.svelte';
+  import NavMenu from './NavMenu.svelte';
 
-  export let data;
+  export let data,
+    title = '';
 
   let menuVisible = false;
 
@@ -19,6 +20,8 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&family=Source+Sans+3:wght@400;600;800&display=swap');
   </style>
+
+  <title>{title} • svelte-canvas</title>
 </svelte:head>
 
 <div class="page">

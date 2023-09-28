@@ -12,6 +12,7 @@ const config = {
   preprocess: [
     mdsvex({
       rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+      layout: 'src/routes/_components/Layout.svelte',
     }),
     preprocess(),
   ],

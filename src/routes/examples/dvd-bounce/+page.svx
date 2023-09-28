@@ -1,0 +1,14 @@
+---
+title: DVD Bounce
+---
+
+<script>
+  import App from './App.svelte';
+  import Example from '../../_components/Example.svelte';
+
+  export let data;
+</script>
+
+<Example aspectRatio="16/9" files={data.files}>
+  <App />
+</Example>

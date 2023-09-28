@@ -3,34 +3,20 @@
   import Highlight, { HighlightSvelte } from 'svelte-highlight';
   import typescript from 'svelte-highlight/languages/typescript';
 
-  export let files: string[] = [],
+  export let files: string[][] = [],
     text = '',
     lang = 'svelte',
     copy = false;
 
-  let contents: string[] = [];
-
   let selectedFile = 0;
 
-  $: titles = files.map((name) => name.split('/').pop());
-
-  $: code = contents.length ? contents[selectedFile] : text.trim();
-
-  Promise.all(
-    files.map((file) => {
-      return import(/* @vite-ignore */ `../_pages/examples/${file}?raw`);
-    }),
-  ).then((modules) => {
-    contents = modules.map((module) => {
-      return module.default.trim().replace('$lib', 'svelte-canvas');
-    });
-  });
+  $: code = files.length ? files[selectedFile][1] : text.trim();
 </script>
 
 <div class="code">
-  {#if contents}
+  {#if files}
     <div class="hljs title">
-      {#each titles as title, i}
+      {#each files as [title], i}
         <button
           class="tab"
           class:active={selectedFile === i}

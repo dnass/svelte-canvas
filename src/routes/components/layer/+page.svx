@@ -3,7 +3,7 @@ title: Layer
 ---
 
 <script lang="ts">
-  import Code from '../../../_components/Code.svelte';
+  import Code from '../../_components/Code.svelte';
 </script>
 
 ## {title}

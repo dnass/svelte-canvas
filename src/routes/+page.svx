@@ -3,13 +3,9 @@ title: Getting Started
 ---
 
 <script lang="ts">
-  import {Canvas} from '$lib'
-  import Code from '../_components/Code.svelte';
+  import { Canvas } from '$lib'
+  import Code from './_components/Code.svelte';
 </script>
-
-<svelte:head>
-  <title>{title} • svelte-canvas</title>
-</svelte:head>
 
 ## {title}
 

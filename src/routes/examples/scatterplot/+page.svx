@@ -1,0 +1,14 @@
+---
+title: Scatterplot
+---
+
+<script>
+  import App from './App.svelte';
+  import Example from '../../_components/Example.svelte';
+
+  export let data;
+</script>
+
+<Example files={data.files}>
+  <App />
+</Example>
