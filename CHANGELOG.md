@@ -1,12 +1,23 @@
-# 0.9.3
+## 1.0.0
+
+- Add `autoplay` prop. When `true`, `Canvas` will re-render on every animation frame.
+- Remove `t` export. Time since initialization can now be accessed through the `time` render prop.
+- When `width` and `height` are unset, `Canvas` now fills its parent container.
+- Add `Canvas` `on:resize` event.
+- Use Svelte's `devicePixelRatio` binding.
+- Move hit detection to [`hit-canvas`](https://npmjs.com/package/hit-canvas) library.
+- New [documentation and examples](https://dnass.github.io/svelte-canvas).
+- Support Svelte 4.
+
+## 0.9.3
 
 - Fix layer events and autoclear when transforms are applied to the canvas.
 
-# 0.9.2
+## 0.9.2
 
 - Fix new layers not being observed.
 
-# 0.9.1
+## 0.9.1
 
 - Fix layer events when `globalAlpha` and `drawImage` are used.
 - Use `@sveltejs/package@2`.
