@@ -22,7 +22,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--body);
   box-sizing: border-box;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
 }
 
 a {
@@ -82,7 +82,7 @@ h4 {
 }
 
 code {
-  font-family: 'Source Code Pro', monospace;
+  font-family: 'Fira Mono', monospace;
   font-size: 0.9em;
   background-color: var(--bg-light);
   padding: 3px 4px;

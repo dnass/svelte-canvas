@@ -12,7 +12,7 @@
     const tooltipX = x + size;
     const tooltipY = y + size;
 
-    context.font = `${size}px 'Source Code Pro', monospace`;
+    context.font = `${size}px 'Fira Mono', monospace`;
     context.textAlign = 'left';
     context.textBaseline = 'top';
 

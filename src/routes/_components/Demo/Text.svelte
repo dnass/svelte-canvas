@@ -12,7 +12,7 @@
   render={({ context, width, height, active }) => {
     const size = width * scale;
     const offset = height * yOffset;
-    context.font = `${size}px 'Source Code Pro', monospace`;
+    context.font = `${size}px 'Fira Mono', monospace`;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillStyle = '#dcdcdc';

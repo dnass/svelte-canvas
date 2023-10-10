@@ -28,7 +28,7 @@
     <Text text="svelte-canvas" yOffset={-0.03} scale={0.06} />
     <Text
       text="Reactive canvas components"
-      scale={0.0295}
+      scale={0.0297}
       yOffset={0.04}
       opacity={0.7}
     />

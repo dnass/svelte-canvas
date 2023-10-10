@@ -55,7 +55,6 @@
     width: 100%;
     border-radius: 0.5rem;
     overflow: hidden;
-    font-family: 'Fira Mono', monospace;
     font-size: 0.9rem;
     line-height: 1.25;
     overflow-x: scroll;
@@ -78,7 +77,7 @@
     appearance: none;
     background-color: transparent;
     border: none;
-    font-family: monospace;
+    font-family: 'Fira Mono', monospace;
     color: inherit;
     font-size: inherit;
     cursor: pointer;
