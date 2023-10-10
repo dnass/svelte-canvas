@@ -13,7 +13,7 @@
     context.translate(width * 0.85, height * 0.6);
 
     const scale = width * 0.0018;
-    context.scale(scale, scale);
+    context.scale(scale * 0.9, scale);
     context.fill(path);
 
     if (active()) {

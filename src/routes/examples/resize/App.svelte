@@ -3,18 +3,18 @@
   import ResizableLayer from './ResizableLayer.svelte';
 
   let colors = ['tomato', 'goldenrod', 'mediumturquoise'];
+
+  const sort = (color) =>
+    (colors = colors.sort((a, b) => (a === color ? 1 : b === color ? -1 : 0)));
 </script>
 
 <Canvas layerEvents>
   {#each colors as color, i (color)}
-    {@const c = (i + 1) * 80}
+    {@const c = (i + 1) * 85}
     <ResizableLayer
-      initialBounds={{ x0: c, y0: c, x1: c + 320, y1: c + 320 }}
-      on:mousedown={() => {
-        colors = colors.sort((a, b) =>
-          a === color ? 1 : b === color ? -1 : 0,
-        );
-      }}
+      initialBounds={{ x0: c, y0: c, x1: c + 338, y1: c + 338 }}
+      on:mousedown={() => sort(color)}
+      on:touchstart={() => sort(color)}
       let:bounds
     >
       <Layer

@@ -21,14 +21,14 @@
   const opacity = styleTween(1);
   const scale = spring(1, { stiffness: 0.1, damping: 0.2 });
 
-  $: active = $activeLayer.id === id;
-  $: inactive = $activeLayer.id && !active;
+  $: active = $activeLayer?.id === id;
+  $: inactive = $activeLayer?.id && !active;
 
   $: blur.set(inactive ? 0.018 : 0);
   $: saturation.set(inactive ? 0.4 : 1);
   $: opacity.set(inactive ? 0.5 : 1);
   $: scale.set(
-    !$activeLayer.id ? 1 : (!active ? 0.95 : 1.1) + Math.random() / 10,
+    !$activeLayer?.id ? 1 : (!active ? 0.95 : 1.1) + Math.random() / 10,
   );
 
   $: [x, y] = $coords;
@@ -57,12 +57,10 @@
 
 <Layer
   on:pointerenter={() => ($activeLayer = { name, id })}
-  on:pointerleave={() => ($activeLayer = { name: null, id: null })}
+  on:touchstart={() => ($activeLayer = { name, id })}
+  on:pointerleave={() => ($activeLayer = null)}
+  on:touchend={() => ($activeLayer = null)}
   on:pointerdown={() => scale.set(0.95)}
   on:pointerup={() => scale.set(1.1)}
-  on:mouseenter
-  on:pointerenter
-  on:mouseleave
-  on:pointerleave
   render={_render}
 />

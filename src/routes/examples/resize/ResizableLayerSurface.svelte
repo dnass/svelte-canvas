@@ -19,4 +19,12 @@
   };
 </script>
 
-<Layer {render} on:mouseenter on:mouseleave on:mousedown on:mouseup />
+<Layer
+  {render}
+  on:mouseenter
+  on:mouseleave
+  on:mousedown
+  on:mouseup
+  on:touchstart
+  on:touchend
+/>

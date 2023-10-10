@@ -180,7 +180,7 @@
       height: 100%;
       background-color: var(--bg);
       top: 0;
-      z-index: 1;
+      z-index: 2;
       visibility: hidden;
       padding: 1rem 1.5rem;
     }

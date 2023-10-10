@@ -14,15 +14,19 @@ title: Canvas
 
 #### `width`
 
+When unset, the canvas will use the width of its parent element.
+
 <Code lang='ts' text='width: number = canvas.parentElement.clientWidth;' />
 
 #### `height`
+
+When unset, the canvas will use the height of its parent element.
 
 <Code lang='ts' text='height: number = canvas.parentElement.clientHeight;' />
 
 #### `pixelRatio`
 
-If unset, the canvas will use Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel ratio.
+When unset, the canvas will use Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel ratio.
 
 <Code lang='ts' text='pixelRatio: number = window.devicePixelRatio ?? 2;' />
 
@@ -41,7 +45,7 @@ A class string which will be applied to the canvas element.
 
 #### `autoplay`
 
-If `true`, will trigger a render with each tick of the animation loop. Otherwise, will only render when a child layer's render dependencies change.
+If `true`, child layers will render with each tick of the animation loop. Otherwise, layers will only render when a child layer's render dependencies change.
 
 <Code lang='ts' text='autoplay: boolean = false;' />
 
@@ -116,4 +120,8 @@ Fires when the canvas is resized.
 
 ### Event handling
 
-Event handling is also possible at the layer level. See the [`Layer` component](/svelte-canvas/components/layer) for more information.
+DOM event handlers added to the `Canvas` component will be forwarded to the canvas element. For example:
+
+<Code text={'<Canvas on:click={() => console.log("clicked")} />'} />
+
+Events can also be handled at the layer level. See the [`Layer` component](/svelte-canvas/components/layer#event-handling) for more information.

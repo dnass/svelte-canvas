@@ -28,9 +28,8 @@
 <Canvas autoplay on:resize={({ detail }) => (width = detail.width)}>
   <!-- Graticule -->
   <Layer
+    setup={({ context }) => path.context(context)}
     render={({ context, time }) => {
-      path.context(context);
-
       projection.rotate([time / 50, -10]);
 
       context.strokeStyle = '#ccc';

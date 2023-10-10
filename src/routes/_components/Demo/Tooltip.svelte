@@ -3,7 +3,7 @@
   import { coords, activeLayer } from './store';
 
   $: [x, y] = $coords;
-  $: text = `<${$activeLayer.name} />`;
+  $: text = `<${$activeLayer?.name} />`;
 </script>
 
 <Layer

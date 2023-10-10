@@ -7,15 +7,20 @@
   import Tooltip from './Tooltip.svelte';
   import { coords, activeLayer } from './store';
 
-  const pointerCoords = (e) => ($coords = [e.offsetX, e.offsetY]);
+  const touch = (e) => {
+    const { left, top } = e.target.getBoundingClientRect();
+    const { clientX, clientY } = e.changedTouches[0];
+    $coords = [clientX - left, clientY - top];
+  };
 </script>
 
 <div>
   <Canvas
     layerEvents
-    style="cursor: {$activeLayer.id ? 'pointer' : 'default'}"
-    on:mousemove={pointerCoords}
-    on:pointerdown={pointerCoords}
+    style="cursor: {$activeLayer ? 'pointer' : 'default'}"
+    on:mousemove={(e) => ($coords = [e.offsetX, e.offsetY])}
+    on:touchstart={touch}
+    on:touchmove={touch}
   >
     <Rect />
     <Blob />
@@ -27,7 +32,7 @@
       yOffset={0.04}
       opacity={0.7}
     />
-    {#if $activeLayer.id}
+    {#if $activeLayer?.id}
       <Tooltip />
     {/if}
   </Canvas>

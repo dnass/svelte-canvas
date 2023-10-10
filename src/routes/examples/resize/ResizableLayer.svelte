@@ -11,7 +11,8 @@
   let { x0, y0, x1, y1 } = initialBounds;
 
   let hoveredHandle = null,
-    draggedHandle = null;
+    draggedHandle = null,
+    previousTouch;
 
   $: bounds = { x0, y0, x1, y1 };
   $: active = Boolean(hoveredHandle || draggedHandle);
@@ -33,6 +34,18 @@
     y1 += draggedHandle & S && movementY;
   }}
   on:mouseup={() => (draggedHandle = null)}
+  on:pointerdown={() => (draggedHandle = null)}
+  on:touchstart={(e) => (previousTouch = e.touches[0])}
+  on:touchmove={(e) => {
+    const { clientX, clientY } = e.touches[0];
+    const movementX = clientX - previousTouch.clientX;
+    const movementY = clientY - previousTouch.clientY;
+    x0 += draggedHandle & W && movementX;
+    y0 += draggedHandle & N && movementY;
+    x1 += draggedHandle & E && movementX;
+    y1 += draggedHandle & S && movementY;
+    previousTouch = e.touches[0];
+  }}
 />
 
 <slot {bounds} />
@@ -41,9 +54,11 @@
   {bounds}
   show={active}
   on:mouseenter={() => (hoveredHandle = SURFACE)}
+  on:touchstart={() => (draggedHandle = SURFACE)}
   on:mouseleave={() => (hoveredHandle = null)}
   on:mousedown={() => (draggedHandle = SURFACE)}
   on:mousedown
+  on:touchstart
 />
 
 {#if active}
@@ -53,9 +68,11 @@
       x={handle & W ? x0 : handle & E ? x1 : (x0 + x1) / 2}
       y={handle & N ? y0 : handle & S ? y1 : (y0 + y1) / 2}
       on:mouseenter={() => (hoveredHandle = handle)}
+      on:touchstart={() => (draggedHandle = handle)}
       on:mouseleave={() => (hoveredHandle = null)}
       on:mousedown={() => (draggedHandle = handle)}
       on:mousedown
+      on:touchstart
     />
   {/each}
 {/if}
