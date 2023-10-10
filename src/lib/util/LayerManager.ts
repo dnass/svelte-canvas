@@ -14,7 +14,6 @@ class LayerManager {
 
   startTime: number;
 
-  needsSetup: boolean;
   needsRedraw: boolean;
 
   context?: CanvasRenderingContext2D;
@@ -47,7 +46,6 @@ class LayerManager {
 
     this.startTime = Date.now();
 
-    this.needsSetup = false;
     this.needsRedraw = true;
 
     this.activeLayerId = 0;
@@ -70,7 +68,6 @@ class LayerManager {
   }) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
-      this.needsSetup = true;
     }
 
     this.renderers.set(this.currentLayerId, render);
@@ -100,14 +97,14 @@ class LayerManager {
   }
 
   observeLayerSequence() {
-    this.layerObserver = new MutationObserver(this.getLayerSequence.bind(this));
-    this.layerObserver.observe(<HTMLElement>this.layerRef, { childList: true });
+    this.layerObserver = new MutationObserver(() => this.getLayerSequence());
+    this.layerObserver.observe(this.layerRef!, { childList: true });
     this.getLayerSequence();
   }
 
   getLayerSequence() {
-    const layers = [...(<HTMLElement>this.layerRef).children] as HTMLElement[];
-    this.layerSequence = layers.map((layer) => +(layer.dataset.layerId ?? -1));
+    const layers = <HTMLElement[]>[...this.layerRef!.children];
+    this.layerSequence = layers.map((layer) => +layer.dataset.layerId!);
     this.redraw();
   }
 
@@ -117,18 +114,17 @@ class LayerManager {
   }
 
   render() {
-    const context = <CanvasRenderingContext2D>this.context;
+    const context = this.context!;
     const width = this.width!;
     const height = this.height!;
     const pixelRatio = this.pixelRatio!;
 
-    if (this.needsSetup) {
-      for (const [layerId, setup] of this.setups) {
-        setup({ context, width, height, time: 0 });
-        this.setups.delete(layerId);
-      }
+    const time = Date.now() - this.startTime;
+    const renderProps = { context, width, height, time };
 
-      this.needsSetup = false;
+    for (const [layerId, setup] of this.setups) {
+      setup(renderProps);
+      this.setups.delete(layerId);
     }
 
     if (this.needsRedraw) {
@@ -138,11 +134,9 @@ class LayerManager {
         context.clearRect(0, 0, width, height);
       }
 
-      const time = Date.now() - this.startTime;
-
       for (const layerId of this.layerSequence) {
         this.renderingLayerIdChangeCallback?.(layerId);
-        this.renderers.get(layerId)?.({ context, width, height, time });
+        this.renderers.get(layerId)?.(renderProps);
       }
 
       this.needsRedraw = this.autoplay!;
@@ -197,8 +191,8 @@ class LayerManager {
   destroy() {
     if (typeof window === 'undefined') return;
 
-    (<MutationObserver>this.layerObserver).disconnect();
-    cancelAnimationFrame(<number>this.renderLoop);
+    this.layerObserver?.disconnect();
+    cancelAnimationFrame(this.renderLoop!);
   }
 }
 
