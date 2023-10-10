@@ -1,9 +1,9 @@
-import type { Render } from '../components/render';
 import type {
+  Render,
   Events,
   LayerEventDetail,
   LayerEventDispatcher,
-} from '../components/layerEvent';
+} from '../types';
 
 class LayerManager {
   currentLayerId: number;
@@ -12,13 +12,15 @@ class LayerManager {
   renderers: Map<number, Render>;
   dispatchers: Map<number, LayerEventDispatcher>;
 
-  needsSetup: boolean;
+  startTime: number;
+
   needsRedraw: boolean;
 
   context?: CanvasRenderingContext2D;
 
   width?: number;
   height?: number;
+  autoplay?: boolean;
   autoclear?: boolean;
   pixelRatio?: number;
 
@@ -28,25 +30,24 @@ class LayerManager {
   layerRef?: HTMLElement;
   layerSequence: number[];
 
-  renderingLayerId: number;
   activeLayerId: number;
   activeLayerDispatcher?: LayerEventDispatcher;
+  renderingLayerIdChangeCallback?: (layerId: number) => void;
 
   constructor() {
     this.register = this.register.bind(this);
     this.unregister = this.unregister.bind(this);
     this.redraw = this.redraw.bind(this);
-    this.getRenderingLayerId = this.getRenderingLayerId.bind(this);
 
     this.currentLayerId = 1;
     this.setups = new Map();
     this.renderers = new Map();
     this.dispatchers = new Map();
 
-    this.needsSetup = false;
+    this.startTime = Date.now();
+
     this.needsRedraw = true;
 
-    this.renderingLayerId = 0;
     this.activeLayerId = 0;
 
     this.layerSequence = [];
@@ -67,7 +68,6 @@ class LayerManager {
   }) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
-      this.needsSetup = true;
     }
 
     this.renderers.set(this.currentLayerId, render);
@@ -75,7 +75,12 @@ class LayerManager {
     this.dispatchers.set(this.currentLayerId, dispatcher);
 
     this.needsRedraw = true;
-    return this.currentLayerId++;
+
+    return {
+      redraw: this.redraw,
+      unregister: () => this.unregister(this.currentLayerId),
+      layerId: this.currentLayerId++,
+    };
   }
 
   unregister(layerId: number) {
@@ -84,7 +89,7 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  setup(context: CanvasRenderingContext2D, layerRef: HTMLElement) {
+  init(context: CanvasRenderingContext2D, layerRef: HTMLElement) {
     this.context = context;
     this.layerRef = layerRef;
     this.observeLayerSequence();
@@ -92,14 +97,14 @@ class LayerManager {
   }
 
   observeLayerSequence() {
-    this.layerObserver = new MutationObserver(this.getLayerSequence.bind(this));
-    this.layerObserver.observe(<HTMLElement>this.layerRef, { childList: true });
+    this.layerObserver = new MutationObserver(() => this.getLayerSequence());
+    this.layerObserver.observe(this.layerRef!, { childList: true });
     this.getLayerSequence();
   }
 
   getLayerSequence() {
-    const layers = [...(<HTMLElement>this.layerRef).children] as HTMLElement[];
-    this.layerSequence = layers.map((layer) => +(layer.dataset.layerId ?? -1));
+    const layers = <HTMLElement[]>[...this.layerRef!.children];
+    this.layerSequence = layers.map((layer) => +layer.dataset.layerId!);
     this.redraw();
   }
 
@@ -109,18 +114,17 @@ class LayerManager {
   }
 
   render() {
-    const context = <CanvasRenderingContext2D>this.context;
+    const context = this.context!;
     const width = this.width!;
     const height = this.height!;
     const pixelRatio = this.pixelRatio!;
 
-    if (this.needsSetup) {
-      for (const [layerId, setup] of this.setups) {
-        setup({ context, width, height });
-        this.setups.delete(layerId);
-      }
+    const time = Date.now() - this.startTime;
+    const renderProps = { context, width, height, time };
 
-      this.needsSetup = false;
+    for (const [layerId, setup] of this.setups) {
+      setup(renderProps);
+      this.setups.delete(layerId);
     }
 
     if (this.needsRedraw) {
@@ -131,11 +135,11 @@ class LayerManager {
       }
 
       for (const layerId of this.layerSequence) {
-        this.renderingLayerId = layerId;
-        this.renderers.get(layerId)?.({ context, width, height });
+        this.renderingLayerIdChangeCallback?.(layerId);
+        this.renderers.get(layerId)?.(renderProps);
       }
 
-      this.needsRedraw = false;
+      this.needsRedraw = this.autoplay!;
     }
   }
 
@@ -180,15 +184,15 @@ class LayerManager {
     }
   }
 
-  getRenderingLayerId() {
-    return this.renderingLayerId;
+  onRenderingLayerIdChange(callback: (layerId: number) => void) {
+    this.renderingLayerIdChangeCallback = callback;
   }
 
   destroy() {
     if (typeof window === 'undefined') return;
 
-    (<MutationObserver>this.layerObserver).disconnect();
-    cancelAnimationFrame(<number>this.renderLoop);
+    this.layerObserver?.disconnect();
+    cancelAnimationFrame(this.renderLoop!);
   }
 }
 

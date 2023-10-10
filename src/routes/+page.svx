@@ -1,0 +1,13 @@
+---
+title: Getting Started
+---
+
+<script lang="ts">
+  import { Canvas } from '$lib'
+  import Code from './_components/Code.svelte';
+  import Demo from './_components/Demo/Demo.svelte';
+</script>
+
+<Demo />
+
+<Code lang="ts" text="npm install svelte-canvas" />

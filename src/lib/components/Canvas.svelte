@@ -1,41 +1,49 @@
 <script context="module" lang="ts">
+  import { getContext as getCtx } from 'svelte';
   import LayerManager from '../util/LayerManager';
-  import { getContext as getCTX } from 'svelte';
 
-  export const KEY = Symbol();
-
-  interface TypedContext {
-    register: LayerManager['register'];
-    unregister: LayerManager['unregister'];
-    redraw: LayerManager['redraw'];
-  }
-
-  export const getTypedContext = (): TypedContext => getCTX(KEY);
+  const KEY = Symbol();
+  export const getRegisterLayer = (): LayerManager['register'] => getCtx(KEY);
 </script>
 
 <script lang="ts">
-  import { createContextProxy, type ContextProxy } from '../util/contextProxy';
-  import { onMount, onDestroy, setContext } from 'svelte';
+  import type { ResizeEvent } from '../types';
+  import {
+    createHitCanvas,
+    type HitCanvasRenderingContext2D,
+  } from 'hit-canvas';
+  import {
+    onMount,
+    onDestroy,
+    setContext,
+    createEventDispatcher,
+  } from 'svelte';
 
-  export let width = 640,
-    height = 640,
+  export let width: number | null = null,
+    height: number | null = null,
     pixelRatio: number | null = null,
     style = '',
+    autoplay = false,
     autoclear = true,
     layerEvents = false;
 
-  let clazz = '';
-
-  export { clazz as class, redraw, getCanvas, getContext };
-
-  let devicePixelRatio: number | undefined;
-  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
-
   let canvas: HTMLCanvasElement;
-  let context: CanvasRenderingContext2D | ContextProxy | null = null;
+  let context: CanvasRenderingContext2D | HitCanvasRenderingContext2D | null =
+    null;
   let layerRef: HTMLDivElement;
 
+  let devicePixelRatio: number | undefined;
+  let className = '';
+
+  let canvasWidth: number;
+  let canvasHeight: number;
+
+  export { className as class, redraw, getCanvas, getContext };
+
+  const dispatch = createEventDispatcher<ResizeEvent>();
+
   const manager = new LayerManager();
+  setContext(KEY, manager.register);
 
   function redraw() {
     manager.redraw();
@@ -46,26 +54,20 @@
   }
 
   function getContext() {
-    return context;
+    return <CanvasRenderingContext2D>context;
   }
 
-  setContext(KEY, {
-    register: manager.register,
-    unregister: manager.unregister,
-    redraw: manager.redraw,
-  });
-
   onMount(() => {
-    const ctx = canvas.getContext('2d')!;
-
     if (layerEvents) {
-      context = createContextProxy(ctx);
-      context._renderingLayerId = manager.getRenderingLayerId;
+      context = createHitCanvas(canvas);
+      manager.onRenderingLayerIdChange((id) => {
+        (<HitCanvasRenderingContext2D>context).setCurrentLayerId(id);
+      });
     } else {
-      context = ctx;
+      context = canvas.getContext('2d');
     }
 
-    manager.setup(<CanvasRenderingContext2D>context, layerRef);
+    manager.init(<CanvasRenderingContext2D>context, layerRef);
   });
 
   onDestroy(() => manager.destroy());
@@ -73,7 +75,7 @@
   const handleLayerMouseMove = (e: MouseEvent) => {
     const x = e.offsetX * _pixelRatio;
     const y = e.offsetY * _pixelRatio;
-    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };
@@ -83,45 +85,65 @@
     const { left, top } = canvas.getBoundingClientRect();
     const x = (clientX - left) * _pixelRatio;
     const y = (clientY - top) * _pixelRatio;
-    const id = (<ContextProxy>context)._getLayerIdAtPixel(x, y);
+    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
     manager.setActiveLayer(id, e);
     manager.dispatchLayerEvent(e);
   };
 
   const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
-    if (window.TouchEvent && e instanceof TouchEvent) e.preventDefault();
     manager.dispatchLayerEvent(e);
   };
 
-  $: manager.width = width;
-  $: manager.height = height;
+  $: _width = width ?? canvasWidth ?? 0;
+  $: _height = height ?? canvasHeight ?? 0;
+  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
+
+  $: manager.width = _width;
+  $: manager.height = _height;
   $: manager.pixelRatio = _pixelRatio;
+  $: manager.autoplay = autoplay;
   $: manager.autoclear = autoclear;
-  $: width, height, _pixelRatio, autoclear, manager.redraw();
+
+  $: _width, _height, _pixelRatio, autoclear, manager.redraw();
+
+  $: layerMouseMoveHandler = layerEvents ? handleLayerMouseMove : null;
+  $: layerTouchStartHandler = layerEvents ? handleLayerTouchStart : null;
+  $: layerEventHandler = layerEvents ? handleLayerEvent : null;
+
+  $: dispatch('resize', { width: _width, height: _height });
 </script>
 
 <svelte:window bind:devicePixelRatio />
 
 <canvas
-  on:touchstart|preventDefault={layerEvents ? handleLayerTouchStart : null}
-  on:mousemove={layerEvents ? handleLayerMouseMove : null}
-  on:pointermove={layerEvents ? handleLayerMouseMove : null}
-  on:click={layerEvents ? handleLayerEvent : null}
-  on:contextmenu={layerEvents ? handleLayerEvent : null}
-  on:dblclick={layerEvents ? handleLayerEvent : null}
-  on:mousedown={layerEvents ? handleLayerEvent : null}
-  on:mouseenter={layerEvents ? handleLayerEvent : null}
-  on:mouseleave={layerEvents ? handleLayerEvent : null}
-  on:mouseup={layerEvents ? handleLayerEvent : null}
-  on:wheel={layerEvents ? handleLayerEvent : null}
-  on:touchcancel|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:touchend|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:touchmove|preventDefault={layerEvents ? handleLayerEvent : null}
-  on:pointerenter={layerEvents ? handleLayerEvent : null}
-  on:pointerleave={layerEvents ? handleLayerEvent : null}
-  on:pointerdown={layerEvents ? handleLayerEvent : null}
-  on:pointerup={layerEvents ? handleLayerEvent : null}
-  on:pointercancel={layerEvents ? handleLayerEvent : null}
+  bind:this={canvas}
+  bind:clientWidth={canvasWidth}
+  bind:clientHeight={canvasHeight}
+  class={className}
+  width={_width * _pixelRatio}
+  height={_height * _pixelRatio}
+  style:width={width ? `${width}px` : '100%'}
+  style:height={height ? `${height}px` : '100%'}
+  {style}
+  on:touchstart|preventDefault={layerTouchStartHandler}
+  on:mousemove={layerMouseMoveHandler}
+  on:pointermove={layerMouseMoveHandler}
+  on:click={layerEventHandler}
+  on:contextmenu={layerEventHandler}
+  on:dblclick={layerEventHandler}
+  on:mousedown={layerEventHandler}
+  on:mouseenter={layerEventHandler}
+  on:mouseleave={layerEventHandler}
+  on:mouseup={layerEventHandler}
+  on:wheel={layerEventHandler}
+  on:touchcancel|preventDefault={layerEventHandler}
+  on:touchend|preventDefault={layerEventHandler}
+  on:touchmove|preventDefault={layerEventHandler}
+  on:pointerenter={layerEventHandler}
+  on:pointerleave={layerEventHandler}
+  on:pointerdown={layerEventHandler}
+  on:pointerup={layerEventHandler}
+  on:pointercancel={layerEventHandler}
   on:focus
   on:blur
   on:fullscreenchange
@@ -167,14 +189,6 @@
   on:pointerleave
   on:gotpointercapture
   on:lostpointercapture
-  width={width * _pixelRatio}
-  height={height * _pixelRatio}
-  class={clazz}
-  style:display="block"
-  style:width="{width}px"
-  style:height="{height}px"
-  {style}
-  bind:this={canvas}
 />
 
 <div style:display="none" bind:this={layerRef}>

@@ -1,0 +1,14 @@
+---
+title: Canvas + SVG
+---
+
+<script lang="ts">
+  import App from './App.svelte';
+  import Example from '../../_components/Example.svelte';
+
+  export let data;
+</script>
+
+<Example width="960px" aspectRatio="8/5" files={data.files}>
+  <App />
+</Example>

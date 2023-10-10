@@ -1,0 +1,127 @@
+---
+title: Layer
+---
+
+<script lang="ts">
+  import Code from '../../_components/Code.svelte';
+</script>
+
+## {title}
+
+The `Layer` component encapsulates a piece of your canvas rendering logic. When your layer render functions are defined reactively (with `$:`), every layer re-renders when the dependencies of any layer's render function change.
+
+<Code text={`
+<script>
+  import { text } from './store';\n
+  // When the value of the \`text\` store changes, \`render\` is updated,
+  // triggering a render of the current layer as well as all other
+  // layers on the canvas.
+  $: render = ({ context }) => context.fillText($text, 10, 10);
+</script>\n
+<Layer {render} />
+`} />
+
+Render functions are called in the order the layers are defined, so each layer will appear visually on top of the layers that precede it.
+
+### Props
+
+#### `render`
+
+A function that receives a `props` object with the following properties;
+
+<Code lang='ts' text={`
+render: (props: {
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  time: number;
+}): void;
+`} />
+
+
+<Code text={`
+<!-- Render the time since initialization, centered on the canvas. -->
+<Layer render={({ context, width, height, time }) => {
+    context.fillText(time, width / 2, height / 2);
+}} />
+`} />
+
+#### `setup`
+
+The `setup` function has the same signature as `render` but is only called once when the layer is initialized.
+
+<Code lang='ts' text={`
+setup: (props: {
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  time: number;
+}): void;
+`} />
+
+### Event handling
+
+When the `layerEvents` prop on the parent `Canvas` component is `true`, individual `Layer` instances can handle events that fall within the pixels they have rendered on the canvas. Event handlers registered with the `on:` directive receive a `CanvasLayerEvent` with properties `detail.x` and `detail.y` representing the coordinates of the event relative to the parent canvas, as well as `detail.originalEvent`, which contains the original DOM event from the `canvas` element.
+
+<Code text={`<script>
+  import { Canvas, Layer } from 'svelte-canvas';
+</script>
+ 
+<Canvas layerEvents>
+  <Layer on:click={(e) => console.log(e.detail.x, e.detail.y) />
+</Canvas>
+`} />
+
+`Layer` supports the following event types:
+
+`'click' | 'contextmenu' | 'dblclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
+
+Under the hood, `svelte-canvas` proxies all `CanvasRenderingContext2D` methods to a second, offscreen canvas, using a unique fill and stroke color to identify each layer. When an event occurs on the main canvas, the color of the pixel at the event coordinates is read from the offscreen canvas and used to identify the corresponding layer. The event is then re-dispatched to the `Layer` component.
+
+### Types
+
+#### `Render`
+
+The `Render` interface is used to type your setup and render functions. Because types [cannot be used](https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#how-do-i-type-reactive-assignments--i-get-an-implicitly-has-type-any-error) directly with Svelte's reactive declarations, you must define your render function with `let` first.
+
+<Code lang='ts' text={`interface Render {
+  (props: {
+    context: CanvasRenderingContext2D;
+    width: number;
+    height: number;
+    time: number;
+  }): void;
+}`} />
+
+<Code text={`<script>
+  import { Layer, type Render } from 'svelte-canvas';
+  
+  let render: Render;
+  $: render = ({ context }) => { ... };
+</script>
+ 
+<Layer {render} />
+`} />
+
+#### `CanvasLayerEvent`
+
+The `CanvasLayerEvent` type is used to type event objects received by layer event handlers.
+
+<Code lang='ts' text={`type CanvasLayerEvent = CustomEvent<{
+  x: number;
+  y: number;
+  originalEvent: MouseEvent | TouchEvent;
+}>
+`} />
+
+
+<Code text={`<script>
+  import { Layer, type CanvasLayerEvent } from 'svelte-canvas';
+  
+  const handleClick = (e: CanvasLayerEvent) => {
+    console.log(e.detail.x, e.detail.y);
+  };
+</script>
+ 
+<Layer on:click={handleClick} />
+`} />
