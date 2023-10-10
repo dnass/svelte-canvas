@@ -31,10 +31,12 @@
   let context: CanvasRenderingContext2D | HitCanvasRenderingContext2D | null =
     null;
   let layerRef: HTMLDivElement;
-  let parentObserver: ResizeObserver;
 
   let devicePixelRatio: number | undefined;
   let className = '';
+
+  let canvasWidth: number;
+  let canvasHeight: number;
 
   export { className as class, redraw, getCanvas, getContext };
 
@@ -56,13 +58,6 @@
   }
 
   onMount(() => {
-    parentObserver = new ResizeObserver(([{ contentRect }]) => {
-      if (inheritWidth) width = contentRect.width;
-      if (inheritHeight) height = contentRect.height;
-    });
-
-    parentObserver.observe(canvas.parentElement!);
-
     if (layerEvents) {
       context = createHitCanvas(canvas);
       manager.onRenderingLayerIdChange((id) => {
@@ -75,10 +70,7 @@
     manager.init(<CanvasRenderingContext2D>context, layerRef);
   });
 
-  onDestroy(() => {
-    manager.destroy();
-    parentObserver?.disconnect();
-  });
+  onDestroy(() => manager.destroy());
 
   const handleLayerMouseMove = (e: MouseEvent) => {
     const x = e.offsetX * _pixelRatio;
@@ -102,12 +94,8 @@
     manager.dispatchLayerEvent(e);
   };
 
-  $: inheritWidth = !$$props.width;
-  $: inheritHeight = !$$props.height;
-
-  $: _width = width ?? 0;
-  $: _height = height ?? 0;
-
+  $: _width = width ?? canvasWidth ?? 0;
+  $: _height = height ?? canvasHeight ?? 0;
   $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
 
   $: manager.width = _width;
@@ -115,7 +103,8 @@
   $: manager.pixelRatio = _pixelRatio;
   $: manager.autoplay = autoplay;
   $: manager.autoclear = autoclear;
-  $: width, height, _pixelRatio, autoclear, manager.redraw();
+
+  $: _width, _height, _pixelRatio, autoclear, manager.redraw();
 
   $: layerMouseMoveHandler = layerEvents ? handleLayerMouseMove : null;
   $: layerTouchStartHandler = layerEvents ? handleLayerTouchStart : null;
@@ -128,11 +117,13 @@
 
 <canvas
   bind:this={canvas}
+  bind:clientWidth={canvasWidth}
+  bind:clientHeight={canvasHeight}
   class={className}
   width={_width * _pixelRatio}
   height={_height * _pixelRatio}
-  style:width={inheritWidth ? '100%' : `${_width}px`}
-  style:height={inheritHeight ? '100%' : `${_height}px`}
+  style:width={width ? `${width}px` : '100%'}
+  style:height={height ? `${height}px` : '100%'}
   {style}
   on:touchstart|preventDefault={layerTouchStartHandler}
   on:mousemove={layerMouseMoveHandler}
