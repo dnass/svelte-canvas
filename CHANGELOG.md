@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Fix auto resizing.
+
 ## 1.0.0
 
 - Add `autoplay` prop. When `true`, `Canvas` will re-render on every animation frame.
