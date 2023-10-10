@@ -72,6 +72,19 @@
 
   onDestroy(() => manager.destroy());
 
+  const resize = (node: Element) => {
+    const canvasObserver = new ResizeObserver(([{ contentRect }]) => {
+      canvasWidth = contentRect.width;
+      canvasHeight = contentRect.height;
+    });
+
+    canvasObserver.observe(node);
+
+    return {
+      destroy: () => canvasObserver.disconnect(),
+    };
+  };
+
   const handleLayerMouseMove = (e: MouseEvent) => {
     const x = e.offsetX * _pixelRatio;
     const y = e.offsetY * _pixelRatio;
@@ -117,6 +130,7 @@
 
 <canvas
   bind:this={canvas}
+  use:resize
   bind:clientWidth={canvasWidth}
   bind:clientHeight={canvasHeight}
   class={className}
