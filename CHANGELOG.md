@@ -1,3 +1,7 @@
+# 1.0.2
+
+- Move `hit-canvas` to dependencies.
+
 ## 1.0.1
 
 - Fix auto resizing.
