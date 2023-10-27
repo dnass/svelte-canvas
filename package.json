@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -20,6 +20,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "hit-canvas": "^0.1.0",
     "svelte": "^4.0.0"
   },
   "devDependencies": {
@@ -35,7 +36,6 @@
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "geojson": "^0.5.0",
-    "hit-canvas": "^0.1.0",
     "mdsvex": "^0.11.0",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.10.1",
