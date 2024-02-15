@@ -143,24 +143,24 @@ class LayerManager {
     }
   }
 
-  setActiveLayer(layer: number, e: MouseEvent | TouchEvent) {
+  setActiveLayer(layer: number, e: MouseEvent | TouchEvent, boundingClientRect?: DOMRect) {
     if (this.activeLayerId === layer) return;
 
     if (e instanceof MouseEvent) {
-      this.dispatchLayerEvent(new PointerEvent('pointerleave', e));
-      this.dispatchLayerEvent(new MouseEvent('mouseleave', e));
+      this.dispatchLayerEvent(new PointerEvent('pointerleave', e), boundingClientRect);
+      this.dispatchLayerEvent(new MouseEvent('mouseleave', e), boundingClientRect);
     }
 
     this.activeLayerId = layer;
     this.activeLayerDispatcher = this.dispatchers.get(layer);
 
     if (e instanceof MouseEvent) {
-      this.dispatchLayerEvent(new PointerEvent('pointerenter', e));
-      this.dispatchLayerEvent(new MouseEvent('mouseenter', e));
+      this.dispatchLayerEvent(new PointerEvent('pointerenter', e), boundingClientRect);
+      this.dispatchLayerEvent(new MouseEvent('mouseenter', e), boundingClientRect);
     }
   }
 
-  dispatchLayerEvent(e: MouseEvent | TouchEvent) {
+  dispatchLayerEvent(e: MouseEvent | TouchEvent, boundingClientRect?: DOMRect|undefined) {
     if (!this.activeLayerDispatcher) return;
 
     if (window.TouchEvent && e instanceof TouchEvent) {
@@ -173,10 +173,10 @@ class LayerManager {
       };
 
       this.activeLayerDispatcher(<Events>e.type, detail);
-    } else if (e instanceof MouseEvent) {
+    } else if (e instanceof MouseEvent || e instanceof PointerEvent) {
       const detail: LayerEventDetail = {
-        x: e.offsetX,
-        y: e.offsetY,
+        x: boundingClientRect ? e.clientX - boundingClientRect.left : e.offsetX,
+        y: boundingClientRect ? e.clientY - boundingClientRect.top : e.offsetY,
         originalEvent: e,
       };
 

@@ -89,7 +89,7 @@
     const x = e.offsetX * _pixelRatio;
     const y = e.offsetY * _pixelRatio;
     const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
-    manager.setActiveLayer(id, e);
+    manager.setActiveLayer(id, e, canvas.getBoundingClientRect());
     manager.dispatchLayerEvent(e);
   };
 
