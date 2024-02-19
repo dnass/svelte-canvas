@@ -8,6 +8,7 @@
   import { coords, activeLayer } from './store';
 
   const touch = (e) => {
+    e.preventDefault();
     const { left, top } = e.target.getBoundingClientRect();
     const { clientX, clientY } = e.changedTouches[0];
     $coords = [clientX - left, clientY - top];
@@ -40,6 +41,7 @@
 
 <style>
   div {
+    overflow: hidden;
     position: relative;
     aspect-ratio: 5/3;
   }

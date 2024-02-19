@@ -78,6 +78,10 @@ When the `layerEvents` prop on the parent `Canvas` component is `true`, individu
 
 Under the hood, `svelte-canvas` proxies all `CanvasRenderingContext2D` methods to a second, offscreen canvas, using a unique fill and stroke color to identify each layer. When an event occurs on the main canvas, the color of the pixel at the event coordinates is read from the offscreen canvas and used to identify the corresponding layer. The event is then re-dispatched to the `Layer` component.
 
+#### Touch events
+
+By default, `svelte-canvas` does not call `preventDefault` on layer touch events. To prevent `touchmove` events from scrolling the page, call `e.detail.originalEvent.preventDefault()` in your layer event handler.
+
 ### Types
 
 #### `Render`

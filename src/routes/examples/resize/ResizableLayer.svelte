@@ -54,7 +54,10 @@
   {bounds}
   show={active}
   on:mouseenter={() => (hoveredHandle = SURFACE)}
-  on:touchstart={() => (draggedHandle = SURFACE)}
+  on:touchstart={(e) => {
+    e.detail.originalEvent.preventDefault();
+    draggedHandle = SURFACE;
+  }}
   on:mouseleave={() => (hoveredHandle = null)}
   on:mousedown={() => (draggedHandle = SURFACE)}
   on:mousedown
@@ -68,7 +71,10 @@
       x={handle & W ? x0 : handle & E ? x1 : (x0 + x1) / 2}
       y={handle & N ? y0 : handle & S ? y1 : (y0 + y1) / 2}
       on:mouseenter={() => (hoveredHandle = handle)}
-      on:touchstart={() => (draggedHandle = handle)}
+      on:touchstart={(e) => {
+        e.detail.originalEvent.preventDefault();
+        draggedHandle = handle;
+      }}
       on:mouseleave={() => (hoveredHandle = null)}
       on:mousedown={() => (draggedHandle = handle)}
       on:mousedown
