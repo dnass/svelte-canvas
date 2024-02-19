@@ -25,7 +25,7 @@
   $: path = geoPath(projection);
 </script>
 
-<Canvas autoplay on:resize={({ detail }) => (width = detail.width)}>
+<Canvas autoplay onresize={(e) => (width = e.width)}>
   <!-- Graticule -->
   <Layer
     render={({ context, time }) => {

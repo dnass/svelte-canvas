@@ -6,7 +6,9 @@
     HANDLES = [N, S, E, W, N | E, N | W, S | E, S | W],
     SURFACE = N | S | E | W;
 
-  export let initialBounds = { x0: 160, y0: 160, x1: 480, y1: 480 };
+  export let initialBounds = { x0: 160, y0: 160, x1: 480, y1: 480 },
+    mousedown,
+    touchstart;
 
   let { x0, y0, x1, y1 } = initialBounds;
 
@@ -53,12 +55,16 @@
 <Surface
   {bounds}
   show={active}
-  on:mouseenter={() => (hoveredHandle = SURFACE)}
-  on:touchstart={() => (draggedHandle = SURFACE)}
-  on:mouseleave={() => (hoveredHandle = null)}
-  on:mousedown={() => (draggedHandle = SURFACE)}
-  on:mousedown
-  on:touchstart
+  mouseenter={() => (hoveredHandle = SURFACE)}
+  touchstart={() => {
+    draggedHandle = SURFACE;
+    touchstart();
+  }}
+  mouseleave={() => (hoveredHandle = null)}
+  mousedown={() => {
+    draggedHandle = SURFACE;
+    mousedown();
+  }}
 />
 
 {#if active}
@@ -67,12 +73,16 @@
       active={handle === hoveredHandle || handle === draggedHandle}
       x={handle & W ? x0 : handle & E ? x1 : (x0 + x1) / 2}
       y={handle & N ? y0 : handle & S ? y1 : (y0 + y1) / 2}
-      on:mouseenter={() => (hoveredHandle = handle)}
-      on:touchstart={() => (draggedHandle = handle)}
-      on:mouseleave={() => (hoveredHandle = null)}
-      on:mousedown={() => (draggedHandle = handle)}
-      on:mousedown
-      on:touchstart
+      mouseenter={() => (hoveredHandle = handle)}
+      touchstart={() => {
+        draggedHandle = handle;
+        touchstart();
+      }}
+      mouseleave={() => (hoveredHandle = null)}
+      mousedown={() => {
+        draggedHandle = handle;
+        mousedown();
+      }}
     />
   {/each}
 {/if}

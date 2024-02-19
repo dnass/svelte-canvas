@@ -13,8 +13,8 @@
     {@const c = (i + 1) * 85}
     <ResizableLayer
       initialBounds={{ x0: c, y0: c, x1: c + 338, y1: c + 338 }}
-      on:mousedown={() => sort(color)}
-      on:touchstart={() => sort(color)}
+      mousedown={() => sort(color)}
+      touchstart={() => sort(color)}
       let:bounds
     >
       <Layer

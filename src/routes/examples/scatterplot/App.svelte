@@ -46,9 +46,9 @@
 
 <Canvas
   style="cursor: pointer"
-  on:resize={({ detail }) => {
-    width = detail.width;
-    height = detail.height;
+  onresize={(e) => {
+    width = e.width;
+    height = e.height;
   }}
   on:mousemove={({ offsetX, offsetY }) => {
     const i = delaunay.find(offsetX, offsetY);

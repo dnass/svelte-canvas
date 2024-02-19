@@ -27,7 +27,7 @@ Render functions are called in the order the layers are defined, so each layer w
 
 #### `render`
 
-A function that receives a `props` object with the following properties;
+A function that receives a `props` object with the following properties:
 
 <Code lang='ts' text={`
 render: (props: {

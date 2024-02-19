@@ -1,13 +1,29 @@
-import type { createEventDispatcher } from 'svelte';
+export type CanvasProps = {
+  width?: number;
+  height?: number;
+  pixelRatio?: number;
+  class?: string;
+  style?: string;
+  autoplay?: boolean;
+  autoclear?: boolean;
+  layerEvents?: boolean;
+  onresize?: (detail: ResizeDetail) => void;
+  children?: any;
+};
 
-export interface Render {
-  (props: {
-    context: CanvasRenderingContext2D;
-    width: number;
-    height: number;
-    time: number;
-  }): void;
-}
+export type Render = (props: {
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  time: number;
+}) => void;
+
+export type LayerProps = { 
+  setup?: Render;
+  render: Render;
+} & {
+  [key in Events]?: (detail: LayerEventDetail) => void;
+};
 
 export type Events =
   | 'click'
@@ -42,10 +58,6 @@ export type LayerEvents = {
 
 export type CanvasLayerEvent = CustomEvent<LayerEventDetail>;
 
-export type LayerEventDispatcher = ReturnType<
-  typeof createEventDispatcher<LayerEvents>
->;
+export type LayerEventDispatcher = (event: Events, detail: LayerEventDetail) => void;
 
-export type ResizeEvent = {
-  resize: { width: number; height: number };
-};
+export type ResizeDetail = { width: number; height: number };

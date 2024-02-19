@@ -1,22 +1,12 @@
 <script>
   import { Layer } from '$lib';
 
-  export let x,
-    y,
-    active = false;
+  let { x, y, active = false, ...eventHandlers } = $props();
 
-  $: render = ({ context }) => {
+  const render = $derived(({ context }) => {
     context.fillStyle = active ? '#111' : '#444';
     context.fillRect(x - 6, y - 6, 12, 12);
-  };
+  });
 </script>
 
-<Layer
-  {render}
-  on:mouseenter
-  on:mouseleave
-  on:mousedown
-  on:mouseup
-  on:touchstart
-  on:touchend
-/>
+<Layer {render} {...eventHandlers} />

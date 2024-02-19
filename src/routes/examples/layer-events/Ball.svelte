@@ -11,6 +11,7 @@
   const radius = spring(80, { stiffness: 0.15, damping: 0.2 });
 
   $: setup = ({ width, height }) => {
+    console.log({ width, height });
     _x = spring(width * x, { stiffness: 0.15, damping: 0.2 });
     _y = spring(height * y, { stiffness: 0.15, damping: 0.2 });
   };

@@ -96,6 +96,11 @@ class LayerManager {
     this.startRenderLoop();
   }
 
+  setProp(prop: keyof this, value: any) {
+    this[prop] = value;
+    this.redraw();
+  }
+
   observeLayerSequence() {
     this.layerObserver = new MutationObserver(() => this.getLayerSequence());
     this.layerObserver.observe(this.layerRef!, { childList: true });

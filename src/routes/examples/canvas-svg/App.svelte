@@ -33,7 +33,7 @@
     {/if}
   </svg>
   <Canvas
-    on:resize={({ detail }) => (width = detail.width)}
+    onresize={(e) => (width = e.width)}
     style="position: absolute"
     autoplay
   >
