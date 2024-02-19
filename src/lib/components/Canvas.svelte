@@ -139,7 +139,7 @@
   style:width={width ? `${width}px` : '100%'}
   style:height={height ? `${height}px` : '100%'}
   {style}
-  on:touchstart|preventDefault={layerTouchStartHandler}
+  on:touchstart={layerTouchStartHandler}
   on:mousemove={layerMouseMoveHandler}
   on:pointermove={layerMouseMoveHandler}
   on:click={layerEventHandler}
@@ -150,9 +150,9 @@
   on:mouseleave={layerEventHandler}
   on:mouseup={layerEventHandler}
   on:wheel={layerEventHandler}
-  on:touchcancel|preventDefault={layerEventHandler}
-  on:touchend|preventDefault={layerEventHandler}
-  on:touchmove|preventDefault={layerEventHandler}
+  on:touchcancel={layerEventHandler}
+  on:touchend={layerEventHandler}
+  on:touchmove={layerEventHandler}
   on:pointerenter={layerEventHandler}
   on:pointerleave={layerEventHandler}
   on:pointerdown={layerEventHandler}
