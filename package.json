@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
