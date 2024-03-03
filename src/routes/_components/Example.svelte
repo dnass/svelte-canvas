@@ -3,7 +3,7 @@
 
   export let width: string = '100%',
     aspectRatio: string = '1',
-    files: string[] = [];
+    files: string[][] = [];
 </script>
 
 <div style:max-width={width} style:aspect-ratio={aspectRatio}>

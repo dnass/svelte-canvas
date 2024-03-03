@@ -26,10 +26,11 @@ When unset, the canvas will use the height of its parent element.
 
 #### `pixelRatio`
 
-When unset, the canvas will use Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel ratio.
+If `pixelRatio` is unset, the canvas uses Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel density.
 
-<Code lang='ts' text='pixelRatio: number = window.devicePixelRatio ?? 2;' />
+If `pixelRatio` is set to `'auto'`, the [`canvas-size` library](https://github.com/jhildenbiddle/canvas-size) is used to automatically calculate the maximum supported pixel ratio based on the browser and canvas size. This can be particularly useful when rendering [large canvases on iOS Safari](https://pqina.nl/blog/canvas-area-exceeds-the-maximum-limit/).
 
+<Code lang='ts' text="pixelRatio: number | 'auto' = window.devicePixelRatio ?? 2;" />
 
 #### `style`
 
@@ -112,9 +113,9 @@ Forces a re-render of the canvas.
 
 #### `resize`
 
-Fires when the canvas is resized.
+Fires when the canvas is resized or the pixel ratio changes.
 
-<Code lang='ts' text={'resize: CustomEvent<{ width: number; height: number; }>;'} />
+<Code lang='ts' text={'resize: CustomEvent<{ width: number; height: number; pixelRatio: number; }>;'} />
 
 <Code text={'<Canvas on:resize={(e) => console.log(e.detail.width)} />'} />
 
