@@ -20,6 +20,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "canvas-size": "^1.2.6",
     "hit-canvas": "^0.1.0",
     "svelte": "^4.0.0"
   },
@@ -28,6 +29,7 @@
     "@sveltejs/kit": "^2.5.0",
     "@sveltejs/package": "^2.2.2",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/canvas-size": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "d3-delaunay": "^6.0.2",

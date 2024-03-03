@@ -18,10 +18,11 @@
     setContext,
     createEventDispatcher,
   } from 'svelte';
+  import { getMaxPixelRatio } from '../util/getMaxPixelRatio';
 
   export let width: number | null = null,
     height: number | null = null,
-    pixelRatio: number | null = null,
+    pixelRatio: number | 'auto' | null = null,
     style = '',
     autoplay = false,
     autoclear = true,
@@ -33,6 +34,7 @@
   let layerRef: HTMLDivElement;
 
   let devicePixelRatio: number | undefined;
+  let maxPixelRatio: number | undefined;
   let className = '';
 
   let canvasWidth: number;
@@ -109,7 +111,14 @@
 
   $: _width = width ?? canvasWidth ?? 0;
   $: _height = height ?? canvasHeight ?? 0;
-  $: _pixelRatio = pixelRatio ?? devicePixelRatio ?? 2;
+
+  $: if (devicePixelRatio && pixelRatio === 'auto') {
+    maxPixelRatio = getMaxPixelRatio(_width, _height, devicePixelRatio);
+  } else {
+    maxPixelRatio = undefined;
+  }
+
+  $: _pixelRatio = maxPixelRatio ?? <number>pixelRatio ?? devicePixelRatio ?? 2;
 
   $: manager.width = _width;
   $: manager.height = _height;
@@ -123,7 +132,11 @@
   $: layerTouchStartHandler = layerEvents ? handleLayerTouchStart : null;
   $: layerEventHandler = layerEvents ? handleLayerEvent : null;
 
-  $: dispatch('resize', { width: _width, height: _height });
+  $: dispatch('resize', {
+    width: _width,
+    height: _height,
+    pixelRatio: _pixelRatio,
+  });
 </script>
 
 <svelte:window bind:devicePixelRatio />
