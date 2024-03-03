@@ -87,6 +87,7 @@
   }
 
   .header {
+    top: 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
