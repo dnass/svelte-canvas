@@ -159,18 +159,18 @@
   on:contextmenu={layerEventHandler}
   on:dblclick={layerEventHandler}
   on:mousedown={layerEventHandler}
-  on:mouseenter={layerEventHandler}
-  on:mouseleave={layerEventHandler}
   on:mouseup={layerEventHandler}
   on:wheel={layerEventHandler}
   on:touchcancel={layerEventHandler}
   on:touchend={layerEventHandler}
   on:touchmove={layerEventHandler}
-  on:pointerenter={layerEventHandler}
-  on:pointerleave={layerEventHandler}
   on:pointerdown={layerEventHandler}
   on:pointerup={layerEventHandler}
   on:pointercancel={layerEventHandler}
+  on:layer.mouseenter={layerEventHandler}
+  on:layer.mouseleave={layerEventHandler}
+  on:layer.pointerenter={layerEventHandler}
+  on:layer.pointerleave={layerEventHandler}
   on:focus
   on:blur
   on:fullscreenchange

@@ -1,4 +1,5 @@
 import type { createEventDispatcher } from 'svelte';
+import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements';
 
 export interface Render {
   (props: {
@@ -49,3 +50,14 @@ export type LayerEventDispatcher = ReturnType<
 export type ResizeEvent = {
   resize: { width: number; height: number; pixelRatio: number };
 };
+
+declare global {
+  namespace svelteHTML {
+    interface HTMLAttributes<T> {
+      'on:layer.mouseenter'?: MouseEventHandler<T> | undefined | null;
+      'on:layer.mouseleave'?: MouseEventHandler<T> | undefined | null;
+      'on:layer.pointerenter'?: PointerEventHandler<T> | undefined | null;
+      'on:layer.pointerleave'?: PointerEventHandler<T> | undefined | null;
+    }
+  }
+}
