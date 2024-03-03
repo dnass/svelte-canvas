@@ -47,5 +47,5 @@ export type LayerEventDispatcher = ReturnType<
 >;
 
 export type ResizeEvent = {
-  resize: { width: number; height: number };
+  resize: { width: number; height: number; pixelRatio: number };
 };
