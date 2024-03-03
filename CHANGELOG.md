@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Rebuild package.
+
 ## 1.1.0
 
 - Add `pixelRatio: 'auto'` setting.
