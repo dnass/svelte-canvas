@@ -1,16 +1,11 @@
 <script>
   import { Canvas, Layer } from '$lib';
-  import { onMount } from 'svelte';
   import { geoOrthographic, geoGraticule10, geoPath } from 'd3-geo';
   import { feature } from 'topojson-client';
+  import land from 'world-atlas/land-110m.json';
 
-  let width, map;
-
-  onMount(() =>
-    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json')
-      .then((data) => data.json())
-      .then((data) => (map = feature(data, 'land'))),
-  );
+  let width,
+    map = feature(land, 'land');
 
   $: pad = width * 0.02;
 

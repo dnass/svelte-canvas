@@ -50,7 +50,9 @@
     "topojson-client": "^3.1.0",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
-    "vite": "^5.0.0"
+    "us-atlas": "^3.0.1",
+    "vite": "^5.0.0",
+    "world-atlas": "^2.0.2"
   },
   "type": "module",
   "exports": {
