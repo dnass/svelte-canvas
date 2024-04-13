@@ -1,3 +1,7 @@
+## 1.1.2
+
+- Correctly handle nine-argument `drawImage`.
+
 ## 1.1.1
 
 - Rebuild package.
