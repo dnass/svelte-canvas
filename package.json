@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -21,7 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "canvas-size": "^1.2.6",
-    "hit-canvas": "^0.1.0",
+    "hit-canvas": "^0.1.1",
     "svelte": "^4.0.0"
   },
   "devDependencies": {
