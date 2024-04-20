@@ -1,23 +1,14 @@
 <script>
-  import { onMount } from 'svelte';
   import { Canvas } from '$lib';
   import { mesh, feature } from 'topojson-client';
   import { geoIdentity, geoPath } from 'd3-geo';
   import Bubble from './Bubble.svelte';
+  import us from 'us-atlas/states-albers-10m.json';
 
   let width;
 
   $: projection = geoIdentity().scale(width / 975);
   $: path = geoPath(projection);
-
-  let us;
-
-  onMount(async () => {
-    const data = await fetch(
-      'https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json',
-    );
-    us = await data.json();
-  });
 
   $: centroids = us
     ? feature(us, us.objects.states)

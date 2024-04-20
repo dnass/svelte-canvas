@@ -152,16 +152,16 @@ class LayerManager {
     if (this.activeLayerId === layer) return;
 
     if (e instanceof MouseEvent) {
-      this.dispatchLayerEvent(new PointerEvent('pointerleave', e));
-      this.dispatchLayerEvent(new MouseEvent('mouseleave', e));
+      e.target?.dispatchEvent(new PointerEvent('layer.pointerleave', e));
+      e.target?.dispatchEvent(new MouseEvent('layer.mouseleave', e));
     }
 
     this.activeLayerId = layer;
     this.activeLayerDispatcher = this.dispatchers.get(layer);
 
     if (e instanceof MouseEvent) {
-      this.dispatchLayerEvent(new PointerEvent('pointerenter', e));
-      this.dispatchLayerEvent(new MouseEvent('mouseenter', e));
+      e.target?.dispatchEvent(new PointerEvent('layer.pointerenter', e));
+      e.target?.dispatchEvent(new MouseEvent('layer.mouseenter', e));
     }
   }
 
@@ -185,7 +185,8 @@ class LayerManager {
         originalEvent: e,
       };
 
-      this.activeLayerDispatcher(<Events>e.type, detail);
+      const baseEventType = <Events>e.type.replace('layer.', '');
+      this.activeLayerDispatcher(baseEventType, detail);
     }
   }
 

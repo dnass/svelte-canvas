@@ -13,6 +13,7 @@
     type HitCanvasRenderingContext2D,
   } from 'hit-canvas';
   import { onDestroy, setContext } from 'svelte';
+  import { getMaxPixelRatio } from '../util/getMaxPixelRatio';
 
   let {
     width,
@@ -32,12 +33,21 @@
   let layerRef: HTMLDivElement;
 
   let devicePixelRatio: number = $state(2);
+  let maxPixelRatio: number | undefined = $state()
   let canvasWidth: number = $state(0);
   let canvasHeight: number = $state(0);
 
   const _width = $derived(width ?? canvasWidth);
   const _height = $derived(height ?? canvasHeight);
   const _pixelRatio = $derived(pixelRatio ?? devicePixelRatio);
+
+  $effect(() => {
+    if (devicePixelRatio && pixelRatio === 'auto') {
+      maxPixelRatio = getMaxPixelRatio(_width, _height, devicePixelRatio);
+    } else {
+      maxPixelRatio = undefined;
+    }
+  });
 
   $effect(() => console.log({ _width, _height }));
 
@@ -99,7 +109,7 @@
     manager.dispatchLayerEvent(e);
   };
 
-  $effect(() => onresize?.({ width: _width, height: _height }));
+  $effect(() => onresize?.({ width: _width, height: _height, pixelRatio: _pixelRatio }));
 </script>
 
 <svelte:window bind:devicePixelRatio />
@@ -133,6 +143,10 @@
   onpointerdown={handleLayerEvent}
   onpointerup={handleLayerEvent}
   onpointercancel={handleLayerEvent}
+  onlayer.mouseenter={handleLayerEvent}
+  onlayer.mouseleave={handleLayerEvent}
+  onlayer.pointerenter={handleLayerEvent}
+  onlayer.pointerleave={handleLayerEvent}
 />
 
 <div style:display="none" bind:this={layerRef}>

@@ -1,3 +1,5 @@
+import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements';
+
 export type CanvasProps = {
   width?: number;
   height?: number;
@@ -60,4 +62,15 @@ export type CanvasLayerEvent = CustomEvent<LayerEventDetail>;
 
 export type LayerEventDispatcher = (event: Events, detail: LayerEventDetail) => void;
 
-export type ResizeDetail = { width: number; height: number };
+export type ResizeDetail = { width: number; height: number; pixelRatio: number };
+
+declare global {
+  namespace svelteHTML {
+    interface HTMLAttributes<T> {
+      'onlayer.mouseenter'?: MouseEventHandler<T> | undefined | null;
+      'onlayer.mouseleave'?: MouseEventHandler<T> | undefined | null;
+      'onlayer.pointerenter'?: PointerEventHandler<T> | undefined | null;
+      'onlayer.pointerleave'?: PointerEventHandler<T> | undefined | null;
+    }
+  }
+}

@@ -10,6 +10,7 @@ const menu = {
     'Hello world': '/examples/hello-world',
     'Reactive render': '/examples/reactive-render',
     'Layer events': '/examples/layer-events',
+    'Pixel ratio': '/examples/pixel-ratio',
     Scatterplot: '/examples/scatterplot',
     Globe: '/examples/globe',
     'DVD bounce': '/examples/dvd-bounce',

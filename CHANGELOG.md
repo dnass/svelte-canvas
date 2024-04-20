@@ -1,4 +1,18 @@
-# 1.0.2
+## 1.1.2
+
+- Correctly handle nine-argument `drawImage`.
+
+## 1.1.1
+
+- Rebuild package.
+
+## 1.1.0
+
+- Add `pixelRatio: 'auto'` setting.
+- `preventDefault` is no longer called on touch events when `layerEvents={true}`.
+- `e.detail.x`, `e.detail.y`, and `e.detail.originalEvent.target` are now set correctly on layer `mouseenter` and `mouseleave` events.
+
+## 1.0.2
 
 - Move `hit-canvas` to dependencies.
 

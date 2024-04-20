@@ -37,7 +37,8 @@
     radius.set(80);
   };
 
-  const onDown = () => {
+  const onDown = (e) => {
+    e.detail.originalEvent.preventDefault();
     dragging = true;
     radius.set(120);
   };
