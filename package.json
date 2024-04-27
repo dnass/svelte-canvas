@@ -21,7 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "canvas-size": "^1.2.6",
-    "hit-canvas": "^0.1.1",
+    "hit-canvas": "^0.2.0",
     "svelte": "^4.0.0"
   },
   "devDependencies": {

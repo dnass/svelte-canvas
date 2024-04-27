@@ -69,7 +69,11 @@ p {
 h3,
 h4 {
   position: relative;
-  margin: 0.5rem 0 0;
+  margin: 2rem 0 0;
+}
+
+h3 + h4 {
+  margin-top: 0.5rem;
 }
 
 :is(h3, h4):hover .icon-link:before {
