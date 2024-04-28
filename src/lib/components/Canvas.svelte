@@ -26,7 +26,8 @@
     style = '',
     autoplay = false,
     autoclear = true,
-    layerEvents = false;
+    layerEvents = false,
+    contextSettings: CanvasRenderingContext2DSettings | undefined = undefined;
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | HitCanvasRenderingContext2D | null =
@@ -61,12 +62,12 @@
 
   onMount(() => {
     if (layerEvents) {
-      context = createHitCanvas(canvas);
+      context = createHitCanvas(canvas, contextSettings);
       manager.onRenderingLayerIdChange((id) => {
         (<HitCanvasRenderingContext2D>context).setCurrentLayerId(id);
       });
     } else {
-      context = canvas.getContext('2d');
+      context = canvas.getContext('2d', contextSettings);
     }
 
     manager.init(<CanvasRenderingContext2D>context, layerRef);

@@ -37,14 +37,14 @@ export type LayerEventDetail = {
   originalEvent: MouseEvent | TouchEvent;
 };
 
-export type LayerEvents = {
+export type LayerEventMap = {
   [E in Events]: LayerEventDetail;
 };
 
 export type CanvasLayerEvent = CustomEvent<LayerEventDetail>;
 
 export type LayerEventDispatcher = ReturnType<
-  typeof createEventDispatcher<LayerEvents>
+  typeof createEventDispatcher<LayerEventMap>
 >;
 
 export type ResizeEvent = {

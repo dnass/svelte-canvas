@@ -1,3 +1,8 @@
+## 1.2.0
+
+- Add `contextSettings` prop.
+- Fix layer event handler typing.
+
 ## 1.1.2
 
 - Correctly handle nine-argument `drawImage`.
