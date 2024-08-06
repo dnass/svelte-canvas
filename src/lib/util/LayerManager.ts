@@ -1,22 +1,23 @@
 import type {
   Render,
-  Events,
-  LayerEventDetail,
-  LayerEventDispatcher,
+  LayerEventHandler,
+  LayerEventHandlers,
+  RegisterLayer,
 } from '../types';
+import type { HitCanvasRenderingContext2D } from 'hit-canvas';
 
 class LayerManager {
   currentLayerId: number;
 
   setups: Map<number, Render>;
   renderers: Map<number, Render>;
-  dispatchers: Map<number, LayerEventDispatcher>;
+  eventHandlers: Map<number, LayerEventHandlers>;
 
   startTime: number;
 
   needsRedraw: boolean;
 
-  context?: CanvasRenderingContext2D;
+  context?: CanvasRenderingContext2D | HitCanvasRenderingContext2D;
 
   width?: number;
   height?: number;
@@ -31,8 +32,7 @@ class LayerManager {
   layerSequence: number[];
 
   activeLayerId: number;
-  activeLayerDispatcher?: LayerEventDispatcher;
-  renderingLayerIdChangeCallback?: (layerId: number) => void;
+  activeLayerEventHandlers?: LayerEventHandlers;
 
   constructor() {
     this.register = this.register.bind(this);
@@ -42,7 +42,7 @@ class LayerManager {
     this.currentLayerId = 1;
     this.setups = new Map();
     this.renderers = new Map();
-    this.dispatchers = new Map();
+    this.eventHandlers = new Map();
 
     this.startTime = Date.now();
 
@@ -57,22 +57,14 @@ class LayerManager {
     this.needsRedraw = true;
   }
 
-  register({
-    setup,
-    render,
-    dispatcher,
-  }: {
-    setup?: Render;
-    render: Render;
-    dispatcher: LayerEventDispatcher;
-  }) {
+  register({ setup, render, eventHandlers }: RegisterLayer) {
     if (setup) {
       this.setups.set(this.currentLayerId, setup);
     }
 
     this.renderers.set(this.currentLayerId, render);
 
-    this.dispatchers.set(this.currentLayerId, dispatcher);
+    this.eventHandlers.set(this.currentLayerId, eventHandlers);
 
     this.needsRedraw = true;
 
@@ -85,7 +77,7 @@ class LayerManager {
 
   unregister(layerId: number) {
     this.renderers.delete(layerId);
-    this.dispatchers.delete(layerId);
+    this.eventHandlers.delete(layerId);
     this.needsRedraw = true;
   }
 
@@ -119,7 +111,7 @@ class LayerManager {
   }
 
   render() {
-    const context = this.context!;
+    const context = <CanvasRenderingContext2D>this.context;
     const width = this.width!;
     const height = this.height!;
     const pixelRatio = this.pixelRatio!;
@@ -140,7 +132,7 @@ class LayerManager {
       }
 
       for (const layerId of this.layerSequence) {
-        this.renderingLayerIdChangeCallback?.(layerId);
+        (<HitCanvasRenderingContext2D>this.context).setCurrentLayerId?.(layerId);
         this.renderers.get(layerId)?.(renderProps);
       }
 
@@ -157,7 +149,7 @@ class LayerManager {
     }
 
     this.activeLayerId = layer;
-    this.activeLayerDispatcher = this.dispatchers.get(layer);
+    this.activeLayerEventHandlers = this.eventHandlers.get(layer);
 
     if (e instanceof MouseEvent) {
       e.target?.dispatchEvent(new PointerEvent('layer.pointerenter', e));
@@ -166,32 +158,28 @@ class LayerManager {
   }
 
   dispatchLayerEvent(e: MouseEvent | TouchEvent) {
-    if (!this.activeLayerDispatcher) return;
+    if (!this.activeLayerEventHandlers) return;
+
+    const eventType = <LayerEventHandler>`on${e.type.replace('layer.', '')}`;
+    const eventHandler = this.activeLayerEventHandlers[eventType];
+    if (!eventHandler) return;
 
     if (window.TouchEvent && e instanceof TouchEvent) {
       const { left, top } = (<Element>e.target).getBoundingClientRect();
       const { clientX, clientY } = e.changedTouches[0];
-      const detail: LayerEventDetail = {
+
+      eventHandler({
         x: clientX - left,
         y: clientY - top,
         originalEvent: e,
-      };
-
-      this.activeLayerDispatcher(<Events>e.type, detail);
+      });
     } else if (e instanceof MouseEvent) {
-      const detail: LayerEventDetail = {
+      eventHandler({
         x: e.offsetX,
         y: e.offsetY,
         originalEvent: e,
-      };
-
-      const baseEventType = <Events>e.type.replace('layer.', '');
-      this.activeLayerDispatcher(baseEventType, detail);
+      });
     }
-  }
-
-  onRenderingLayerIdChange(callback: (layerId: number) => void) {
-    this.renderingLayerIdChangeCallback = callback;
   }
 
   destroy() {

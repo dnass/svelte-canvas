@@ -4,20 +4,22 @@
   import { feature } from 'topojson-client';
   import land from 'world-atlas/land-110m.json';
 
-  let width,
-    map = feature(land, 'land');
+  const map = feature(land, 'land');
 
-  $: pad = width * 0.02;
+  let width = $state();
+  const pad = $derived(width * 0.02);
 
-  $: projection = geoOrthographic().fitExtent(
-    [
-      [pad, pad],
-      [width - pad, width - pad],
-    ],
-    { type: 'Sphere' },
+  const projection = $derived(
+    geoOrthographic().fitExtent(
+      [
+        [pad, pad],
+        [width - pad, width - pad],
+      ],
+      { type: 'Sphere' },
+    ),
   );
 
-  $: path = geoPath(projection);
+  const path = $derived(geoPath(projection));
 </script>
 
 <Canvas autoplay onresize={(e) => (width = e.width)}>

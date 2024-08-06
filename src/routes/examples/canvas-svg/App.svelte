@@ -5,16 +5,18 @@
   import Bubble from './Bubble.svelte';
   import us from 'us-atlas/states-albers-10m.json';
 
-  let width;
+  let width = $state();
 
-  $: projection = geoIdentity().scale(width / 975);
-  $: path = geoPath(projection);
+  const projection = $derived(geoIdentity().scale(width / 975));
+  const path = $derived(geoPath(projection));
 
-  $: centroids = us
-    ? feature(us, us.objects.states)
-        .features.map(path.centroid)
-        .sort(([a], [b]) => b - a)
-    : [];
+  const centroids = $derived(
+    us
+      ? feature(us, us.objects.states)
+          .features.map(path.centroid)
+          .sort(([a], [b]) => b - a)
+      : [],
+  );
 </script>
 
 <div>

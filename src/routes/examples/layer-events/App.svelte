@@ -15,14 +15,8 @@
   };
 </script>
 
-<Canvas layerEvents>
+<Canvas pixelRatio="auto" layerEvents>
   {#each balls as { color, x, y } (color)}
-    <Ball
-      {color}
-      {x}
-      {y}
-      on:mousedown={() => reorder(color)}
-      on:touchstart={() => reorder(color)}
-    />
+    <Ball {color} {x} {y} onclick={() => reorder(color)} />
   {/each}
 </Canvas>

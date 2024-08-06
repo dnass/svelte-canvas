@@ -50,7 +50,7 @@
     width = e.width;
     height = e.height;
   }}
-  on:mousemove={({ offsetX, offsetY }) => {
+  onmousemove={({ offsetX, offsetY }) => {
     const i = delaunay.find(offsetX, offsetY);
     if (i) {
       picked = points[i].id;
@@ -58,9 +58,9 @@
       points = points;
     }
   }}
-  on:mouseout={() => (picked = null)}
-  on:mousedown={() => (click = true)}
-  on:mouseup={() => (click = false)}
+  onmouseout={() => (picked = null)}
+  onmousedown={() => (click = true)}
+  onmouseup={() => (click = false)}
 >
   <Axis type="x" scale={x} tickNumber={8} {margin} />
   <Axis type="y" scale={y} tickNumber={10} {margin} />

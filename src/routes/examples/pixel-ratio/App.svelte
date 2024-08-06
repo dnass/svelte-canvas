@@ -14,22 +14,9 @@
     { value: 'auto', label: "'auto'" },
   ];
 
-  let heightSetting = heights[0];
-  let pixelRatioSetting = pixelRatios[0];
-
-  let pixelRatioValue;
-
-  $: render = ({ context, width }) => {
-    context.font = `${width / 20}px 'Fira Mono', monospace`;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillStyle = 'tomato';
-    context.fillText(
-      `pixelRatio: ${pixelRatioValue.toFixed(1)}`,
-      width / 2,
-      width / 4,
-    );
-  };
+  let heightSetting = $state(heights[0]);
+  let pixelRatioSetting = $state(pixelRatios[0]);
+  let pixelRatioValue = $state();
 </script>
 
 <div class="controls">
@@ -37,7 +24,7 @@
     canvas height:
     {#each heights as option}
       <button
-        on:click={() => (heightSetting = option)}
+        onclick={() => (heightSetting = option)}
         disabled={option.label === heightSetting.label}
       >
         {option.label}
@@ -49,7 +36,7 @@
     pixel ratio:
     {#each pixelRatios as option}
       <button
-        on:click={() => (pixelRatioSetting = option)}
+        onclick={() => (pixelRatioSetting = option)}
         disabled={option.label === pixelRatioSetting.label}
       >
         {option.label}
@@ -61,9 +48,21 @@
 <Canvas
   height={heightSetting.value}
   pixelRatio={pixelRatioSetting.value}
-  on:resize={(e) => (pixelRatioValue = e.detail.pixelRatio)}
+  onresize={(e) => (pixelRatioValue = e.pixelRatio)}
 >
-  <Layer {render} />
+  <Layer
+    render={({ context, width }) => {
+      context.font = `${width / 20}px 'Fira Mono', monospace`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillStyle = 'tomato';
+      context.fillText(
+        `pixelRatio: ${pixelRatioValue?.toFixed(1)}`,
+        width / 2,
+        width / 4,
+      );
+    }}
+  />
 </Canvas>
 
 <style>

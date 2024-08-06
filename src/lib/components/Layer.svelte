@@ -1,17 +1,12 @@
 <script lang="ts">
-  import type { LayerEventDispatcher, LayerProps } from '../types';
   import { onDestroy } from 'svelte';
-  import { getRegisterLayer } from './Canvas.svelte';
+  import type { LayerProps } from '../types';
+  import { register } from './Canvas.svelte';
 
-  let { setup, render, ...props } = $props<LayerProps>();
+  const { setup, render, ...eventHandlers }: LayerProps = $props();
 
-  const dispatcher: LayerEventDispatcher = (type, detail) => {
-    props[type]?.(detail);
-  };
+  const layer = { setup, render, eventHandlers: { ...eventHandlers } };
 
-  const layer = { setup, render, dispatcher };
-
-  const register = getRegisterLayer();
   const { layerId, unregister } = register(layer);
 
   onDestroy(unregister);

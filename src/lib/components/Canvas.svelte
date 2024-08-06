@@ -1,13 +1,15 @@
 <script context="module" lang="ts">
-  import { getContext as getCtx } from 'svelte';
+  import { getContext } from 'svelte';
   import LayerManager from '../util/LayerManager';
+  import type { RegisterLayer } from '../types';
 
   const KEY = Symbol();
-  export const getRegisterLayer = (): LayerManager['register'] => getCtx(KEY);
+  export const register = (layer: RegisterLayer) =>
+    (<LayerManager['register']>getContext(KEY))(layer);
 </script>
 
 <script lang="ts">
-  import type { CanvasProps } from '../types';
+  import type { CanvasProps, LayerEventHandler } from '../types';
   import {
     createHitCanvas,
     type HitCanvasRenderingContext2D,
@@ -26,39 +28,44 @@
     layerEvents = false,
     onresize,
     children,
-  } = $props<CanvasProps>();
+    ...props
+  }: CanvasProps = $props();
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D | HitCanvasRenderingContext2D;
   let layerRef: HTMLDivElement;
 
   let devicePixelRatio: number = $state(2);
-  let maxPixelRatio: number | undefined = $state()
+  let maxPixelRatio: number | null = $state(null);
   let canvasWidth: number = $state(0);
   let canvasHeight: number = $state(0);
 
   const _width = $derived(width ?? canvasWidth);
   const _height = $derived(height ?? canvasHeight);
-  const _pixelRatio = $derived(pixelRatio ?? devicePixelRatio);
+  const _pixelRatio = $derived.by(() => {
+    if (maxPixelRatio) return maxPixelRatio;
+    if (pixelRatio && pixelRatio !== 'auto') return pixelRatio;
+    return devicePixelRatio;
+  });
 
   $effect(() => {
     if (devicePixelRatio && pixelRatio === 'auto') {
       maxPixelRatio = getMaxPixelRatio(_width, _height, devicePixelRatio);
     } else {
-      maxPixelRatio = undefined;
+      maxPixelRatio = null;
     }
   });
 
-  $effect(() => console.log({ _width, _height }));
+  $effect(() => {
+    onresize?.({ width: _width, height: _height, pixelRatio: _pixelRatio });
+  });
 
   const manager = new LayerManager();
   setContext(KEY, manager.register);
 
   const redraw = () => manager.redraw();
-  const getCanvas = () => canvas;
-  const getContext = () => <CanvasRenderingContext2D>context;
 
-  export { redraw, getCanvas, getContext };
+  export { redraw, canvas, context };
 
   $effect(() => manager.setProp('width', _width));
   $effect(() => manager.setProp('height', _height));
@@ -69,47 +76,70 @@
   $effect(() => {
     if (layerEvents) {
       context = createHitCanvas(canvas);
-      manager.onRenderingLayerIdChange((id) => {
-        (<HitCanvasRenderingContext2D>context).setCurrentLayerId(id);
-      });
     } else {
       context = canvas.getContext('2d')!;
     }
 
-    manager.init(<CanvasRenderingContext2D>context, layerRef);
+    manager.init(context, layerRef);
   });
 
   onDestroy(() => manager.destroy());
 
-  const handleLayerMouseMove = (e: MouseEvent) => {
+  const handleEvent = (e: MouseEvent | TouchEvent) => {
+    props[`on${e.type}` as LayerEventHandler]?.(e);
+
     if (!layerEvents) return;
 
-    const x = e.offsetX * _pixelRatio;
-    const y = e.offsetY * _pixelRatio;
-    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
-    manager.setActiveLayer(id, e);
-    manager.dispatchLayerEvent(e);
+    switch (e.type) {
+      case 'touchstart': {
+        const { clientX, clientY } = (e as TouchEvent).changedTouches[0];
+        const { left, top } = canvas.getBoundingClientRect();
+        const x = (clientX - left) * _pixelRatio;
+        const y = (clientY - top) * _pixelRatio;
+        const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
+        manager.setActiveLayer(id, e);
+        manager.dispatchLayerEvent(e);
+        break;
+      }
+      case 'mousemove':
+      case 'pointermove': {
+        const x = (e as MouseEvent).offsetX * _pixelRatio;
+        const y = (e as MouseEvent).offsetY * _pixelRatio;
+        const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
+        manager.setActiveLayer(id, e);
+        manager.dispatchLayerEvent(e);
+        break;
+      }
+      default:
+        manager.dispatchLayerEvent(e);
+    }
   };
 
-  const handleLayerTouchStart = (e: TouchEvent) => {
-    if (!layerEvents) return;
-
-    const { clientX, clientY } = e.changedTouches[0];
-    const { left, top } = canvas.getBoundingClientRect();
-    const x = (clientX - left) * _pixelRatio;
-    const y = (clientY - top) * _pixelRatio;
-    const id = (<HitCanvasRenderingContext2D>context).getLayerIdAt(x, y);
-    manager.setActiveLayer(id, e);
-    manager.dispatchLayerEvent(e);
-  };
-
-  const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
-    if (!layerEvents) return;
-
-    manager.dispatchLayerEvent(e);
-  };
-
-  $effect(() => onresize?.({ width: _width, height: _height, pixelRatio: _pixelRatio }));
+  const layerEventHandlers = [
+    'onclick',
+    'oncontextmenu',
+    'ondblclick',
+    'onmousedown',
+    'onmouseenter',
+    'onmouseleave',
+    'onmouseup',
+    'onmousemove',
+    'onwheel',
+    'ontouchstart',
+    'ontouchcancel',
+    'ontouchend',
+    'ontouchmove',
+    'onpointerenter',
+    'onpointerleave',
+    'onpointerdown',
+    'onpointerup',
+    'onpointermove',
+    'onpointercancel',
+    'onlayer.mouseenter',
+    'onlayer.mouseleave',
+    'onlayer.pointerenter',
+    'onlayer.pointerleave',
+  ].reduce((acc, type) => ({ ...acc, [type]: handleEvent }), {});
 </script>
 
 <svelte:window bind:devicePixelRatio />
@@ -121,34 +151,12 @@
   class={className}
   width={_width * _pixelRatio}
   height={_height * _pixelRatio}
+  {style}
   style:width={width ? `${width}px` : '100%'}
   style:height={height ? `${height}px` : '100%'}
-  {style}
-  ontouchstart={handleLayerTouchStart}
-  onmousemove={handleLayerMouseMove}
-  onpointermove={handleLayerMouseMove}
-  onclick={handleLayerEvent}
-  oncontextmenu={handleLayerEvent}
-  ondblclick={handleLayerEvent}
-  onmousedown={handleLayerEvent}
-  onmouseenter={handleLayerEvent}
-  onmouseleave={handleLayerEvent}
-  onmouseup={handleLayerEvent}
-  onwheel={handleLayerEvent}
-  ontouchcancel={handleLayerEvent}
-  ontouchend={handleLayerEvent}
-  ontouchmove={handleLayerEvent}
-  onpointerenter={handleLayerEvent}
-  onpointerleave={handleLayerEvent}
-  onpointerdown={handleLayerEvent}
-  onpointerup={handleLayerEvent}
-  onpointercancel={handleLayerEvent}
-  onlayer.mouseenter={handleLayerEvent}
-  onlayer.mouseleave={handleLayerEvent}
-  onlayer.pointerenter={handleLayerEvent}
-  onlayer.pointerleave={handleLayerEvent}
-/>
+  {...layerEventHandlers}
+></canvas>
 
 <div style:display="none" bind:this={layerRef}>
-  {@render children()}
+  {@render children?.()}
 </div>

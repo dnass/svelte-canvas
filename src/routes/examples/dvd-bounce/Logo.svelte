@@ -1,24 +1,23 @@
 <script>
   import { Layer } from '$lib';
-  import { onMount } from 'svelte';
   import Logo from './DVD_logo.svg?raw';
 
-  let logo;
+  let logo = $state();
 
-  onMount(() => {
+  $effect(() => {
     logo = new Image();
     logo.src = `data:image/svg+xml,${encodeURIComponent(Logo)}`;
   });
 
-  let x = 0,
-    y = 0,
-    xflip = 1,
-    yflip = 1;
+  let x = $state(0);
+  let y = $state(0);
+  let xflip = $state(1);
+  let yflip = $state(1);
+  let colorIndex = $state(0);
 
   const colors = ['tomato', 'goldenrod', 'mediumturquoise'];
-  let colorIndex = 0;
 
-  $: render = ({ context, width, height }) => {
+  const render = $derived(({ context, width, height }) => {
     const w = Math.min(210, width / 3);
     const h = w / 2;
 
@@ -36,7 +35,7 @@
     context.fillRect(0, 0, width, height);
     context.globalCompositeOperation = 'destination-in';
     context.drawImage(logo, x, y, w, h);
-  };
+  });
 </script>
 
 <Layer {render} />

@@ -3,18 +3,14 @@
   import { tweened } from 'svelte/motion';
   import { quadOut as easing } from 'svelte/easing';
 
-  let position = $state();
+  const position = tweened([0.5, 0.5], { duration: 400, easing });
 
   $effect(() => {
-    position = tweened([0.5, 0.5], { duration: 400, easing });
-
-    setInterval(() => {
-      position.set([Math.random(), Math.random()]);
-    }, 500);
+    setInterval(() => ($position = [Math.random(), Math.random()]), 500);
   });
 
   const render = $derived(({ context, width, height }) => {
-    const [x, y] = console.log(position);
+    const [x, y] = $position;
     context.fillStyle = 'tomato';
     context.beginPath();
     context.arc(x * width, y * height, 20, 0, 2 * Math.PI);
