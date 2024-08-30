@@ -22,7 +22,7 @@
   "dependencies": {
     "canvas-size": "^1.2.6",
     "hit-canvas": "^0.2.0",
-    "svelte": "^4.0.0"
+    "svelte": "^4.2.19"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.0",
