@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Bump Svelte to 4.2.19.
+
 ## 1.2.0
 
 - Add `contextSettings` prop.
