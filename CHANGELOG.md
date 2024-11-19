@@ -1,3 +1,12 @@
+## 1.2.1
+
+- Bump Svelte to 4.2.19.
+
+## 1.2.0
+
+- Add `contextSettings` prop.
+- Fix layer event handler typing.
+
 ## 1.1.2
 
 - Correctly handle nine-argument `drawImage`.

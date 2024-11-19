@@ -62,6 +62,14 @@ If `true`, enables event handling on child `Layer` components. This has a perfor
 
 <Code lang='ts' text='layerEvents: boolean = false;' />
 
+#### `contextSettings`
+
+A settings object passed to [`canvas.getContext`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext#contextattributes). 
+
+<Code lang='ts' text='contextSettings: CanvasRenderingContext2DSettings | undefined = undefined;' />
+
+<Code lang='ts' text={`<Canvas contextSettings={{ alpha: false }} />`} />
+
 ### Properties
 
 #### `canvas`
