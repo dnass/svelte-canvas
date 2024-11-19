@@ -6,7 +6,7 @@ title: Layer Events
   import App from './App.svelte';
   import Example from '../../_components/Example.svelte';
 
-  let { data } = $props();
+  export let data;
 </script>
 
 <Example files={data.files}>

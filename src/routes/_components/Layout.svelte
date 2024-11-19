@@ -2,12 +2,12 @@
   import './page.css';
   import { page } from '$app/stores';
   import { browser, version } from '$app/environment';
-  import NavMenu, { type NavItems } from './_components/NavMenu.svelte';
+  import NavMenu, { type NavItems } from './NavMenu.svelte';
   import type { Snippet } from 'svelte';
 
   let {
     data,
-    title = '',
+    title,
     children,
   }: { data: { menu: NavItems }; title: string; children: Snippet } = $props();
 

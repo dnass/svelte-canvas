@@ -6,7 +6,7 @@ title: Pixel Ratio
   import App from './App.svelte';
   import Example from '../../_components/Example.svelte';
 
-  let { data } = $props();
+  export let data;
 </script>
 
 <Example aspectRatio="2/1" files={data.files}>
