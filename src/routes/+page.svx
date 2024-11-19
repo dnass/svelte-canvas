@@ -10,4 +10,4 @@ title: Getting Started
 
 <Demo />
 
-<Code lang="ts" text="npm install svelte-canvas" />
+<Code lang="text" text="npm install svelte-canvas" />

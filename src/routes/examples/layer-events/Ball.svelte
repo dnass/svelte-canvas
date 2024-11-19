@@ -16,7 +16,7 @@
     _y = spring(height * y, { stiffness: 0.15, damping: 0.2 });
   };
 
-  const render = $derived(({ context }) => {
+  const render = ({ context }) => {
     context.globalCompositeOperation = 'screen';
     context.fillStyle = color;
     context.lineWidth = 10;
@@ -24,7 +24,7 @@
     context.arc($_x, $_y, $radius, 0, Math.PI * 2);
     context.fill();
     context.stroke();
-  });
+  };
 
   const onEnter = () => {
     document.body.style.cursor = 'pointer';
@@ -38,7 +38,6 @@
   };
 
   const onDown = (e) => {
-    e.originalEvent.preventDefault();
     dragging = true;
     radius.set(120);
     onclick?.();

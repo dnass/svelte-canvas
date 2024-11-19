@@ -10,6 +10,7 @@
     initialBounds = { x0: 160, y0: 160, x1: 480, y1: 480 },
     onmousedown,
     ontouchstart,
+    content,
   } = $props();
 
   let x0 = $state(initialBounds.x0);
@@ -57,13 +58,13 @@
   }}
 />
 
-<slot {bounds} />
+{@render content(bounds)}
 
 <Surface
   {bounds}
   show={active}
   onmouseenter={() => {
-    hoveredHandle = handle;
+    hoveredHandle = SURFACE;
   }}
   ontouchstart={() => {
     draggedHandle = SURFACE;
@@ -85,7 +86,6 @@
       x={handle & W ? x0 : handle & E ? x1 : (x0 + x1) / 2}
       y={handle & N ? y0 : handle & S ? y1 : (y0 + y1) / 2}
       onmouseenter={() => {
-        console.log('here');
         hoveredHandle = handle;
       }}
       ontouchstart={() => {

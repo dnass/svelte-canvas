@@ -5,7 +5,7 @@
   import Bubble from './Bubble.svelte';
   import us from 'us-atlas/states-albers-10m.json';
 
-  let width = $state();
+  let width = $state(0);
 
   const projection = $derived(geoIdentity().scale(width / 975));
   const path = $derived(geoPath(projection));

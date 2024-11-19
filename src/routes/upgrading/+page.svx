@@ -1,0 +1,106 @@
+---
+title: Upgrading to v2
+---
+
+<script lang="ts">
+  import Code from '../_components/Code.svelte';
+</script>
+
+## {title}
+
+`svelte-canvas@2` has been rewritten for [Svelte 5](https://svelte.dev/docs/svelte/v5-migration-guide). General usage and features have not changed, but the components make use of new Svelte 5 syntax.
+
+### `Canvas`
+
+#### Event handlers
+
+`svelte-canvas@2` uses Svelte 5's new event syntax. Event handlers are now passed as props, rather than using the `on:` prefix. The `onresize` component event payload no longer has a `detail` property.
+
+<Code lang="svelte" text={`
+<!-- Before -->
+<Canvas
+  on:click={() => console.log("clicked")}
+  on:resize={(e) => console.log(e.detail.width)}
+/>
+ 
+<!-- After -->
+<Canvas
+  onclick={() => console.log("clicked")}
+  onresize={(e) => console.log(e.width)}
+/>
+`} />
+
+#### Methods
+
+The `getCanvas` and `getContext` methods have been removed. Instead, you can use the component instance's `canvas` and `context` properties to access the canvas and context.
+
+<Code lang="svelte" text={`
+<!-- Before -->
+<script>
+  let canvas;
+  $: canvas?.getCanvas(); // HTMLCanvasElement
+  $: canvas?.getContext(); // CanvasRenderingContext2D
+</script>
+ 
+<Canvas bind:this={canvas} />
+`}/>
+
+<Code lang="svelte" text={`
+<!-- After -->
+<script>
+  let canvas;
+  $effect(() => {
+    canvas?.canvas; // HTMLCanvasElement
+    canvas?.context; // CanvasRenderingContext2D
+  });
+</script>
+ 
+<Canvas bind:this={canvas} />
+`}/>
+
+### `Layer`
+
+#### Event handlers
+
+`Layer` event handlers also make use of the new Svelte 5 syntax. Layer event callbacks now receive plain objects rather than `CustomEvent`s. The layer event handler payload type has been renamed from `CanvasLayerEvent` to `LayerEvent`.
+
+<Code lang="svelte" text={`
+<!-- Before -->
+<script>
+  import { Layer, type CanvasLayerEvent } from 'svelte-canvas';
+  
+  const handleClick = (e: CanvasLayerEvent) => {
+    console.log(e.detail.x, e.detail.y);
+  };
+</script>
+ 
+<Layer on:click={handleClick} />
+`} />
+
+<Code lang="svelte" text={`
+<!-- After -->
+<script>
+  import { Layer, type LayerEvent } from 'svelte-canvas';
+  
+  const handleClick = (e: LayerEvent) => {
+    console.log(e.x, e.y);
+  };
+</script>
+ 
+<Layer onclick={handleClick} />
+`} />
+
+#### Render function reactivity
+
+In v1, `render` functions had to be declared reactively with `$:`. In v2, `render` functions can simply be declared with `const`. The `$derived` rune is not needed for reactive rendering.
+
+<Code lang="ts" text={`
+// Before
+let render: Render;
+$: render = ({ context }) => { ... };
+`} />
+
+<Code lang="ts" text={`
+// After
+const render: Render = ({ context }) => { ... };
+`} />

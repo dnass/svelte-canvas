@@ -1,9 +1,10 @@
-export async function load({ route }) {
+export function load({ route }) {
   const [, category, page] = route.id.split('/');
 
   if (category === 'examples') {
-    const allFiles = await import.meta.glob('./*/**.svelte', {
-      as: 'raw',
+    const allFiles = import.meta.glob<string>('./*/**.svelte', {
+      query: '?raw',
+      import: 'default',
       eager: true,
     });
 

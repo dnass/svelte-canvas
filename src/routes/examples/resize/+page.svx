@@ -6,7 +6,7 @@ title: Resizable Layer
   import App from './App.svelte';
   import Example from '../../_components/Example.svelte';
 
-  export let data;
+  let { data } = $props();
 </script>
 
 <Example files={data.files}>

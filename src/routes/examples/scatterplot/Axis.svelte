@@ -3,7 +3,7 @@
 
   const { scale, tickSize = 4, margin, tickNumber = 10, type = 'x' } = $props();
 
-  const render = $derived(({ context, height }) => {
+  const render = ({ context, height }) => {
     const ticks = scale.ticks(tickNumber);
     context.beginPath();
 
@@ -31,7 +31,7 @@
         context.fillText(d, margin.left - tickSize - 1, scale(d));
       }
     });
-  });
+  };
 </script>
 
 <Layer {render} />

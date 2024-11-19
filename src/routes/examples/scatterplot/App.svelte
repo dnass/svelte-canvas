@@ -10,10 +10,11 @@
 
   const margin = { top: 24, right: 24, bottom: 36, left: 36 };
 
-  let points = [];
-  let width, height;
-  let picked = null,
-    click = false;
+  let points = $state([]),
+    width = $state(),
+    height = $state(),
+    picked = $state(null),
+    click = $state(false);
 
   onMount(() =>
     fetch(
@@ -27,20 +28,26 @@
       }),
   );
 
-  $: x = scaleLinear()
-    .domain(extent(points, (d) => d.mpg))
-    .range([margin.left, width - margin.right])
-    .nice();
+  let x = $derived(
+    scaleLinear()
+      .domain(extent(points, (d) => d.mpg))
+      .range([margin.left, width - margin.right])
+      .nice(),
+  );
 
-  $: y = scaleLinear()
-    .domain(extent(points, (d) => d.hp))
-    .range([height - margin.bottom, margin.top])
-    .nice();
+  let y = $derived(
+    scaleLinear()
+      .domain(extent(points, (d) => d.hp))
+      .range([height - margin.bottom, margin.top])
+      .nice(),
+  );
 
-  $: delaunay = Delaunay.from(
-    points,
-    (d) => x(d.mpg),
-    (d) => y(d.hp),
+  let delaunay = $derived(
+    Delaunay.from(
+      points,
+      (d) => x(d.mpg),
+      (d) => y(d.hp),
+    ),
   );
 </script>
 

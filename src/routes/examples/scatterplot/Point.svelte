@@ -16,7 +16,7 @@
     radius.set(r);
   });
 
-  const render = $derived(({ context }) => {
+  const render = ({ context }) => {
     const r = Math.max($radius, 0);
 
     context.fillStyle = fill;
@@ -31,7 +31,7 @@
       context.arc(x, y, r + strokeWidth / 2, 0, 2 * Math.PI);
       context.stroke();
     }
-  });
+  };
 </script>
 
 <Layer {render} />

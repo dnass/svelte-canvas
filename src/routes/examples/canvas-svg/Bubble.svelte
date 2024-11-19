@@ -3,7 +3,7 @@
   import { quadInOut } from 'svelte/easing';
   import { piecewise, interpolateRgbBasis } from 'd3-interpolate';
 
-  export let x, y, i;
+  let { x, y, i } = $props();
 
   const pieces = piecewise([
     { r: 0.005, alpha: 0.1 },
@@ -18,7 +18,7 @@
     'mediumturquoise',
   ]);
 
-  $: render = ({ context, width, time }) => {
+  const render = ({ context, width, time }) => {
     const { r, alpha } = scale(((time / 25 + i * 3) % 100) / 100);
 
     context.fillStyle = interpolate(1 - i / 50);

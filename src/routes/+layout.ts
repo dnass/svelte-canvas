@@ -2,6 +2,7 @@ export const prerender = true;
 
 const menu = {
   'Getting started': '',
+  'Upgrading to v2': '/upgrading',
   Components: {
     Canvas: '/components/canvas',
     Layer: '/components/layer',

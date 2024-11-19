@@ -1,10 +1,7 @@
 <script>
   import DemoLayer from './DemoLayer.svelte';
 
-  export let text,
-    scale,
-    opacity = 1,
-    yOffset = 0;
+  let { text, scale, opacity = 1, yOffset = 0 } = $props();
 </script>
 
 <DemoLayer

@@ -62,37 +62,43 @@ If `true`, enables event handling on child `Layer` components. This has a perfor
 
 <Code lang='ts' text='layerEvents: boolean = false;' />
 
+### Properties
+
+#### `canvas`
+
+A reference to the canvas DOM element.
+
+<Code lang='ts' text='canvas: HTMLCanvasElement;' />
+
+<Code text={`
+<script>
+  let canvas;
+  $effect(() => {
+    canvas?.canvas; // HTMLCanvasElement
+  });
+</script>\n
+
+<Canvas bind:this={canvas} />
+`} />
+
+#### `context`
+
+A reference to the canvas's 2D rendering context.
+
+<Code lang='ts' text='context: CanvasRenderingContext2D;' />
+
+<Code text={`
+<script>
+  let canvas;
+  $effect(() => {
+    canvas?.context; // CanvasRenderingContext2D
+  });
+</script>\n
+
+<Canvas bind:this={canvas} />
+`} />
+
 ### Methods
-
-#### `getCanvas`
-
-Returns a reference to the canvas DOM element.
-
-<Code lang='ts' text='getCanvas(): HTMLCanvasElement;' />
-
-<Code text={`
-<script>
-  let canvas;
-  $: canvas?.getCanvas(); // HTMLCanvasElement
-</script>\n
-
-<Canvas bind:this={canvas} />
-`} />
-
-#### `getContext`
-
-Returns a reference to the canvas's 2D rendering context.
-
-<Code lang='ts' text='getContext(): CanvasRenderingContext2D;' />
-
-<Code text={`
-<script>
-  let canvas;
-  $: canvas?.getContext(); // CanvasRenderingContext2D
-</script>\n
-
-<Canvas bind:this={canvas} />
-`} />
 
 #### `redraw`
 
@@ -103,7 +109,9 @@ Forces a re-render of the canvas.
 <Code text={`
 <script>
   let canvas;
-  $: canvas?.redraw();
+  $effect(() => {
+    canvas?.redraw();
+  });
 </script>\n
 
 <Canvas bind:this={canvas} />
@@ -115,14 +123,26 @@ Forces a re-render of the canvas.
 
 Fires when the canvas is resized or the pixel ratio changes.
 
-<Code lang='ts' text={'resize: CustomEvent<{ width: number; height: number; pixelRatio: number; }>;'} />
+<Code lang='ts' text={`type CanvasResizeEvent = {
+  width: number;
+  height: number;
+  pixelRatio: number;
+};`} />
 
-<Code text={'<Canvas on:resize={(e) => console.log(e.detail.width)} />'} />
+<Code text={`
+<script>
+  import { Canvas, type CanvasResizeEvent } from 'svelte-canvas';
+ 
+  const onresize = (e: CanvasResizeEvent) => console.log(e.width);
+</script>
+ 
+<Canvas {onresize} />`
+} />
 
 ### Event handling
 
 DOM event handlers added to the `Canvas` component will be forwarded to the canvas element. For example:
 
-<Code text={'<Canvas on:click={() => console.log("clicked")} />'} />
+<Code text={'<Canvas onclick={() => console.log("clicked")} />'} />
 
 Events can also be handled at the layer level. See the [`Layer` component](/svelte-canvas/components/layer#event-handling) for more information.

@@ -4,7 +4,7 @@
   import { quadInOut as easing } from 'svelte/easing';
   import { coords, activeLayer } from './store';
 
-  export let name, render;
+  let { name, render } = $props();
 
   const id = Symbol();
 
@@ -21,19 +21,22 @@
   const opacity = styleTween(1);
   const scale = spring(1, { stiffness: 0.1, damping: 0.2 });
 
-  $: active = $activeLayer?.id === id;
-  $: inactive = $activeLayer?.id && !active;
+  let active = $derived($activeLayer?.id === id);
+  let inactive = $derived($activeLayer?.id && !active);
 
-  $: blur.set(inactive ? 0.018 : 0);
-  $: saturation.set(inactive ? 0.4 : 1);
-  $: opacity.set(inactive ? 0.5 : 1);
-  $: scale.set(
-    !$activeLayer?.id ? 1 : (!active ? 0.95 : 1.1) + Math.random() / 10,
-  );
+  $effect(() => {
+    blur.set(inactive ? 0.018 : 0);
+    saturation.set(inactive ? 0.4 : 1);
+    opacity.set(inactive ? 0.5 : 1);
+  });
 
-  $: [x, y] = $coords;
+  $effect(() => {
+    scale.set(
+      !$activeLayer?.id ? 1 : (!active ? 0.95 : 1.1) + Math.random() / 10,
+    );
+  });
 
-  $: styleActive = (context) => () => {
+  let styleActive = $derived((context) => () => {
     if (active) {
       context.setLineDash([4, 4]);
       context.strokeStyle = '#dcdcdc';
@@ -41,9 +44,10 @@
     }
 
     return active;
-  };
+  });
 
-  $: _render = ({ context, width, height, time }) => {
+  const _render = ({ context, width, height, time }) => {
+    const [x, y] = $coords;
     context.save();
     context.translate(x, y);
     context.scale($scale, $scale);
@@ -56,11 +60,11 @@
 </script>
 
 <Layer
-  on:pointerenter={() => ($activeLayer = { name, id })}
-  on:touchstart={() => ($activeLayer = { name, id })}
-  on:pointerleave={() => ($activeLayer = null)}
-  on:touchend={() => ($activeLayer = null)}
-  on:pointerdown={() => scale.set(0.95)}
-  on:pointerup={() => scale.set(1.1)}
+  onpointerenter={() => ($activeLayer = { name, id })}
+  ontouchstart={() => ($activeLayer = { name, id })}
+  onpointerleave={() => ($activeLayer = null)}
+  ontouchend={() => ($activeLayer = null)}
+  onpointerdown={() => scale.set(0.95)}
+  onpointerup={() => scale.set(1.1)}
   render={_render}
 />

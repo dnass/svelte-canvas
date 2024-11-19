@@ -1,13 +1,13 @@
 <script>
   import { Layer } from '$lib';
   import { coords, activeLayer } from './store';
-
-  $: [x, y] = $coords;
-  $: text = `<${$activeLayer?.name} />`;
 </script>
 
 <Layer
   render={({ context }) => {
+    const [x, y] = $coords;
+    const text = `<${$activeLayer?.name} />`;
+
     const size = 17;
     const tooltipX = x + size;
     const tooltipY = y + size;

@@ -10,6 +10,6 @@
   };
 </script>
 
-<Canvas autoplay>
+<Canvas>
   <Layer {render} />
 </Canvas>

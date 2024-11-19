@@ -1,5 +1,5 @@
 import adapter from '@sveltejs/adapter-static';
-import preprocess from 'svelte-preprocess';
+import { sveltePreprocess } from 'svelte-preprocess';
 import { mdsvex } from 'mdsvex';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -10,11 +10,8 @@ const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
   preprocess: [
-    mdsvex({
-      rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
-      layout: 'src/routes/_components/Layout.svelte',
-    }),
-    preprocess(),
+    mdsvex({ rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings] }),
+    sveltePreprocess(),
   ],
 
   extensions: ['.svelte', '.svx'],
