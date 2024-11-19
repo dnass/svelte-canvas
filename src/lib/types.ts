@@ -1,80 +1,12 @@
 import type { Snippet } from 'svelte';
 import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements';
+import type { HitCanvasRenderingContext2D } from 'hit-canvas';
 
-type CanvasEvent =
-  | 'focus'
-  | 'blur'
-  | 'fullscreenchange'
-  | 'fullscreenerror'
-  | 'scroll'
-  | 'cut'
-  | 'copy'
-  | 'paste'
-  | 'keydown'
-  | 'keypress'
-  | 'keyup'
-  | 'auxclick'
-  | 'click'
-  | 'contextmenu'
-  | 'dblclick'
-  | 'mousedown'
-  | 'mouseenter'
-  | 'mouseleave'
-  | 'mousemove'
-  | 'mouseover'
-  | 'mouseout'
-  | 'mouseup'
-  | 'select'
-  | 'wheel'
-  | 'drag'
-  | 'dragend'
-  | 'dragenter'
-  | 'dragstart'
-  | 'dragleave'
-  | 'dragover'
-  | 'drop'
-  | 'touchcancel'
-  | 'touchend'
-  | 'touchmove'
-  | 'touchstart'
-  | 'pointerover'
-  | 'pointerenter'
-  | 'pointerdown'
-  | 'pointermove'
-  | 'pointerup'
-  | 'pointercancel'
-  | 'pointerout'
-  | 'pointerleave'
-  | 'gotpointercapture'
-  | 'lostpointercapture';
+export type CanvasContext =
+  | CanvasRenderingContext2D
+  | HitCanvasRenderingContext2D;
 
-export type CanvasProps = {
-  width?: number;
-  height?: number;
-  pixelRatio?: number | 'auto';
-  class?: string;
-  style?: string;
-  autoplay?: boolean;
-  autoclear?: boolean;
-  layerEvents?: boolean;
-  onresize?: (detail: {
-    width: number;
-    height: number;
-    pixelRatio: number;
-  }) => void;
-  children?: Snippet;
-} & {
-  [key in `on${CanvasEvent}`]?: (event: Event) => void;
-};
-
-export type Render = (props: {
-  context: CanvasRenderingContext2D;
-  width: number;
-  height: number;
-  time: number;
-}) => void;
-
-export type LayerEvent =
+export type LayerEvents =
   | 'click'
   | 'contextmenu'
   | 'dblclick'
@@ -95,28 +27,96 @@ export type LayerEvent =
   | 'pointerup'
   | 'pointercancel';
 
-export type LayerEventDetail = {
+export type LayerEventHandler = `on${LayerEvents}`;
+
+type CanvasEvents =
+  | LayerEvents
+  | 'focus'
+  | 'blur'
+  | 'fullscreenchange'
+  | 'fullscreenerror'
+  | 'scroll'
+  | 'cut'
+  | 'copy'
+  | 'paste'
+  | 'keydown'
+  | 'keypress'
+  | 'keyup'
+  | 'auxclick'
+  | 'mouseover'
+  | 'mouseout'
+  | 'select'
+  | 'drag'
+  | 'dragend'
+  | 'dragenter'
+  | 'dragstart'
+  | 'dragleave'
+  | 'dragover'
+  | 'drop'
+  | 'pointerover'
+  | 'pointerout'
+  | 'pointerleave'
+  | 'gotpointercapture'
+  | 'lostpointercapture';
+
+export type CanvasEventHandler = `on${CanvasEvents}`;
+
+export type CanvasEventHandlers = {
+  [key in CanvasEventHandler]?: (event: Event) => void;
+};
+
+export type CanvasResizeEvent = {
+  width: number;
+  height: number;
+  pixelRatio: number;
+};
+
+export type CanvasProps = {
+  width?: number;
+  height?: number;
+  pixelRatio?: number | 'auto';
+  class?: string;
+  style?: string;
+  autoplay?: boolean;
+  autoclear?: boolean;
+  layerEvents?: boolean;
+  onresize?: (detail: CanvasResizeEvent) => void;
+  contextSettings?: CanvasRenderingContext2DSettings;
+  children?: Snippet;
+} & CanvasEventHandlers;
+
+export type CanvasConfig = {
+  width: number;
+  height: number;
+  pixelRatio: number;
+  autoplay: boolean;
+  autoclear: boolean;
+  layerEvents: boolean;
+  contextSettings?: CanvasRenderingContext2DSettings;
+  handlers: CanvasEventHandlers;
+};
+
+export type Render = (props: {
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  time: number;
+}) => void;
+
+export type LayerEvent = {
   x: number;
   y: number;
   originalEvent: MouseEvent | TouchEvent;
 };
 
-export type LayerEventHandler = `on${LayerEvent}`;
-
 export type LayerEventHandlers = {
-  [key in LayerEventHandler]?: (detail: LayerEventDetail) => void;
+  [key in LayerEventHandler]?: (detail: LayerEvent) => void;
 };
 
 export type LayerProps = {
   setup?: Render;
   render: Render;
 } & LayerEventHandlers;
-
-export interface RegisterLayer {
-  setup?: Render;
-  render: Render;
-  eventHandlers: LayerEventHandlers;
-}
 
 declare global {
   namespace svelteHTML {
