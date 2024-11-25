@@ -55,7 +55,6 @@ type CanvasEvents =
   | 'drop'
   | 'pointerover'
   | 'pointerout'
-  | 'pointerleave'
   | 'gotpointercapture'
   | 'lostpointercapture';
 

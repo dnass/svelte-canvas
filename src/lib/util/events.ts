@@ -11,6 +11,7 @@ export const getEventCoords = (e: MouseEvent | TouchEvent) => {
 };
 
 export const SUPPORTED_EVENTS = [
+  // Canvas and layer events
   'onclick',
   'oncontextmenu',
   'ondblclick',
@@ -30,8 +31,38 @@ export const SUPPORTED_EVENTS = [
   'onpointerup',
   'onpointermove',
   'onpointercancel',
+
+  // Layer custom events
   'onlayer.mouseenter',
   'onlayer.mouseleave',
   'onlayer.pointerenter',
   'onlayer.pointerleave',
+
+  // Canvas events
+  'onfocus',
+  'onblur',
+  'onfullscreenchange',
+  'onfullscreenerror',
+  'onscroll',
+  'oncut',
+  'oncopy',
+  'onpaste',
+  'onkeydown',
+  'onkeypress',
+  'onkeyup',
+  'onauxclick',
+  'onmouseover',
+  'onmouseout',
+  'onselect',
+  'ondrag',
+  'ondragend',
+  'ondragenter',
+  'ondragstart',
+  'ondragleave',
+  'ondragover',
+  'ondrop',
+  'onpointerover',
+  'onpointerout',
+  'ongotpointercapture',
+  'onlostpointercapture',
 ];
