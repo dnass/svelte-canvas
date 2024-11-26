@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Fix layer unregistering.
+
 ## 2.0.0
 
 - Svelte 5 rewrite — [read the migration guide.](https://dnass.github.io/svelte-canvas/upgrading)
