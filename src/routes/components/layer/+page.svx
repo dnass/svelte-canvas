@@ -73,7 +73,7 @@ When the `layerEvents` prop on the parent `Canvas` component is `true`, individu
 
 `Layer` supports the following event types:
 
-`'click' | 'contextmenu' | 'dblclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
+`'click' | 'contextmenu' | 'dblclick' | 'auxclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
 
 Under the hood, `svelte-canvas` proxies all `CanvasRenderingContext2D` methods to a second, offscreen canvas, using a unique fill and stroke color to identify each layer. When an event occurs on the main canvas, the color of the pixel at the event coordinates is read from the offscreen canvas and used to identify the corresponding layer. The event is then re-dispatched to the `Layer` component.
 

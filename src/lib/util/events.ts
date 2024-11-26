@@ -10,11 +10,22 @@ export const getEventCoords = (e: MouseEvent | TouchEvent) => {
   return { x, y };
 };
 
+export const dispatchLayerEvent = (
+  e: MouseEvent | TouchEvent,
+  type: 'enter' | 'leave',
+) => {
+  if (!(e instanceof MouseEvent)) return;
+
+  e.target?.dispatchEvent(new PointerEvent(`layer.pointer${type}`, e));
+  e.target?.dispatchEvent(new MouseEvent(`layer.mouse${type}`, e));
+};
+
 export const SUPPORTED_EVENTS = [
   // Canvas and layer events
   'onclick',
   'oncontextmenu',
   'ondblclick',
+  'onauxclick',
   'onmousedown',
   'onmouseenter',
   'onmouseleave',
@@ -50,7 +61,6 @@ export const SUPPORTED_EVENTS = [
   'onkeydown',
   'onkeypress',
   'onkeyup',
-  'onauxclick',
   'onmouseover',
   'onmouseout',
   'onselect',

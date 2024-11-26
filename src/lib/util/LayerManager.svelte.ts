@@ -1,7 +1,7 @@
 import type { HitCanvasRenderingContext2D as HitContext } from 'hit-canvas';
 import { onDestroy, untrack } from 'svelte';
 import { SvelteMap } from 'svelte/reactivity';
-import { getEventCoords, SUPPORTED_EVENTS } from './events';
+import { dispatchLayerEvent, getEventCoords, SUPPORTED_EVENTS } from './events';
 import { warn } from './console';
 import type {
   CanvasContext,
@@ -20,7 +20,6 @@ class LayerManager {
 
   #currentLayerId = 1;
   #startTime = Date.now();
-  #time = 0;
   #frame = $state(0);
 
   #context?: CanvasContext;
@@ -136,14 +135,14 @@ class LayerManager {
   }
 
   createEventHandlers() {
-    const handleEvent = (e: MouseEvent | TouchEvent) => {
-      const { handlers, layerEvents, pixelRatio } = this.#config;
+    const handleCanvasEvent = (e: MouseEvent | TouchEvent) => {
+      const type = <CanvasEventHandler>`on${e.type}`;
+      const handler = this.#config.handlers[type];
+      handler?.(e);
+    };
 
-      const canvasHandler = handlers[<CanvasEventHandler>`on${e.type}`];
-      canvasHandler?.(e);
-
-      if (!layerEvents) return;
-
+    const handleLayerEvent = (e: MouseEvent | TouchEvent) => {
+      const { pixelRatio } = this.#config;
       const { x, y } = getEventCoords(e);
 
       if (['touchstart', 'pointermove'].includes(e.type)) {
@@ -156,10 +155,17 @@ class LayerManager {
 
       if (!this.#activeLayerEventHandlers) return;
 
-      const layerHandlerType = `on${e.type.replace('layer.', '')}`;
-      const layerHandler =
-        this.#activeLayerEventHandlers[<LayerEventHandler>layerHandlerType];
-      layerHandler?.({ x, y, originalEvent: e });
+      const type = <LayerEventHandler>`on${e.type.replace('layer.', '')}`;
+      const handler = this.#activeLayerEventHandlers[type];
+      handler?.({ x, y, originalEvent: e });
+    };
+
+    const handleEvent = (e: MouseEvent | TouchEvent) => {
+      handleCanvasEvent(e);
+
+      if (this.#config.layerEvents) {
+        handleLayerEvent(e);
+      }
     };
 
     return SUPPORTED_EVENTS.reduce(
@@ -171,18 +177,12 @@ class LayerManager {
   #setActiveLayer(layer: number, e: MouseEvent | TouchEvent) {
     if (this.#activeLayerId === layer) return;
 
-    if (e instanceof MouseEvent) {
-      e.target?.dispatchEvent(new PointerEvent('layer.pointerleave', e));
-      e.target?.dispatchEvent(new MouseEvent('layer.mouseleave', e));
-    }
+    dispatchLayerEvent(e, 'leave');
 
     this.#activeLayerId = layer;
     this.#activeLayerEventHandlers = this.#eventHandlers.get(layer);
 
-    if (e instanceof MouseEvent) {
-      e.target?.dispatchEvent(new PointerEvent('layer.pointerenter', e));
-      e.target?.dispatchEvent(new MouseEvent('layer.mouseenter', e));
-    }
+    dispatchLayerEvent(e, 'enter');
   }
 
   #destroy() {
