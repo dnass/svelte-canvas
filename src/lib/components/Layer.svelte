@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
   import type { LayerProps } from '../types';
-  import { register } from './Canvas.svelte';
+  import { register } from '../util/registerLayer';
 
   const layer: LayerProps = $props();
-  const { layerId, unregister } = register(layer);
-
-  onDestroy(unregister);
+  const layerId = register(layer);
 </script>
 
 <div data-layer-id={layerId}></div>

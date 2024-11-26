@@ -1,19 +1,9 @@
-<script module lang="ts">
-  import { getContext } from 'svelte';
-  import LayerManager from '../util/LayerManager.svelte';
-
-  const KEY = Symbol();
-  export const register = (layer: LayerProps) => {
-    const _register = <LayerManager['register']>getContext(KEY);
-    return _register(layer);
-  };
-</script>
-
 <script lang="ts">
-  import { onMount, setContext } from 'svelte';
+  import { onMount } from 'svelte';
   import { createHitCanvas } from 'hit-canvas';
+  import LayerManager from '../util/LayerManager.svelte';
   import { getMaxPixelRatio } from '../util/getMaxPixelRatio';
-  import type { CanvasContext, CanvasProps, LayerProps } from '../types';
+  import type { CanvasContext, CanvasProps } from '../types';
 
   let {
     width: _width,
@@ -84,8 +74,6 @@
 
     manager.init(context, layerRef);
   });
-
-  setContext(KEY, manager.register.bind(manager));
 
   const redraw = () => manager.redraw();
   export { redraw, canvas, context };

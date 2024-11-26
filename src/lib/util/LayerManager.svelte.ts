@@ -1,8 +1,9 @@
 import type { HitCanvasRenderingContext2D as HitContext } from 'hit-canvas';
-import { onDestroy, untrack } from 'svelte';
+import { onDestroy, setContext, untrack } from 'svelte';
 import { SvelteMap } from 'svelte/reactivity';
 import { dispatchLayerEvent, getEventCoords, SUPPORTED_EVENTS } from './events';
 import { warn } from './console';
+import { REGISTER_KEY } from './registerLayer';
 import type {
   CanvasContext,
   CanvasConfig,
@@ -36,6 +37,7 @@ class LayerManager {
 
   constructor(config: CanvasConfig) {
     this.#config = config;
+    setContext(REGISTER_KEY, this.register.bind(this));
   }
 
   init(context: CanvasContext, layerRef: HTMLElement) {
@@ -54,15 +56,17 @@ class LayerManager {
   }
 
   register({ setup, render, ...eventHandlers }: LayerProps) {
+    const layerId = this.#getLayerId();
+
     if (setup) {
-      this.#setups.set(this.#currentLayerId, setup);
+      this.#setups.set(layerId, setup);
     }
 
-    this.#renderers.set(this.#currentLayerId, render);
+    this.#renderers.set(layerId, render);
 
     if (Object.keys(eventHandlers).length) {
       if (this.#config.layerEvents) {
-        this.#eventHandlers.set(this.#currentLayerId, eventHandlers);
+        this.#eventHandlers.set(layerId, eventHandlers);
       } else {
         warn(
           'Canvas must have layerEvents={true} in order to use layer-level event handlers',
@@ -70,12 +74,13 @@ class LayerManager {
       }
     }
 
-    this.redraw();
+    onDestroy(() => this.#unregister(layerId));
 
-    return {
-      unregister: () => this.#unregister(this.#currentLayerId),
-      layerId: this.#currentLayerId++,
-    };
+    return layerId;
+  }
+
+  #getLayerId() {
+    return this.#currentLayerId++;
   }
 
   #unregister(layerId: number) {
