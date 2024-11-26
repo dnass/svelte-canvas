@@ -14,7 +14,7 @@
 
 html {
   font-size: 17px;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 body {
@@ -41,17 +41,17 @@ h1 {
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 600;
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 
 h4 {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
@@ -69,11 +69,7 @@ p {
 h3,
 h4 {
   position: relative;
-  margin: 2rem 0 0;
-}
-
-h3 + h4 {
-  margin-top: 0.5rem;
+  margin: 1rem 0 0;
 }
 
 :is(h3, h4):hover .icon-link:before {
@@ -87,9 +83,11 @@ h3 + h4 {
 
 code {
   font-family: 'Fira Mono', monospace;
-  font-size: 0.9em;
-  background-color: var(--bg-light);
-  padding: 3px 4px;
-  border-radius: 2px;
   font-size: 0.9rem;
+}
+
+p code {
+  background-color: var(--bg-light);
+  border-radius: 2px;
+  padding: 3px 4px;
 }

@@ -2,20 +2,21 @@
   import { Layer } from '$lib';
   import { spring } from 'svelte/motion';
 
-  export let x, y, color;
+  let { x, y, color, onclick } = $props();
 
-  let dragging = false;
+  let dragging = $state(false);
 
-  let _x, _y;
+  let _x = $state();
+  let _y = $state();
 
   const radius = spring(80, { stiffness: 0.15, damping: 0.2 });
 
-  $: setup = ({ width, height }) => {
+  const setup = ({ width, height }) => {
     _x = spring(width * x, { stiffness: 0.15, damping: 0.2 });
     _y = spring(height * y, { stiffness: 0.15, damping: 0.2 });
   };
 
-  $: render = ({ context }) => {
+  const render = ({ context }) => {
     context.globalCompositeOperation = 'screen';
     context.fillStyle = color;
     context.lineWidth = 10;
@@ -37,9 +38,9 @@
   };
 
   const onDown = (e) => {
-    e.detail.originalEvent.preventDefault();
     dragging = true;
     radius.set(120);
+    onclick?.();
   };
 
   const onUp = () => {
@@ -47,10 +48,10 @@
     radius.set(80);
   };
 
-  const onMove = (e) => {
+  const onMove = ({ x, y }) => {
     if (dragging) {
-      _x.set(e.detail.x);
-      _y.set(e.detail.y);
+      _x.set(x);
+      _y.set(y);
     }
   };
 </script>
@@ -58,14 +59,12 @@
 <Layer
   {setup}
   {render}
-  on:mouseenter={onEnter}
-  on:mouseleave={onLeave}
-  on:mousedown={onDown}
-  on:mousedown
-  on:mousemove={onMove}
-  on:mouseup={onUp}
-  on:touchstart={onDown}
-  on:touchstart
-  on:touchmove={onMove}
-  on:touchend={onUp}
+  onmouseenter={onEnter}
+  onmouseleave={onLeave}
+  onmousedown={onDown}
+  onmousemove={onMove}
+  onmouseup={onUp}
+  ontouchstart={onDown}
+  ontouchmove={onMove}
+  ontouchend={onUp}
 />

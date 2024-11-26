@@ -1,16 +1,29 @@
-<script lang="ts">
-  import 'svelte-highlight/styles/onedark.css';
-  import Highlight, { HighlightSvelte } from 'svelte-highlight';
-  import typescript from 'svelte-highlight/languages/typescript';
+<script module>
+  import { createHighlighter } from 'shiki';
 
-  export let files: string[][] = [],
+  const { codeToHtml } = await createHighlighter({
+    themes: ['one-dark-pro'],
+    langs: ['typescript', 'svelte'],
+  });
+</script>
+
+<script lang="ts">
+  let {
+    files = [],
     text = '',
     lang = 'svelte',
-    copy = false;
+    copy = false,
+  }: {
+    files: string[][];
+    text?: string;
+    lang?: 'svelte' | 'ts' | 'text';
+    copy?: boolean;
+  } = $props();
 
-  let selectedFile = 0;
+  let selectedFile = $state(0);
 
-  $: code = files.length ? files[selectedFile][1] : text.trim();
+  let code = $derived(files.length ? files[selectedFile][1] : text.trim());
+  let html = $derived(codeToHtml(code, { lang, theme: 'one-dark-pro' }));
 </script>
 
 <div class="code">
@@ -20,7 +33,7 @@
         <button
           class="tab"
           class:active={selectedFile === i}
-          on:click={() => (selectedFile = i)}
+          onclick={() => (selectedFile = i)}
         >
           {title}
         </button>
@@ -32,7 +45,7 @@
       <button
         class="copy"
         aria-label="Copy to clipboard"
-        on:click={() => navigator.clipboard.writeText(code)}
+        onclick={() => navigator.clipboard.writeText(code)}
       >
         <svg viewBox="0 0 32 32">
           <path
@@ -41,11 +54,7 @@
         </svg>
       </button>
     {/if}
-    {#if lang === 'ts'}
-      <Highlight {code} language={typescript} />
-    {:else}
-      <HighlightSvelte {code} />
-    {/if}
+    {@html html}
   </div>
 </div>
 
@@ -56,17 +65,14 @@
     border-radius: 0.5rem;
     overflow: hidden;
     font-size: 0.9rem;
-    line-height: 1.25;
-    overflow-x: scroll;
     position: relative;
   }
 
   .code :global(pre) {
     margin: 0;
-  }
-
-  .code :global(code) {
+    line-height: 1.25;
     padding: 0.75rem;
+    overflow-x: scroll;
   }
 
   .title {

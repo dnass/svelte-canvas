@@ -1,10 +1,9 @@
 <script>
   import { Layer } from '$lib';
 
-  export let bounds,
-    show = false;
+  let { bounds, show = false, ...eventHandlers } = $props();
 
-  $: render = ({ context }) => {
+  const render = ({ context }) => {
     const { x0, y0, x1, y1 } = bounds;
 
     if (show) {
@@ -19,12 +18,4 @@
   };
 </script>
 
-<Layer
-  {render}
-  on:mouseenter
-  on:mouseleave
-  on:mousedown
-  on:mouseup
-  on:touchstart
-  on:touchend
-/>
+<Layer {render} {...eventHandlers} />

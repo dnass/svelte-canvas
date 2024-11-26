@@ -1,15 +1,16 @@
 <script>
   import { Canvas, Layer } from '$lib';
+  import { onMount } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { quadOut as easing } from 'svelte/easing';
 
   const position = tweened([0.5, 0.5], { duration: 400, easing });
 
-  setInterval(() => {
-    position.set([Math.random(), Math.random()]);
-  }, 500);
+  onMount(() => {
+    setInterval(() => ($position = [Math.random(), Math.random()]), 1000);
+  });
 
-  $: render = ({ context, width, height }) => {
+  const render = ({ context, width, height }) => {
     const [x, y] = $position;
     context.fillStyle = 'tomato';
     context.beginPath();

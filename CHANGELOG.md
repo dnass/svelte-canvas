@@ -1,3 +1,11 @@
+## 2.0.0
+
+- Svelte 5 rewrite — [read the migration guide.](https://dnass.github.io/svelte-canvas/upgrading)
+- Replace `getCanvas` and `getContext` methods with `canvas` and `context` properties.
+- Support `auxclick` event on layers.
+- Rename `CanvasLayerEvent` to `LayerEvent`.
+- Export `CanvasResizeEvent` type.
+
 ## 1.2.1
 
 - Bump Svelte to 4.2.19.

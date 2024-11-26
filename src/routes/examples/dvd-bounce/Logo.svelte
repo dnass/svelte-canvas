@@ -1,41 +1,43 @@
 <script>
   import { Layer } from '$lib';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import Logo from './DVD_logo.svg?raw';
 
-  let logo;
+  let logo = $state();
 
   onMount(() => {
     logo = new Image();
     logo.src = `data:image/svg+xml,${encodeURIComponent(Logo)}`;
   });
 
-  let x = 0,
-    y = 0,
-    xflip = 1,
-    yflip = 1;
+  let x = $state(0);
+  let y = $state(0);
+  let xflip = $state(1);
+  let yflip = $state(1);
+  let colorIndex = $state(0);
 
   const colors = ['tomato', 'goldenrod', 'mediumturquoise'];
-  let colorIndex = 0;
 
-  $: render = ({ context, width, height }) => {
-    const w = Math.min(210, width / 3);
-    const h = w / 2;
+  const render = ({ context, width, height }) => {
+    untrack(() => {
+      const w = Math.min(210, width / 3);
+      const h = w / 2;
 
-    if ((x += 5 * xflip) <= 0 || x + w >= width) {
-      xflip *= -1;
-      colorIndex++;
-    }
+      if ((x += 5 * xflip) <= 0 || x + w >= width) {
+        xflip *= -1;
+        colorIndex++;
+      }
 
-    if ((y += 5 * yflip) <= 0 || y + h >= height) {
-      yflip *= -1;
-      colorIndex++;
-    }
+      if ((y += 5 * yflip) <= 0 || y + h >= height) {
+        yflip *= -1;
+        colorIndex++;
+      }
 
-    context.fillStyle = colors[colorIndex % colors.length];
-    context.fillRect(0, 0, width, height);
-    context.globalCompositeOperation = 'destination-in';
-    context.drawImage(logo, x, y, w, h);
+      context.fillStyle = colors[colorIndex % colors.length];
+      context.fillRect(0, 0, width, height);
+      context.globalCompositeOperation = 'destination-in';
+      context.drawImage(logo, x, y, w, h);
+    });
   };
 </script>
 

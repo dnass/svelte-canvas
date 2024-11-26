@@ -1,7 +1,14 @@
+<script module lang="ts">
+  export type NavItems = {
+    [key in string]: string | NavItems;
+  };
+</script>
+
 <script lang="ts">
   import { page } from '$app/stores';
+  import NavMenu from './NavMenu.svelte';
 
-  export let items;
+  let { items }: { items: NavItems } = $props();
 </script>
 
 {#each Object.entries(items) as [title, value]}
@@ -12,13 +19,14 @@
     </a>
   {:else if typeof value === 'object'}
     <p>{title}</p>
-    <svelte:self items={value} />
+    <NavMenu items={value} />
   {/if}
 {/each}
 
 <style>
   a {
     display: block;
+    line-height: 1.4;
   }
 
   a.active {

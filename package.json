@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -19,39 +19,41 @@
     "canvas"
   ],
   "license": "ISC",
+  "homepage": "https://dnass.github.io/svelte-canvas/",
   "dependencies": {
     "canvas-size": "^1.2.6",
-    "hit-canvas": "^0.2.0",
-    "svelte": "^4.2.19"
+    "hit-canvas": "^0.2.1",
+    "svelte": "^5.0.0"
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "^3.0.0",
-    "@sveltejs/kit": "^2.5.0",
-    "@sveltejs/package": "^2.2.2",
-    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/adapter-static": "^3.0.4",
+    "@sveltejs/kit": "^2.5.25",
+    "@sveltejs/package": "^2.3.4",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@types/canvas-size": "^1.2.2",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.3",
-    "d3-delaunay": "^6.0.2",
-    "d3-geo": "^3.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "canvas-size": "^1.2.6",
+    "d3-delaunay": "^6.0.4",
+    "d3-geo": "^3.1.1",
     "d3-interpolate": "^3.0.1",
     "d3-scale": "^4.0.2",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
     "geojson": "^0.5.0",
-    "mdsvex": "^0.11.0",
-    "prettier": "^2.6.2",
-    "prettier-plugin-svelte": "^2.10.1",
-    "rehype-autolink-headings": "^7.0.0",
+    "mdsvex": "^0.12.3",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.6",
+    "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
-    "svelte-check": "^3.4.3",
-    "svelte-highlight": "^7.6.0",
-    "svelte-preprocess": "^5.0.3",
+    "shiki": "^1.22.2",
+    "svelte-check": "^4.0.2",
+    "svelte-preprocess": "^6.0.2",
     "topojson-client": "^3.1.0",
-    "tslib": "^2.6.2",
-    "typescript": "^5.2.2",
+    "tslib": "^2.7.0",
+    "typescript": "^5.5.4",
     "us-atlas": "^3.0.1",
-    "vite": "^5.1.7",
+    "vite": "^5.4.2",
     "world-atlas": "^2.0.2"
   },
   "type": "module",
@@ -82,6 +84,15 @@
       ],
       "util/LayerManager": [
         "./dist/util/LayerManager.d.ts"
+      ],
+      "util/getMaxPixelRatio": [
+        "./dist/util/getMaxPixelRatio.d.ts"
+      ],
+      "util/events": [
+        "./dist/util/events.d.ts"
+      ],
+      "util/console": [
+        "./dist/util/console.d.ts"
       ]
     }
   }

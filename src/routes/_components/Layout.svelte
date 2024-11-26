@@ -2,18 +2,27 @@
   import './page.css';
   import { page } from '$app/stores';
   import { browser, version } from '$app/environment';
-  import NavMenu from './NavMenu.svelte';
+  import NavMenu, { type NavItems } from './NavMenu.svelte';
+  import type { Snippet } from 'svelte';
 
-  export let data,
-    title = '';
+  let {
+    data,
+    title,
+    children,
+  }: { data: { menu: NavItems }; title: string; children: Snippet } = $props();
 
-  let menuVisible = false;
+  let menuVisible = $state(false);
+  let article = $derived(!$page.url.pathname.includes('/examples/'));
 
-  $: $page, (menuVisible = false);
-  $: article = !$page.url.pathname.includes('/examples/');
-  $: if (browser) {
+  $effect(() => {
+    $page;
+    menuVisible = false;
+  });
+
+  $effect(() => {
+    if (!browser) return;
     document.body.style.overflow = menuVisible ? 'hidden' : 'auto';
-  }
+  });
 </script>
 
 <svelte:head>
@@ -30,7 +39,7 @@
       <button
         aria-expanded={menuVisible}
         aria-label="Toggle menu"
-        on:click={() => (menuVisible = !menuVisible)}
+        onclick={() => (menuVisible = !menuVisible)}
       >
         <svg viewBox="0 0 24 24">
           <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" />
@@ -71,7 +80,7 @@
   </nav>
 
   <main class:article>
-    <slot />
+    {@render children()}
   </main>
 </div>
 
@@ -159,6 +168,7 @@
       padding: var(--header-pad) 1.5rem;
       background-color: var(--bg-dark);
       border-bottom: 1px solid var(--bg-light);
+      line-height: 1.3;
     }
 
     h1 {

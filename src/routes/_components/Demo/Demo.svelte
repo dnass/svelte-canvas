@@ -8,7 +8,6 @@
   import { coords, activeLayer } from './store';
 
   const touch = (e) => {
-    e.preventDefault();
     const { left, top } = e.target.getBoundingClientRect();
     const { clientX, clientY } = e.changedTouches[0];
     $coords = [clientX - left, clientY - top];
@@ -19,9 +18,9 @@
   <Canvas
     layerEvents
     style="cursor: {$activeLayer ? 'pointer' : 'default'}"
-    on:mousemove={(e) => ($coords = [e.offsetX, e.offsetY])}
-    on:touchstart={touch}
-    on:touchmove={touch}
+    onpointermove={(e) => ($coords = [e.offsetX, e.offsetY])}
+    ontouchstart={touch}
+    ontouchmove={touch}
   >
     <Rect />
     <Blob />
@@ -44,5 +43,6 @@
     overflow: hidden;
     position: relative;
     aspect-ratio: 5/3;
+    touch-action: none;
   }
 </style>

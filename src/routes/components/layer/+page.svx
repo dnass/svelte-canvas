@@ -8,15 +8,14 @@ title: Layer
 
 ## {title}
 
-The `Layer` component encapsulates a piece of your canvas rendering logic. When your layer render functions are defined reactively (with `$:`), every layer re-renders when the dependencies of any layer's render function change.
+The `Layer` component encapsulates a piece of your canvas rendering logic. Every layer re-renders when the dependencies of any layer's render function change.
 
 <Code text={`
 <script>
   import { text } from './store';\n
-  // When the value of the \`text\` store changes, \`render\` is updated,
-  // triggering a render of the current layer as well as all other
-  // layers on the canvas.
-  $: render = ({ context }) => context.fillText($text, 10, 10);
+  // When the value of the \`text\` store changes, it triggers a render
+  // of the current layer as well as all other layers on the canvas.
+  const render = ({ context }) => context.fillText($text, 10, 10);
 </script>\n
 <Layer {render} />
 `} />
@@ -25,9 +24,9 @@ Render functions are called in the order the layers are defined, so each layer w
 
 ### Props
 
-#### `render`
+#### render
 
-A function that receives a `props` object with the following properties;
+A function that receives a `props` object with the following properties:
 
 <Code lang='ts' text={`
 render: (props: {
@@ -46,7 +45,7 @@ render: (props: {
 }} />
 `} />
 
-#### `setup`
+#### setup
 
 The `setup` function has the same signature as `render` but is only called once when the layer is initialized.
 
@@ -61,32 +60,32 @@ setup: (props: {
 
 ### Event handling
 
-When the `layerEvents` prop on the parent `Canvas` component is `true`, individual `Layer` instances can handle events that fall within the pixels they have rendered on the canvas. Event handlers registered with the `on:` directive receive a `CanvasLayerEvent` with properties `detail.x` and `detail.y` representing the coordinates of the event relative to the parent canvas, as well as `detail.originalEvent`, which contains the original DOM event from the `canvas` element.
+When the `layerEvents` prop on the parent `Canvas` component is `true`, individual `Layer` instances can handle events that fall within the pixels they have rendered on the canvas. Event handlers receive a `LayerEvent` with properties `x` and `y` representing the coordinates of the event relative to the parent canvas, as well as `originalEvent`, which contains the original DOM event from the `canvas` element.
 
 <Code text={`<script>
   import { Canvas, Layer } from 'svelte-canvas';
 </script>
  
 <Canvas layerEvents>
-  <Layer on:click={(e) => console.log(e.detail.x, e.detail.y) />
+  <Layer onclick={(e) => console.log(e.x, e.y) />
 </Canvas>
 `} />
 
 `Layer` supports the following event types:
 
-`'click' | 'contextmenu' | 'dblclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
+`'click' | 'contextmenu' | 'dblclick' | 'auxclick' | 'mousedown' | 'mouseenter' | 'mouseleave' | 'mousemove' | 'mouseup' | 'wheel' | 'touchcancel' | 'touchend' | 'touchmove' | 'touchstart' | 'pointerenter' | 'pointerleave' | 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'`
 
 Under the hood, `svelte-canvas` proxies all `CanvasRenderingContext2D` methods to a second, offscreen canvas, using a unique fill and stroke color to identify each layer. When an event occurs on the main canvas, the color of the pixel at the event coordinates is read from the offscreen canvas and used to identify the corresponding layer. The event is then re-dispatched to the `Layer` component.
 
 #### Touch events
 
-By default, `svelte-canvas` does not call `preventDefault` on layer touch events. To prevent `touchmove` events from scrolling the page, call `e.detail.originalEvent.preventDefault()` in your layer event handler.
+By default, `svelte-canvas` does not call `preventDefault` on layer touch events. To prevent `touchmove` events from scrolling the page, call `e.originalEvent.preventDefault()` in your layer event handler. Alternatively, you can style the parent canvas with `touch-action: none`.
 
 ### Types
 
-#### `Render`
+#### Render
 
-The `Render` interface is used to type your setup and render functions. Because types [cannot be used](https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#how-do-i-type-reactive-assignments--i-get-an-implicitly-has-type-any-error) directly with Svelte's reactive declarations, you must define your render function with `let` first.
+The `Render` interface is used to type your setup and render functions.
 
 <Code lang='ts' text={`interface Render {
   (props: {
@@ -100,32 +99,31 @@ The `Render` interface is used to type your setup and render functions. Because 
 <Code text={`<script>
   import { Layer, type Render } from 'svelte-canvas';
   
-  let render: Render;
-  $: render = ({ context }) => { ... };
+  const render: Render = ({ context }) => { ... };
 </script>
  
 <Layer {render} />
 `} />
 
-#### `CanvasLayerEvent`
+#### LayerEvent
 
-The `CanvasLayerEvent` type is used to type event objects received by layer event handlers.
+The `LayerEvent` type is used to type event objects received by layer event handlers.
 
-<Code lang='ts' text={`type CanvasLayerEvent = CustomEvent<{
+<Code lang='ts' text={`type LayerEvent = {
   x: number;
   y: number;
   originalEvent: MouseEvent | TouchEvent;
-}>
+}
 `} />
 
 
 <Code text={`<script>
-  import { Layer, type CanvasLayerEvent } from 'svelte-canvas';
+  import { Layer, type LayerEvent } from 'svelte-canvas';
   
-  const handleClick = (e: CanvasLayerEvent) => {
-    console.log(e.detail.x, e.detail.y);
+  const handleClick = (e: LayerEvent) => {
+    console.log(e.x, e.y);
   };
 </script>
  
-<Layer on:click={handleClick} />
+<Layer onclick={handleClick} />
 `} />

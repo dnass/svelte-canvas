@@ -1,13 +1,22 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import Code from './Code.svelte';
 
-  export let width: string = '100%',
-    aspectRatio: string = '1',
-    files: string[][] = [];
+  let {
+    width = '100%',
+    aspectRatio = '1',
+    files = [],
+    children,
+  }: {
+    width: string;
+    aspectRatio: string;
+    files: string[][];
+    children: Snippet;
+  } = $props();
 </script>
 
 <div style:max-width={width} style:aspect-ratio={aspectRatio}>
-  <slot />
+  {@render children()}
 </div>
 
 <Code copy {files} />

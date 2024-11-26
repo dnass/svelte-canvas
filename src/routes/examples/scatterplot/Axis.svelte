@@ -1,15 +1,10 @@
 <script>
   import { Layer } from '$lib';
 
-  export let scale,
-    tickSize = 4,
-    margin,
-    tickNumber = 10,
-    type = 'x';
+  const { scale, tickSize = 4, margin, tickNumber = 10, type = 'x' } = $props();
 
-  $: ticks = scale.ticks(tickNumber);
-
-  $: render = ({ context, height }) => {
+  const render = ({ context, height }) => {
+    const ticks = scale.ticks(tickNumber);
     context.beginPath();
 
     ticks.forEach((d) => {
