@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -93,6 +93,9 @@
       ],
       "util/console": [
         "./dist/util/console.d.ts"
+      ],
+      "util/register": [
+        "./dist/util/register.d.ts"
       ]
     }
   }
