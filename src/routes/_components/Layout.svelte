@@ -168,6 +168,7 @@
       padding: var(--header-pad) 1.5rem;
       background-color: var(--bg-dark);
       border-bottom: 1px solid var(--bg-light);
+      line-height: 1.3;
     }
 
     h1 {
