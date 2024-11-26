@@ -92,6 +92,7 @@ export type CanvasConfig = {
   autoclear: boolean;
   layerEvents: boolean;
   contextSettings?: CanvasRenderingContext2DSettings;
+  onresize?: (detail: CanvasResizeEvent) => void;
   handlers: CanvasEventHandlers;
 };
 

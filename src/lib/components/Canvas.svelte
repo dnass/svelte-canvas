@@ -10,15 +10,15 @@
 </script>
 
 <script lang="ts">
-  import { onMount, onDestroy, setContext } from 'svelte';
+  import { onMount, setContext } from 'svelte';
   import { createHitCanvas } from 'hit-canvas';
   import { getMaxPixelRatio } from '../util/getMaxPixelRatio';
   import type { CanvasContext, CanvasProps, LayerProps } from '../types';
 
   let {
-    width: _width = $bindable(),
-    height: _height = $bindable(),
-    pixelRatio: _pixelRatio = $bindable(),
+    width: _width,
+    height: _height,
+    pixelRatio: _pixelRatio,
     class: className,
     style = '',
     autoplay = false,
@@ -44,7 +44,9 @@
   const pixelRatio = $derived.by(() => {
     if (devicePixelRatio && _pixelRatio === 'auto')
       return getMaxPixelRatio(width, height, devicePixelRatio);
+
     if (_pixelRatio && _pixelRatio !== 'auto') return _pixelRatio;
+
     return devicePixelRatio;
   });
 
@@ -67,10 +69,11 @@
     get layerEvents() {
       return layerEvents;
     },
+    get onresize() {
+      return onresize;
+    },
     handlers,
   });
-
-  $effect(() => onresize?.({ width, height, pixelRatio }));
 
   onMount(() => {
     if (layerEvents) {
@@ -82,9 +85,7 @@
     manager.init(context, layerRef);
   });
 
-  onDestroy(() => manager.destroy());
-
-  setContext(KEY, manager.register);
+  setContext(KEY, manager.register.bind(manager));
 
   const redraw = () => manager.redraw();
   export { redraw, canvas, context };
