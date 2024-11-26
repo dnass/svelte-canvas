@@ -24,7 +24,7 @@ Render functions are called in the order the layers are defined, so each layer w
 
 ### Props
 
-#### `render`
+#### render
 
 A function that receives a `props` object with the following properties:
 
@@ -45,7 +45,7 @@ render: (props: {
 }} />
 `} />
 
-#### `setup`
+#### setup
 
 The `setup` function has the same signature as `render` but is only called once when the layer is initialized.
 
@@ -83,9 +83,9 @@ By default, `svelte-canvas` does not call `preventDefault` on layer touch events
 
 ### Types
 
-#### `Render`
+#### Render
 
-The `Render` interface is used to type your setup and render functions. Because types [cannot be used](https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#how-do-i-type-reactive-assignments--i-get-an-implicitly-has-type-any-error) directly with Svelte's reactive declarations, you must define your render function with `let` first.
+The `Render` interface is used to type your setup and render functions.
 
 <Code lang='ts' text={`interface Render {
   (props: {
@@ -105,7 +105,7 @@ The `Render` interface is used to type your setup and render functions. Because 
 <Layer {render} />
 `} />
 
-#### `LayerEvent`
+#### LayerEvent
 
 The `LayerEvent` type is used to type event objects received by layer event handlers.
 

@@ -10,7 +10,7 @@ title: Upgrading to v2
 
 `svelte-canvas@2` has been rewritten for [Svelte 5](https://svelte.dev/docs/svelte/v5-migration-guide). General usage and features have not changed, but the components make use of new Svelte 5 syntax.
 
-### `Canvas`
+### Canvas
 
 #### Event handlers
 
@@ -58,7 +58,7 @@ The `getCanvas` and `getContext` methods have been removed. Instead, you can use
 <Canvas bind:this={canvas} />
 `}/>
 
-### `Layer`
+### Layer
 
 #### Event handlers
 

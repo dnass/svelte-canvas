@@ -12,19 +12,19 @@ title: Canvas
 
 ### Props
 
-#### `width`
+#### width
 
 When unset, the canvas will use the width of its parent element.
 
 <Code lang='ts' text='width: number = canvas.parentElement.clientWidth;' />
 
-#### `height`
+#### height
 
 When unset, the canvas will use the height of its parent element.
 
 <Code lang='ts' text='height: number = canvas.parentElement.clientHeight;' />
 
-#### `pixelRatio`
+#### pixelRatio
 
 If `pixelRatio` is unset, the canvas uses Svelte's [`devicePixelRatio` binding](https://svelte.dev/docs#template-syntax-svelte-window) to match the window's pixel density.
 
@@ -32,37 +32,37 @@ If `pixelRatio` is set to `'auto'`, the [`canvas-size` library](https://github.c
 
 <Code lang='ts' text="pixelRatio: number | 'auto' = window.devicePixelRatio ?? 2;" />
 
-#### `style`
+#### style
 
 A CSS style string which will be applied to the canvas element.
 
 <Code lang='ts' text='style: string | null = null;' />
 
-#### `class`
+#### class
 
 A class string which will be applied to the canvas element.
 
 <Code lang='ts' text='class: string | null = null;' />
 
-#### `autoplay`
+#### autoplay
 
 If `true`, child layers will render with each tick of the animation loop. Otherwise, layers will only render when a child layer's render dependencies change.
 
 <Code lang='ts' text='autoplay: boolean = false;' />
 
-#### `autoclear`
+#### autoclear
 
 If `true`, will use `context.clearRect` to clear the canvas at the start of each render cycle.
 
 <Code lang='ts' text='autoclear: boolean = true;' />
 
-#### `layerEvents`
+#### layerEvents
 
 If `true`, enables event handling on child `Layer` components. This has a performance cost, so it's disabled by default.
 
 <Code lang='ts' text='layerEvents: boolean = false;' />
 
-#### `contextSettings`
+#### contextSettings
 
 A settings object passed to [`canvas.getContext`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext#contextattributes). 
 
@@ -72,7 +72,7 @@ A settings object passed to [`canvas.getContext`](https://developer.mozilla.org/
 
 ### Properties
 
-#### `canvas`
+#### canvas
 
 A reference to the canvas DOM element.
 
@@ -89,7 +89,7 @@ A reference to the canvas DOM element.
 <Canvas bind:this={canvas} />
 `} />
 
-#### `context`
+#### context
 
 A reference to the canvas's 2D rendering context.
 
@@ -108,7 +108,7 @@ A reference to the canvas's 2D rendering context.
 
 ### Methods
 
-#### `redraw`
+#### redraw
 
 Forces a re-render of the canvas.
 
@@ -125,9 +125,9 @@ Forces a re-render of the canvas.
 <Canvas bind:this={canvas} />
 `} />
 
-### Events
+### Component events
 
-#### `resize`
+#### onresize
 
 Fires when the canvas is resized or the pixel ratio changes.
 
@@ -147,7 +147,7 @@ Fires when the canvas is resized or the pixel ratio changes.
 <Canvas {onresize} />`
 } />
 
-### Event handling
+### DOM event handling
 
 DOM event handlers added to the `Canvas` component will be forwarded to the canvas element. For example:
 
