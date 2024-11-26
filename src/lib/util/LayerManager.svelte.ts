@@ -29,7 +29,7 @@ class LayerManager {
   #autoplayLoop?: number;
 
   #layerObserver?: MutationObserver;
-  #layerSequence: number[] = [];
+  #layerSequence: number[] = $state([]);
 
   #activeLayerId = 0;
   #activeLayerEventHandlers?: LayerEventHandlers;
@@ -81,7 +81,6 @@ class LayerManager {
   #unregister(layerId: number) {
     this.#renderers.delete(layerId);
     this.#eventHandlers.delete(layerId);
-    this.redraw();
   }
 
   #handleResize() {
@@ -93,7 +92,6 @@ class LayerManager {
     const getLayerSequence = () => {
       const layers = <HTMLElement[]>[...layerRef.children];
       this.#layerSequence = layers.map((layer) => +layer.dataset.layerId!);
-      this.redraw();
     };
 
     this.#layerObserver = new MutationObserver(() => getLayerSequence());
