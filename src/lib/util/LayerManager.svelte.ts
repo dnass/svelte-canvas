@@ -32,8 +32,10 @@ class LayerManager {
   #layerObserver?: MutationObserver;
   #layerSequence: number[] = $state([]);
 
-  #activeLayerId = 0;
-  #activeLayerEventHandlers?: LayerEventHandlers;
+  #activeLayerId = $state(0);
+  #activeLayerEventHandlers? = $derived(
+    this.#eventHandlers.get(this.#activeLayerId),
+  );
 
   constructor(config: CanvasConfig) {
     this.#config = config;
@@ -153,7 +155,12 @@ class LayerManager {
           x * pixelRatio,
           y * pixelRatio,
         );
-        this.#setActiveLayer(id, e);
+
+        if (this.#activeLayerId !== id) {
+          dispatchLayerEvent(e, 'leave');
+          this.#activeLayerId = id;
+          dispatchLayerEvent(e, 'enter');
+        }
       }
 
       if (!this.#activeLayerEventHandlers) return;
@@ -175,17 +182,6 @@ class LayerManager {
       (acc, type) => ({ ...acc, [type]: handleEvent }),
       {},
     );
-  }
-
-  #setActiveLayer(layer: number, e: MouseEvent | TouchEvent) {
-    if (this.#activeLayerId === layer) return;
-
-    dispatchLayerEvent(e, 'leave');
-
-    this.#activeLayerId = layer;
-    this.#activeLayerEventHandlers = this.#eventHandlers.get(layer);
-
-    dispatchLayerEvent(e, 'enter');
   }
 
   #destroy() {
