@@ -1,6 +1,6 @@
 {
   "name": "svelte-canvas",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -22,7 +22,7 @@
   "homepage": "https://dnass.github.io/svelte-canvas/",
   "dependencies": {
     "canvas-size": "^1.2.6",
-    "hit-canvas": "^0.2.1",
+    "hit-canvas": "^0.2.3",
     "svelte": "^5.0.0"
   },
   "devDependencies": {
