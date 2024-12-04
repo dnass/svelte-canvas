@@ -1,3 +1,7 @@
+## 2.0.2
+
+- Bump `hit-canvas` to 0.2.3.
+
 ## 2.0.1
 
 - Fix layer unregistering.
