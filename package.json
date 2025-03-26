@@ -53,7 +53,7 @@
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
     "us-atlas": "^3.0.1",
-    "vite": "^5.4.2",
+    "vite": "^5.4.15",
     "world-atlas": "^2.0.2"
   },
   "type": "module",
