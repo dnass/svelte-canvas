@@ -1,3 +1,7 @@
+## 2.1.0
+
+- Support object or array values for `Canvas` component's `class` prop.
+
 ## 2.0.2
 
 - Bump `hit-canvas` to 0.2.3.

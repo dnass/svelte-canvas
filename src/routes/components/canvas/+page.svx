@@ -40,9 +40,9 @@ A CSS style string which will be applied to the canvas element.
 
 #### class
 
-A class string which will be applied to the canvas element.
+A class string or [`ClassValue`](https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays) which will be applied to the canvas element.
 
-<Code lang='ts' text='class: string | null = null;' />
+<Code lang='ts' text='class: ClassValue | null = null;' />
 
 #### autoplay
 
