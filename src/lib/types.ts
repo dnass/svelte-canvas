@@ -1,5 +1,9 @@
 import type { Snippet } from 'svelte';
-import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements';
+import type {
+  ClassValue,
+  MouseEventHandler,
+  PointerEventHandler,
+} from 'svelte/elements';
 import type { HitCanvasRenderingContext2D } from 'hit-canvas';
 
 export type CanvasContext =
@@ -74,7 +78,7 @@ export type CanvasProps = {
   width?: number;
   height?: number;
   pixelRatio?: number | 'auto';
-  class?: string;
+  class?: ClassValue | null;
   style?: string;
   autoplay?: boolean;
   autoclear?: boolean;
